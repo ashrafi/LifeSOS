@@ -2,15 +2,33 @@ package com.example.data.connectors
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.data.security.SecureByokStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class ConnectorPreferencesStore(context: Context) {
+
+    private val secureByokStore = SecureByokStore.getInstance(context)
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences("metamuse_real_connectors_prefs", Context.MODE_PRIVATE)
 
     var metaAiToken: String
-        get() = prefs.getString("meta_ai_token", "") ?: ""
-        set(value) = prefs.edit().putString("meta_ai_token", value).apply()
+        get() = secureByokStore.getMetaAiTokenSync()
+        set(value) {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) {
+                secureByokStore.removeMetaAiTokenSync()
+            } else {
+                runBlocking(Dispatchers.IO) {
+                    secureByokStore.saveMetaAiToken(trimmed)
+                }
+            }
+        }
+
+    fun removeMetaAiToken() {
+        secureByokStore.removeMetaAiTokenSync()
+    }
 
     var metaAiEndpoint: String
         get() = prefs.getString("meta_ai_endpoint", "https://api.groq.com/openai/v1/chat/completions") ?: "https://api.groq.com/openai/v1/chat/completions"
@@ -45,8 +63,25 @@ class ConnectorPreferencesStore(context: Context) {
         set(value) = prefs.edit().putString("plaid_client_id", value).apply()
 
     var plaidSecret: String
-        get() = prefs.getString("plaid_secret", "") ?: ""
-        set(value) = prefs.edit().putString("plaid_secret", value).apply()
+        get() = secureByokStore.getPlaidSecretSync()
+        set(value) {
+            val trimmed = value.trim()
+            if (trimmed.isEmpty()) {
+                runBlocking(Dispatchers.IO) {
+                    secureByokStore.removePlaidSecret()
+                }
+            } else {
+                runBlocking(Dispatchers.IO) {
+                    secureByokStore.savePlaidSecret(trimmed)
+                }
+            }
+        }
+
+    fun removePlaidSecret() {
+        runBlocking(Dispatchers.IO) {
+            secureByokStore.removePlaidSecret()
+        }
+    }
 
     var plaidEnvironment: String
         get() = prefs.getString("plaid_environment", "sandbox") ?: "sandbox"
