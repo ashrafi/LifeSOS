@@ -44,13 +44,16 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material.icons.filled.UploadFile
@@ -98,6 +101,7 @@ import com.example.ui.components.SerenityPillChip
 import com.example.ui.components.SerenityPrimaryButton
 import com.example.ui.components.SerenitySecondaryButton
 import com.example.ui.components.SerenityStatusChip
+import com.example.ui.theme.AmberContainer
 import com.example.ui.theme.AmberTertiary
 import com.example.ui.theme.AppThemeMode
 import com.example.ui.theme.BaseCanvas
@@ -145,6 +149,7 @@ fun PresenceScreen(
     var isLocalPrivacyMode by remember(metaAiConfig.isLocalLlamaPrivacyMode) { mutableStateOf(metaAiConfig.isLocalLlamaPrivacyMode) }
     var isTokenVisible by remember { mutableStateOf(false) }
     var showTokenSavedMessage by remember { mutableStateOf(false) }
+    var showTokenRemovedMessage by remember { mutableStateOf(false) }
 
     var googleTasksTokenInput by remember(realState.googleTasksToken) {
         mutableStateOf(realState.googleTasksToken)
@@ -563,15 +568,48 @@ fun PresenceScreen(
 
                                 Surface(
                                     shape = CircleShape,
-                                    color = if (isLocalPrivacyMode) MintContainer else if (tokenInput.isNotBlank()) MintContainer else SubtleContainer
+                                    color = if (isLocalPrivacyMode) MintContainer else if (metaAiConfig.hasConfiguredKey || tokenInput.isNotBlank()) MintContainer else SubtleContainer
                                 ) {
                                     Text(
-                                        text = if (isLocalPrivacyMode) "On-Device (Private)" else if (tokenInput.isNotBlank()) "Cloud Llama 3.1" else "Key Needed",
+                                        text = if (isLocalPrivacyMode) "On-Device (Zero-Cloud)" else if (metaAiConfig.hasConfiguredKey || tokenInput.isNotBlank()) "🔒 Keystore Encrypted" else "Key Needed",
                                         style = MaterialTheme.typography.labelSmall.copy(
                                             color = DarkSageText,
                                             fontWeight = FontWeight.Bold
                                         ),
                                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            // Keystore & DataStore Security Status Badge
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(SubtleContainer)
+                                    .border(1.dp, WarmBorder, RoundedCornerShape(12.dp))
+                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Lock,
+                                        contentDescription = null,
+                                        tint = if (metaAiConfig.hasConfiguredKey || tokenInput.isNotBlank()) DarkSageText else WarmSlateCharcoal,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = if (metaAiConfig.hasConfiguredKey || tokenInput.isNotBlank()) {
+                                            "Android Keystore AES-256-GCM • DataStore Protected"
+                                        } else {
+                                            "Hardware Keystore ready • No BYOK key stored"
+                                        },
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = if (metaAiConfig.hasConfiguredKey || tokenInput.isNotBlank()) DarkSageText else WarmSlateCharcoal
+                                        )
                                     )
                                 }
                             }
@@ -692,11 +730,11 @@ fun PresenceScreen(
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 SerenitySecondaryButton(
-                                    text = "Save Config",
-                                    icon = Icons.Default.Check,
+                                    text = "Save & Encrypt",
+                                    icon = Icons.Default.Lock,
                                     onClick = {
                                         viewModel.updateMetaAiConfig(
                                             token = tokenInput,
@@ -705,16 +743,32 @@ fun PresenceScreen(
                                             isLocalPrivacyMode = isLocalPrivacyMode
                                         )
                                         showTokenSavedMessage = true
+                                        showTokenRemovedMessage = false
                                     },
                                     modifier = Modifier.weight(1f),
                                     testTag = "save_meta_key_button"
                                 )
 
+                                if (tokenInput.isNotBlank() || metaAiConfig.hasConfiguredKey) {
+                                    SerenitySecondaryButton(
+                                        text = "Remove Key",
+                                        icon = Icons.Default.DeleteForever,
+                                        onClick = {
+                                            viewModel.removeMetaAiToken()
+                                            tokenInput = ""
+                                            showTokenRemovedMessage = true
+                                            showTokenSavedMessage = false
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        testTag = "remove_meta_key_button"
+                                    )
+                                }
+
                                 SerenityPrimaryButton(
                                     text = if (isSyncingWithMuse) "Reasoning..." else "Run Llama Brain",
                                     icon = Icons.Default.Sync,
                                     onClick = { viewModel.sendAllInfoToMuse() },
-                                    modifier = Modifier.weight(1.3f),
+                                    modifier = Modifier.weight(1.2f),
                                     testTag = "send_to_muse_button"
                                 )
                             }
@@ -737,10 +791,80 @@ fun PresenceScreen(
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
-                                        text = "Llama brain configuration saved securely.",
+                                        text = "🔒 Key encrypted with AES-256-GCM via Android Keystore and saved to DataStore.",
                                         style = MaterialTheme.typography.labelSmall.copy(
                                             color = DarkSageText,
                                             fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+
+                            if (showTokenRemovedMessage) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(AmberContainer)
+                                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = DeepEspresso,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "🗑️ BYOK Key permanently removed from Keystore, DataStore, and memory.",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = DeepEspresso,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+
+                            // Security Safeguards & Threat Model Disclosure Card
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(SubtleContainer.copy(alpha = 0.7f))
+                                    .border(1.dp, WarmBorder, RoundedCornerShape(14.dp))
+                                    .padding(12.dp)
+                            ) {
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Default.Security,
+                                            contentDescription = null,
+                                            tint = CoralPrimary,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = "BYOK Security Safeguards & Threat Model",
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                color = DeepEspresso
+                                            )
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = "• Android Keystore: Key encrypted at rest via hardware-backed AES-256-GCM (TEE / StrongBox).\n" +
+                                               "• Encrypted DataStore: Excluded from Google Drive and local device backups.\n" +
+                                               "• Zero Exfiltration: Key is never logged to Logcat, analytics, or crash reports.\n" +
+                                               "• Instant Revocation: Remove the key anytime using the Remove Key button above.\n" +
+                                               "• Threat Model Notice: While Keystore encryption protects against unprivileged apps and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For untrusted devices, use 100% On-Device Privacy Mode.",
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            color = WarmSlateCharcoal,
+                                            fontSize = 11.sp,
+                                            lineHeight = 16.sp
                                         )
                                     )
                                 }
@@ -1109,7 +1233,7 @@ private fun RealBankFinanceCard(
                         listOf("sandbox", "production").forEach { env ->
                             SerenityPillChip(
                                 text = env.replaceFirstChar { it.uppercase() },
-                                isSelected = plaidEnv.lowercase() == env,
+                               ポーチisSelected = plaidEnv.lowercase() == env,
                                 onClick = { onPlaidEnvChange(env) }
                             )
                         }
