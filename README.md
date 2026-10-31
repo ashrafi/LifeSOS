@@ -334,12 +334,14 @@ MetaMuse/
 │   │   │       ├── data/
 │   │   │       │   ├── MuseService.kt       # Meta Llama 3.1 API, Llama Guard & On-Device Engine
 │   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
+│   │   │       │   ├── security/
+│   │   │       │   │   └── SecureByokStore.kt       # Hardware Keystore AES-256-GCM + DataStore BYOK
 │   │   │       │   └── connectors/
 │   │   │       │       ├── HealthConnectManager.kt      # Android Health Connect SDK wrapper
 │   │   │       │       ├── CalendarTasksConnector.kt    # CalendarProvider + Google Tasks client
 │   │   │       │       ├── FacebookSocialConnector.kt   # Facebook Graph API v21.0 + Contacts
 │   │   │       │       ├── BankFinanceConnector.kt      # Plaid API + SimpleFIN + CSV parser
-│   │   │       │       └── ConnectorPreferencesStore.kt # SharedPreferences token persistence
+│   │   │       │       └── ConnectorPreferencesStore.kt # SharedPreferences & Keystore token integration
 │   │   │       ├── viewmodel/
 │   │   │       │   └── SerenityViewModel.kt # State orchestration, TTS voice & WhatsApp Intents
 │   │   │       └── ui/
@@ -429,16 +431,32 @@ adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 
 ---
 
-## 🔒 Security, Privacy & Responsible AI
+## 🔒 Security, Privacy, Responsible AI & Direct BYOK Safeguards
 
-1. **Zero-Knowledge Privacy Engine**:
-   Biometric health records and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
-2. **Responsible AI with Llama Guard 3**:
-   All proactive conversational advice and Llama prescriptions are verified against Llama Guard 3 criteria. MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness pressure.
-3. **Android Health Connect Compliance**:
-   All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
-4. **Resilient Offline CSV & Contacts**:
-   No third-party bank credentials are required to evaluate spending; users can import bank statements directly as local CSV files.
+### 1. Direct BYOK (Bring-Your-Own-Key) Cryptographic Architecture
+For users who connect their own Meta Llama 3.1 / provider API key, MetaMuse enforces strict defense-in-depth safeguards:
+* **Hardware-Backed Android Keystore Encryption**:
+  The BYOK API key is encrypted at rest using **AES-256-GCM** with a hardware-backed key generated inside the `AndroidKeyStore` (isolated in the device's Trusted Execution Environment [TEE] or StrongBox Keymaster).
+* **Encrypted Jetpack DataStore**:
+  Ciphertext and 12-byte initialization vectors (IVs) are stored in an isolated Preferences DataStore (`metamuse_secure_byok`), eliminating insecure plaintext SharedPreferences.
+* **Zero Cloud Backups & Zero Exfiltration**:
+  Configured in `data_extraction_rules.xml` and `backup_rules.xml` to explicitly exclude all BYOK DataStore files from Google Drive cloud backups and device-to-device transfers. Keys are never printed in Logcat, analytics, or crash reports.
+* **Instant User Revocation**:
+  Users can tap **"Remove Key"** at any time to instantly wipe and purge the encrypted payload from DataStore and flush active runtime memory.
+* **Security Threat Model Disclosure**:
+  While hardware-backed Keystore encryption protects stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, MetaMuse offers its **100% On-Device Privacy Mode**.
+
+### 2. Zero-Knowledge On-Device Privacy Engine
+Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
+
+### 3. Responsible AI with Llama Guard 3
+All proactive conversational advice and Llama prescriptions are verified against Llama Guard 3 criteria. MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness pressure.
+
+### 4. Android Health Connect Compliance
+All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
+
+### 5. Resilient Offline CSV & Contacts
+No third-party bank credentials are required to evaluate spending; users can import bank statements directly as local CSV files.
 
 ---
 
