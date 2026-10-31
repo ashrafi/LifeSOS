@@ -29,7 +29,7 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
              ▼                         ▼                         ▼                         ▼
       "Step Goal Met!"          "8 Meetings Added"          "+20% Savings!"        "3 Plans Canceled"
              │                         │                         │                         │
-             └─────────────────────────┼─────────────────────────┴─────────────────────────┘
+             └─────────────────────────┴─────────────────────────┴─────────────────────────┘
                                        │
                                        ▼ (Isolated Metric Silos)
                          ┌───────────────────────────┐
@@ -297,7 +297,7 @@ MetaMuse features pre-configured interactive demo scenarios accessible with a si
 
 ### Scenario 1: The Success Trap
 * **The Conflict**: High productivity (98% tasks completed) and +20% monthly savings, but sleep drops from 7.5h to 5.0h with 3 canceled social plans.
-* **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤒)**, dimming her vibrant aura to a tired violet.
+* **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤢)**, dimming her vibrant aura to a tired violet.
 * **Llama's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
 * **WhatsApp Nudge**: Pre-drafts a message to friends: *"Free for Saturday brunch? Missing catching up!"*
 * **Verified Follow-Through**: Verifying 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
@@ -390,8 +390,7 @@ cd MetaMuse
 ```
 
 ### 2. Configure Environment Secrets
-Copy `.env.example` to `.env`:
-```bash
+Copy `.env.example` to `.env`:\n```bash
 cp .env.example .env
 ```
 
@@ -503,8 +502,8 @@ timeline
 
 ## 👥 Authors & Acknowledgments
 
-* **Created by the MetaMuse Team for the Meta AI Hackathon 2026**
-* Special thanks to the **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
+* **Created by Siamak (Ash) Ashrafi for the Meta AI Hackathon 2026**
+* Special thanks to the amazing orgs that make all this cool tech **Meta Super Intelligence**,  **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
 
 ---
 *MetaMuse — Empathetic AI that cares about the whole human.* 🪽
