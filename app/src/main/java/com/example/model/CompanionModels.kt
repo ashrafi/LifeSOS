@@ -251,7 +251,9 @@ data class MetaAiConfig(
     val lastSyncedAt: String? = null,
     val endpointUrl: String = "https://api.groq.com/openai/v1/chat/completions",
     val modelName: String = "llama-3.1-70b-versatile",
-    val isLocalLlamaPrivacyMode: Boolean = true
+    val isLocalLlamaPrivacyMode: Boolean = true,
+    val isKeyEncryptedInKeystore: Boolean = true,
+    val hasConfiguredKey: Boolean = false
 )
 
 data class MuseLifeAdvice(
