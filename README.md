@@ -1,0 +1,492 @@
+# MetaMuse 🪽
+
+> **Bio-Responsive Personal Superintelligence & Life Companion powered by Meta Llama 3**  
+> *Connecting Health Connect, Calendar, Financial Outflows, and Social Ties into an Empathetic, Living Virtual Companion.*
+
+[![Meta AI Hackathon](https://img.shields.io/badge/Meta_AI-Hackathon_2026-0866FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
+[![Llama 3.1](https://img.shields.io/badge/Powered_by-Meta_Llama_3.1-7B61FF?style=for-the-badge&logo=meta&logoColor=white)](https://llama.meta.com/)
+[![Llama Guard 3](https://img.shields.io/badge/Safety-Llama_Guard_3_PASSED-00B2FF?style=for-the-badge)](https://llama.meta.com/)
+[![Android Health Connect](https://img.shields.io/badge/Android-Health_Connect_SDK-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/health-and-fitness/guides/health-connect)
+[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
+[![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
+
+---
+
+## 📖 Executive Summary & The Problem We Solve
+
+Every modern productivity and wellness application looks at human life through a narrow straw:
+
+* **Your Calendar App** schedules 8 consecutive sprint meetings, completely unaware you only slept 4.5 hours last night.
+* **Your Fitness Tracker** congratulates you on hitting 10,000 steps, blind to the fact that you’ve canceled dinner plans with your closest friends three weeks in a row to hit arbitrary work deadlines.
+* **Your Bank App** celebrates a +20% monthly savings rate, completely unaware that your late-night food delivery orders and isolation are warning signs of impending burnout.
+
+Single-metric optimization inevitably forces humans into a dangerous local maximum: **invisible burnout**.
+
+```
+    [ Health Trackers ]       [ Calendar & Tasks ]       [ Bank & Budget ]       [ Social & Messaging ]
+             │                         │                         │                         │
+             ▼                         ▼                         ▼                         ▼
+      "Step Goal Met!"          "8 Meetings Added"          "+20% Savings!"        "3 Plans Canceled"
+             │                         │                         │                         │
+             └─────────────────────────┼─────────────────────────┴─────────────────────────┘
+                                       │
+                                       ▼ (Isolated Metric Silos)
+                         ┌───────────────────────────┐
+                         │   INVISIBLE BURNOUT ⚠️    │
+                         └───────────────────────────┘
+```
+
+### The Solution: MetaMuse
+
+**MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
+
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Llama 3.1** and **Llama Guard 3** to detect hidden life trade-offs *before* they turn into exhaustion. 
+
+When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Llama 3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
+
+---
+
+## 🌟 Key Highlights & Hackathon Innovation
+
+1. **Deterministic Multi-Channel Anomaly Detection**:
+   Cross-references asynchronous biometric, schedule, spending, and relationship metrics in real time.
+2. **Meta Llama 3.1 Reasoning Brain**:
+   Executes structured JSON reasoning prompts that analyze holistic telemetry against the user's pinned core values.
+3. **Llama Guard 3 Responsible AI Verification**:
+   Every coaching suggestion and proactive companion dialogue is screened against Llama Guard safety guidelines to ensure non-clinical, empathetic, and constructive guidance.
+4. **Frictionless Actionable Nudges via WhatsApp**:
+   Instead of passive advice, MetaMuse generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
+5. **Auditory Warmth (Native Text-To-Speech)**:
+   Lumi speaks her prescriptions out loud using tuned voice synthesis with customizable pitch and tempo.
+6. **Closed-Loop Symbiotic Healing**:
+   Agreement does not heal Lumi—**verified follow-through does**. Lumi's health, glow, and halo blossom only when subsequent sensor telemetry confirms recovery.
+7. **Official Meta Horizon Design System**:
+   Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
+8. **Zero-Knowledge Privacy-First Architecture**:
+   Includes an offline rule-based privacy engine where sensitive health and financial numbers never leave the device, establishing a clean path to **ExecuTorch on-device Llama 3.2**.
+
+---
+
+## 🏗️ System Architecture & Data Flow
+
+```mermaid
+flowchart TD
+    subgraph DataSources["1. Multi-Stream Ingestion Layer"]
+        HC["Android Health Connect<br/>(Steps, Sleep, HR, Water)"]
+        CAL["Android Calendar & Tasks<br/>(Meetings, Deadlines, Late-Nights)"]
+        SOC["Facebook Graph v21.0 & Contacts<br/>(Starred Friends, Interaction Cadence)"]
+        FIN["Plaid API / SimpleFIN / CSV<br/>(Balances, Late-Night Delivery Spend)"]
+    end
+
+    subgraph CoreEngine["2. Telemetry Correlation & State Engine"]
+        REPO["SerenityRepository<br/>(Unified StateFlow)"]
+        STORE["ConnectorPreferencesStore<br/>(Encrypted SharedPreferences)"]
+        RULES["Deterministic Trade-Off Rules<br/>(e.g., Success Trap, Money Leak)"]
+    end
+
+    subgraph LlamaBrain["3. Meta Llama 3.1 Intelligence"]
+        PROMPT["Structured Telemetry Payload<br/>(Companion state + 4 channels + Core Values)"]
+        LLAMA["Meta Llama 3.1 70B / 8B<br/>(Chain-of-Thought JSON Inference)"]
+        GUARD["Llama Guard 3<br/>(Content Safety & Empathy Screening)"]
+        LOCAL["Local Privacy Engine<br/>(ExecuTorch On-Device Fallback)"]
+    end
+
+    subgraph UIExperience["4. Reactive Jetpack Compose UI"]
+        HABITAT["AttuneScreen & Habitat<br/>(Lumi Living Creature, Halo, Motes)"]
+        RADAR["VitalityScreen<br/>(4-Channel Concentric Bio-Radar)"]
+        SETTINGS["PresenceScreen<br/>(Meta Horizon Design Engine & Connectors)"]
+        THEME["ThemeState Dynamic Engine<br/>(Meta Blue #0866FF, Cyan, Violet)"]
+    end
+
+    subgraph Actions["5. Closed-Loop Real-World Execution"]
+        WA["WhatsApp Intent Deep Link<br/>(1-Tap Reconnect Message)"]
+        VOICE["Android TextToSpeech<br/>(Warm Auditory Companion Readout)"]
+        VERIFY["Verified Follow-Through<br/>(Sleep check + Event confirmation -> Radiant)"]
+    end
+
+    HC --> REPO
+    CAL --> REPO
+    SOC --> REPO
+    FIN --> REPO
+    REPO <--> STORE
+    REPO --> RULES
+
+    RULES --> PROMPT
+    PROMPT --> LLAMA
+    LLAMA --> GUARD
+    GUARD --> REPO
+    RULES -. Fallback .-> LOCAL
+    LOCAL -. Offline .-> REPO
+
+    REPO --> HABITAT
+    REPO --> RADAR
+    REPO --> SETTINGS
+    THEME --> UIExperience
+
+    HABITAT --> WA
+    HABITAT --> VOICE
+    WA -. User Reconnects .-> VERIFY
+    VERIFY --> REPO
+```
+
+---
+
+## 📱 Three-Tab Application Interface
+
+MetaMuse features an uncluttered 3-tab navigation hierarchy with full dynamic support for both the **Meta Horizon** and **Luminous Serenity** theme palettes:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       METAMUSE / SERENITY                   │
+├──────────────────────────────┬──────────────────────────────┤
+│ Tab 1: Home (Habitat)        │ Living Lumi Companion        │
+│                              │ Reactive Emotional Moods     │
+│                              │ Orbital Energy Motes & Halo  │
+│                              │ Llama Proactive Advice Card  │
+│                              │ 1-Tap WhatsApp Nudge Button  │
+│                              │ 🔊 Voice Audio Readout       │
+├──────────────────────────────┼──────────────────────────────┤
+│ Tab 2: Show Data (Vitality)  │ 4-Channel Bio-Radar Arcs     │
+│                              │ Health Connect Live Steps    │
+│                              │ Calendar Overload Monitor    │
+│                              │ Delivery Spend Leak Tracker  │
+│                              │ Social Connection Score      │
+├──────────────────────────────┼──────────────────────────────┤
+│ Tab 3: Connections (Settings)│ Companion Theme Swatches     │
+│                              │ Google Health Connect OAuth  │
+│                              │ Calendar & Tasks Permissions │
+│                              │ Facebook Graph & Contacts    │
+│                              │ Plaid Bank Link / CSV Upload │
+│                              │ Meta Llama Brain API Config  │
+└──────────────────────────────┴──────────────────────────────┘
+```
+
+---
+
+## 🔬 Multi-Channel Telemetry Ingestion Deep-Dive
+
+MetaMuse continuously aggregates real-world data across four distinct pillars without requiring manual tracking:
+
+### 1. Physical Health (Google Health Connect & Hardware Step Counter)
+* **SDK**: `androidx.health.connect.client:health-connect-client`
+* **Metrics Read**:
+  * Real-time daily steps (`StepsRecord`)
+  * 7-day sleep sessions and duration (`SleepSessionRecord`)
+  * Resting and active heart rate (`HeartRateRecord`)
+  * Hydration intake in liters (`HydrationRecord`)
+* **Permission Model**: Android 14+ system Health Connect permission dialogue with fallback for Android 13 APK.
+
+### 2. Cognitive Tasks & Schedule (Android Calendar Provider & Google Tasks API)
+* **Provider**: `CalendarContract.Instances`, `CalendarContract.Events`
+* **Metrics Read**:
+  * Total scheduled meetings today vs completed agenda items
+  * Late-night work events scheduled past 9:30 PM
+  * 14-day history of canceled, declined, or rescheduled social commitments
+  * Optional Google Tasks REST API v1 synchronization
+
+### 3. Social Fabric (Facebook Graph API v21.0 & Android Contacts)
+* **API**: Facebook Graph API v21.0 OAuth + Native Android `ContactsContract`
+* **Two-Tier Resilient Design**:
+  * **Tier 1 (Android Contacts Provider)**: Reads starred/favorite close contacts and computes interaction recency. Runs with zero external API dependencies or review hurdles for 100% demo reliability.
+  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 PKCE flow for public profile, family circles, and social events.
+
+### 4. Financial Equilibrium (Plaid API, SimpleFIN & Zero-Cloud CSV)
+* **Connectors**:
+  * **Plaid API v2020-09-14**: Sandbox and production institution linking with 30-day transaction sync.
+  * **SimpleFIN Bridge**: Standard read-only open banking protocol.
+  * **Zero-Cloud Bank CSV Importer**: Complete client-side CSV parser that scans transaction descriptions for late-night food delivery (`DoorDash`, `Uber Eats`, `Deliveroo`, `Grubhub`) without sending financial data over the Internet.
+
+---
+
+## 🧠 Meta Llama 3 Reasoning & Llama Guard Integration
+
+### Structured Telemetry Prompting
+
+When multi-channel telemetry suggests an emerging conflict, MetaMuse packages the complete state—including Lumi's hydration, energy, focus, channel reports, and user-pinned core values—into a structured JSON payload submitted to **Meta Llama 3.1**:
+
+```json
+{
+  "client": "MetaMuse Bio-Responsive Companion",
+  "timestamp": "1:24 PM, Oct 31",
+  "companion": {
+    "name": "Lumi",
+    "level": 4,
+    "mood": "SICK",
+    "overallLifeScore": 58,
+    "hydration": 45,
+    "focus": 98,
+    "innerPeace": 35,
+    "physicalEnergy": 40,
+    "connection": 30
+  },
+  "scenario": "SUCCESS_TRAP",
+  "anomalyDetected": true,
+  "ruleExplanation": "Rule Triggered: Sleep dropped 7.5h → 5.0h (14d) + Late-night tasks (98%) + 3 canceled social plans despite +20% savings.",
+  "healthChannel": { "score": 40, "status": "Sleep Deficit Warning", "summary": "5.0h average sleep" },
+  "tasksChannel": { "score": 98, "status": "Hyper-Productive Sprint", "summary": "Working past midnight" },
+  "financeChannel": { "score": 85, "status": "High Savings", "summary": "+20% monthly net savings" },
+  "socialChannel": { "score": 25, "status": "Connection Debt Alert", "summary": "3 canceled friend plans" },
+  "coreValues": [
+    { "title": "Deep Relationships", "content": "Never sacrifice close friends for transient work sprints." }
+  ]
+}
+```
+
+### Llama Structured JSON Output Schema
+
+Llama 3.1 returns a deterministic JSON schema containing chain-of-thought analysis, pillar scores, a companion message, and an actionable nudge:
+
+```json
+{
+  "headline": "Success Trap: High Focus Dimming Vitality",
+  "overallDiagnosis": "You've executed 98% of your tasks and increased savings by 20%, but your sleep has dropped to 5.0 hours and you have canceled on close friends three weeks in a row. You are trading health and relationships for output.",
+  "reasoningSteps": [
+    { "title": "1. Multi-Stream Ingestion", "detail": "Observed high task completion coupled with critical sleep deficit." },
+    { "title": "2. Hidden Trade-Off", "detail": "Financial and career metrics look thriving while social ties and restorative rest are silently decaying." },
+    { "title": "3. Llama Guard 3 Evaluation", "detail": "Screened proactive prompt for safety: validated compassionate, non-judgmental guidance. Status: PASSED." }
+  ],
+  "pillars": [
+    { "pillar": "Health & Vitality", "score": 40, "recommendation": "Protect 7.5h sleep window tonight.", "suggestedAction": "11 PM Screen Cutoff" },
+    { "pillar": "Focus & Tasks", "score": 90, "recommendation": "Productivity is excellent; enforce a hard finish.", "suggestedAction": "End Sprint at 6 PM" },
+    { "pillar": "Financial Peace", "score": 85, "recommendation": "Strong capital retention.", "suggestedAction": "Maintain Budget" },
+    { "pillar": "Social Connection", "score": 30, "recommendation": "High connection debt with Sam & Priya.", "suggestedAction": "Send WhatsApp Check-In" }
+  ],
+  "tamagotchiPrescription": "You're getting so much done, but you're running on empty. Let's protect your rest tonight and reconnect with someone you love.",
+  "actionableNudge": {
+    "type": "WHATSAPP",
+    "title": "Reconnect with Sam & Priya",
+    "description": "Send a warm check-in on WhatsApp right now to lock in weekend brunch.",
+    "actionButtonText": "📱 WhatsApp Sam & Priya",
+    "targetPayload": "Hey! Missing catching up—are you free for Saturday brunch?"
+  },
+  "llamaGuardStatus": "PASSED (Safe for Well-being & Guidance)",
+  "modelUsed": "Meta Llama 3.1"
+}
+```
+
+---
+
+## 🎨 Meta Horizon Brand Design System
+
+MetaMuse incorporates an official **Meta Horizon Brand Design System** configured alongside the original Luminous Serenity palette:
+
+| Token Name | Hex Code | Visual Swatch | Semantic Purpose |
+|:---|:---|:---:|:---|
+| **`MetaPrimaryBlue`** | `#0866FF` | 🟦 | Primary brand CTA, active navigation pill, Lumi core crystal heart |
+| **`MetaCyanSecondary`** | `#00B2FF` | 🔷 | Secondary energy motes, companion celestial halo, telemetry arcs |
+| **`MetaHorizonViolet`** | `#7B61FF` | 🟪 | Llama AI intelligence aura, focus chips, elevated accents |
+| **`MetaBaseCanvas`** | `#F3F6FA` | ⬜ | Crisp ergonomic application canvas |
+| **`MetaDeepNavy`** | `#0C1A30` | ⬛ | High-contrast readable typography and icon outlines |
+| **`MetaSubtleBlue`** | `#E7F0FF` | ▫️ | Card background surfaces, badge fills, subtle dividers |
+
+* **Dynamic Jetpack Compose Engine**: Changing the theme in Settings instantly recalculates all component tokens via [`ThemeState`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/java/com/example/ui/theme/Color.kt) without restarting the Activity.
+* **Persistent Settings**: Preserved across launches via [`ConnectorPreferencesStore`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/java/com/example/data/connectors/ConnectorPreferencesStore.kt).
+
+---
+
+## 🎭 The 4 Hackathon Demo Scenarios
+
+MetaMuse features pre-configured interactive demo scenarios accessible with a single tap in the app header:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🟢 Live Data │ Healthy Baseline │ 1. Success Trap │ 2. Money Leak │ 3. Debt │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Scenario 1: The Success Trap
+* **The Conflict**: High productivity (98% tasks completed) and +20% monthly savings, but sleep drops from 7.5h to 5.0h with 3 canceled social plans.
+* **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤒)**, dimming her vibrant aura to a tired violet.
+* **Llama's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
+* **WhatsApp Nudge**: Pre-drafts a message to friends: *"Free for Saturday brunch? Missing catching up!"*
+* **Verified Follow-Through**: Verifying 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
+
+### Scenario 2: The Invisible Money Leak
+* **The Conflict**: Consecutive late-night work sessions past 9:30 PM correlate 1:1 with 9 convenience delivery orders ($318/mo).
+* **Lumi's Reaction**: Lumi becomes **Tired & Drained (🥱)**.
+* **Llama's Diagnosis**: Identifies that delivery spending is not driven by hunger, but by evening cognitive exhaustion.
+* **Actionable Nudge**: Suggests a 5-minute easy home meal and an evening screen cutoff.
+
+### Scenario 3: The Connection Debt
+* **The Conflict**: Healthy steps, balanced budget, and on-time task completion, but 14 days without contact with family members despite "Family First" being pinned in core values.
+* **Lumi's Reaction**: Lumi becomes **Sad & Drifting (🥺)**.
+* **Llama's Diagnosis**: Pinpoints the gap between stated values and actual communication cadence.
+* **WhatsApp Nudge**: 1-tap WhatsApp voice note or message to sibling.
+
+### Scenario 4: Live Real Data Mode
+* **Real Telemetry**: Evaluates actual connected Google Health Connect steps/sleep, native Android Calendar events, starred contacts, and linked bank statements in real time.
+
+---
+
+## 📂 Project Structure & Key Files
+
+```
+MetaMuse/
+├── app/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── AndroidManifest.xml          # Health Connect, Calendar, Contacts permissions & deep links
+│   │   │   └── java/com/example/
+│   │   │       ├── MainActivity.kt          # Compose root, theme collection & navigation orchestrator
+│   │   │       ├── model/
+│   │   │       │   └── CompanionModels.kt   # Telemetry, TamagotchiState, Nudges, Scenarios & Connectors
+│   │   │       ├── data/
+│   │   │       │   ├── MuseService.kt       # Meta Llama 3.1 API, Llama Guard & On-Device Engine
+│   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
+│   │   │       │   └── connectors/
+│   │   │       │       ├── HealthConnectManager.kt      # Android Health Connect SDK wrapper
+│   │   │       │       ├── CalendarTasksConnector.kt    # CalendarProvider + Google Tasks client
+│   │   │       │       ├── FacebookSocialConnector.kt   # Facebook Graph API v21.0 + Contacts
+│   │   │       │       ├── BankFinanceConnector.kt      # Plaid API + SimpleFIN + CSV parser
+│   │   │       │       └── ConnectorPreferencesStore.kt # SharedPreferences token persistence
+│   │   │       ├── viewmodel/
+│   │   │       │   └── SerenityViewModel.kt # State orchestration, TTS voice & WhatsApp Intents
+│   │   │       └── ui/
+│   │   │           ├── screens/
+│   │   │           │   ├── AttuneScreen.kt    # Tab 1: Home habitat, Lumi creature & dialogue
+│   │   │           │   ├── VitalityScreen.kt  # Tab 2: 4-Channel concentric bio-radar telemetry
+│   │   │           │   ├── PresenceScreen.kt  # Tab 3: Connections, theme switcher & settings
+│   │   │           │   ├── DialogueScreen.kt  # Conversational history & thought streams
+│   │   │           │   └── VaultScreen.kt     # Pinned core values & life memory vault
+│   │   │           ├── components/
+│   │   │           │   ├── TamagotchiCreature.kt # Canvas rendering of Lumi, eyes, halo & motes
+│   │   │           │   ├── TamagotchiHabitat.kt  # Ambient environment, clouds & glowing aura
+│   │   │           │   ├── LuminousAura.kt       # Animated gradient pulses
+│   │   │           │   ├── LuminousPills.kt      # Material3 buttons, cards & status chips
+│   │   │           │   └── ThoughtBubble.kt     # Conversational dialogue bubble
+│   │   │           └── theme/
+│   │   │               ├── Color.kt             # Meta Horizon & Luminous Serenity color tokens
+│   │   │               ├── Theme.kt             # Dynamic Material3 ColorScheme integration
+│   │   │               └── Type.kt              # Typography styles
+│   │   └── test/
+│   │       └── java/com/example/
+│   │           └── ExampleUnitTest.kt       # Unit tests verifying theme switching & token resolution
+│   ├── build.gradle.kts                     # App dependencies & SDK configuration
+│   └── proguard-rules.pro
+├── gradle/
+│   └── libs.versions.toml                   # Version catalog (Compose BOM, Health Connect, Retrofit)
+├── build.gradle.kts                         # Root build configuration
+├── settings.gradle.kts                      # Module settings
+└── README.md                                # Comprehensive Project Documentation
+```
+
+---
+
+## 🚀 Setup & Build Instructions
+
+### Prerequisites
+* **Android Studio**: Ladybug (2024.2.1) or newer
+* **Java Development Kit**: JDK 17 or JDK 21 (configured as `JAVA_HOME`)
+* **Android Target**: Android 14 (API 34) or Android 15 (API 35/36) physical device (e.g., Google Pixel 8/9) or emulator with Google APIs
+* **Android Debug Bridge (ADB)**: Installed and added to system path
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/ashrafi/MetaMuse.git
+cd MetaMuse
+```
+
+### 2. Configure Environment Secrets
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+Add your optional credentials:
+```properties
+# Meta Llama 3.1 Inference Token (Groq, Together AI, or Meta Model API)
+META_AI_TOKEN=your_llama_api_token_here
+
+# (Optional) Plaid API Credentials for Live Bank Sync
+PLAID_CLIENT_ID=your_plaid_client_id
+PLAID_SECRET=your_plaid_secret
+
+# (Optional) Facebook App ID for Graph API v21.0
+FACEBOOK_APP_ID=your_facebook_app_id
+```
+*(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device Engine**, ensuring full offline functionality).*
+
+### 3. Build the Debug APK
+```bash
+export JAVA_HOME=/path/to/jdk-21
+./gradlew assembleDebug
+```
+The compiled APK will be generated at:
+`app/build/outputs/apk/debug/app-debug.apk`
+
+### 4. Install and Launch on Connected Device
+```bash
+# Verify device connection
+adb devices
+
+# Install APK
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Launch MainActivity
+adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
+```
+
+---
+
+## 🔒 Security, Privacy & Responsible AI
+
+1. **Zero-Knowledge Privacy Engine**:
+   Biometric health records and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
+2. **Responsible AI with Llama Guard 3**:
+   All proactive conversational advice and Llama prescriptions are verified against Llama Guard 3 criteria. MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness pressure.
+3. **Android Health Connect Compliance**:
+   All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
+4. **Resilient Offline CSV & Contacts**:
+   No third-party bank credentials are required to evaluate spending; users can import bank statements directly as local CSV files.
+
+---
+
+## 🗺️ Future Roadmap & Meta Ecosystem Synergy
+
+```mermaid
+timeline
+    title MetaMuse Evolution Roadmap
+    section Hackathon MVP (Today)
+        Multi-Channel Telemetry Ingestion : Health Connect, Calendar, Facebook Graph, Plaid/CSV
+        Meta Llama 3.1 & Llama Guard 3   : Structured JSON multi-step reasoning
+        WhatsApp 1-Tap Nudges            : Deep-link integration
+        Meta Horizon Brand Theme         : Dynamic reactive color system
+    section Phase 1 (Near-Term)
+        ExecuTorch On-Device Llama 3.2   : Quantized 1B/3B running locally on NPU
+        Meta Messenger Bi-Directional Bot: Check in with Lumi via Messenger chat
+        Wear OS Companion Watch Face     : Real-time glanceable Lumi aura on wrist
+    section Phase 2 (Meta Spatial)
+        Ray-Ban Meta Smart Glasses HUD   : Audio whispers when stress spikes detected
+        Meta Horizon OS (Quest 3 / Pro)  : Spatial 3D companion floating in your room
+```
+
+* **Ray-Ban Meta Smart Glasses**:
+  Leverage the glasses' microphone and open-ear speakers to deliver ambient, whisper-quiet voice check-ins when telemetry detects elevated heart rates or marathon screen sessions.
+* **Meta Horizon OS / Quest**:
+  Port Lumi from a 2D Jetpack Compose Canvas into a volumetric 3D spatial companion floating in Mixed Reality alongside your work monitors.
+* **ExecuTorch On-Device Deployment**:
+  Package Meta Llama 3.2 1B/3B via ExecuTorch to achieve sub-100ms local reasoning on Android NPUs with mathematical zero-cloud privacy.
+
+---
+
+## ⚖️ Hackathon Evaluation FAQ
+
+**Q: Why choose Meta Llama 3 instead of proprietary cloud APIs?**  
+**A:** Open weights allow MetaMuse to pioneer on-device edge AI via ExecuTorch, ensuring private health and financial data never leave the phone. Additionally, native **Llama Guard 3** provides specialized safety screening vital for empathetic lifestyle coaching.
+
+**Q: How does the companion avoid becoming annoying or guilt-inducing?**  
+**A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
+
+**Q: How does the WhatsApp integration work?**  
+**A:** When Llama spots social isolation, it drafts an empathetic message and triggers an Android Intent to `https://api.whatsapp.com/send?text=...`. The user is taken directly into WhatsApp with the message pre-filled, reducing the cognitive friction of reconnecting to a single tap.
+
+---
+
+## 👥 Authors & Acknowledgments
+
+* **Created by the MetaMuse Team for the Meta AI Hackathon 2026**
+* Special thanks to the **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
+
+---
+*MetaMuse — Empathetic AI that cares about the whole human.* 🪽
