@@ -1233,7 +1233,7 @@ private fun RealBankFinanceCard(
                         listOf("sandbox", "production").forEach { env ->
                             SerenityPillChip(
                                 text = env.replaceFirstChar { it.uppercase() },
-                               ポーチisSelected = plaidEnv.lowercase() == env,
+                                isSelected = plaidEnv.lowercase() == env,
                                 onClick = { onPlaidEnvChange(env) }
                             )
                         }
