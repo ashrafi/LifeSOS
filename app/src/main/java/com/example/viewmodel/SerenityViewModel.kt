@@ -307,6 +307,10 @@ class SerenityViewModel(
         repository.updateMetaAiConfig(token, endpoint, model, isLocalPrivacyMode)
     }
 
+    fun removeMetaAiToken() {
+        repository.removeMetaAiToken()
+    }
+
     fun sendAllInfoToMuse(onSuccess: (com.example.model.MuseLifeAdvice) -> Unit = {}) {
         viewModelScope.launch {
             _isSyncingWithMuse.value = true
