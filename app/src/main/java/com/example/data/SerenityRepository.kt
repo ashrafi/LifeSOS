@@ -160,7 +160,9 @@ class SerenityRepository(
             lastSyncedAt = null,
             endpointUrl = prefsStore?.metaAiEndpoint ?: "https://api.groq.com/openai/v1/chat/completions",
             modelName = prefsStore?.metaAiModel ?: "llama-3.1-70b-versatile",
-            isLocalLlamaPrivacyMode = prefsStore?.isLocalLlamaPrivacyMode ?: true
+            isLocalLlamaPrivacyMode = prefsStore?.isLocalLlamaPrivacyMode ?: true,
+            isKeyEncryptedInKeystore = true,
+            hasConfiguredKey = prefsStore?.metaAiToken?.isNotBlank() == true
         )
     )
     val metaAiConfig: StateFlow<MetaAiConfig> = _metaAiConfig.asStateFlow()
@@ -1008,7 +1010,19 @@ class SerenityRepository(
             endpointUrl = trimmedEndpoint,
             modelName = trimmedModel,
             isLocalLlamaPrivacyMode = isLocalPrivacyMode,
-            isConnected = trimmedToken.isNotEmpty()
+            isConnected = trimmedToken.isNotEmpty(),
+            isKeyEncryptedInKeystore = true,
+            hasConfiguredKey = trimmedToken.isNotEmpty()
+        )
+    }
+
+    fun removeMetaAiToken() {
+        prefsStore?.removeMetaAiToken()
+        _metaAiConfig.value = _metaAiConfig.value.copy(
+            token = "",
+            isConnected = false,
+            hasConfiguredKey = false,
+            isLocalLlamaPrivacyMode = true
         )
     }
 
