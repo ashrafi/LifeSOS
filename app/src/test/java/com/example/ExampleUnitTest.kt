@@ -35,29 +35,59 @@ class ExampleUnitTest {
   }
 
   @Test
+  fun testMuseSparkAsStarModel() {
+    val repo = com.example.data.SerenityRepository(null)
+
+    // Meta Muse Spark 1.3 is the default flagship star
+    assertEquals(com.example.model.MetaModelEngine.MUSE_SPARK_1_3, repo.metaAiConfig.value.selectedEngine)
+    assertEquals("muse-spark-1.3", repo.metaAiConfig.value.modelName)
+    assertEquals("https://api.meta.ai/v1/chat/completions", repo.metaAiConfig.value.endpointUrl)
+    assertEquals(false, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
+    assertEquals(true, repo.metaAiConfig.value.isKeyEncryptedInKeystore)
+
+    // Switch to Llama 3.1 70B
+    repo.selectModelEngine(com.example.model.MetaModelEngine.LLAMA_3_1_70B)
+    assertEquals(com.example.model.MetaModelEngine.LLAMA_3_1_70B, repo.metaAiConfig.value.selectedEngine)
+    assertEquals("llama-3.1-70b-versatile", repo.metaAiConfig.value.modelName)
+    assertEquals(false, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
+
+    // Switch to On-Device Privacy Mode
+    repo.selectModelEngine(com.example.model.MetaModelEngine.ON_DEVICE_LLAMA)
+    assertEquals(com.example.model.MetaModelEngine.ON_DEVICE_LLAMA, repo.metaAiConfig.value.selectedEngine)
+    assertEquals(true, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
+
+    // Return to Flagship Meta Muse Spark 1.3
+    repo.selectModelEngine(com.example.model.MetaModelEngine.MUSE_SPARK_1_3)
+    assertEquals(com.example.model.MetaModelEngine.MUSE_SPARK_1_3, repo.metaAiConfig.value.selectedEngine)
+    assertEquals("muse-spark-1.3", repo.metaAiConfig.value.modelName)
+    assertEquals(false, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
+  }
+
+  @Test
   fun testByokSecurityConfigAndRevocation() {
     val repo = com.example.data.SerenityRepository(null)
     
     // Initially without context, key should not be configured
     assertEquals(false, repo.metaAiConfig.value.hasConfiguredKey)
     assertEquals(true, repo.metaAiConfig.value.isKeyEncryptedInKeystore)
+    assertEquals("muse-spark-1.3", repo.metaAiConfig.value.modelName)
 
     // Updating token sets hasConfiguredKey = true
     repo.updateMetaAiConfig(
-      newToken = "gsk_test_mock_secret_key_12345",
-      endpointUrl = "https://api.groq.com/openai/v1/chat/completions",
-      modelName = "llama-3.1-70b-versatile",
+      newToken = "meta_spark_test_mock_secret_key_12345",
+      endpointUrl = "https://api.meta.ai/v1/chat/completions",
+      modelName = "muse-spark-1.3",
       isLocalPrivacyMode = false
     )
     assertEquals(true, repo.metaAiConfig.value.hasConfiguredKey)
     assertEquals(true, repo.metaAiConfig.value.isConnected)
-    assertEquals("gsk_test_mock_secret_key_12345", repo.metaAiConfig.value.token)
+    assertEquals("meta_spark_test_mock_secret_key_12345", repo.metaAiConfig.value.token)
+    assertEquals(com.example.model.MetaModelEngine.MUSE_SPARK_1_3, repo.metaAiConfig.value.selectedEngine)
 
     // User revokes / removes the BYOK key
     repo.removeMetaAiToken()
     assertEquals(false, repo.metaAiConfig.value.hasConfiguredKey)
     assertEquals(false, repo.metaAiConfig.value.isConnected)
     assertEquals("", repo.metaAiConfig.value.token)
-    assertEquals(true, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
   }
 }

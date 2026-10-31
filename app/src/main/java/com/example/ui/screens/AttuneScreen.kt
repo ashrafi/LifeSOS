@@ -538,6 +538,34 @@ fun AttuneScreen(
                                         color = DeepEspresso
                                     )
                                 )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = MintContainer
+                                    ) {
+                                        Text(
+                                            text = "⭐ ${advice.modelUsed}",
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                color = DarkSageText,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 9.sp
+                                            ),
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                    Text(
+                                        text = "🛡️ ${advice.llamaGuardStatus}",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = DarkSageText,
+                                            fontSize = 9.sp
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

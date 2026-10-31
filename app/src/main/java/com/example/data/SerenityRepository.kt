@@ -158,9 +158,10 @@ class SerenityRepository(
             token = prefsStore?.metaAiToken.orEmpty(),
             isConnected = prefsStore?.metaAiToken?.isNotBlank() == true,
             lastSyncedAt = null,
-            endpointUrl = prefsStore?.metaAiEndpoint ?: "https://api.groq.com/openai/v1/chat/completions",
-            modelName = prefsStore?.metaAiModel ?: "llama-3.1-70b-versatile",
-            isLocalLlamaPrivacyMode = prefsStore?.isLocalLlamaPrivacyMode ?: true,
+            endpointUrl = prefsStore?.metaAiEndpoint ?: "https://api.meta.ai/v1/chat/completions",
+            modelName = prefsStore?.metaAiModel ?: "muse-spark-1.3",
+            selectedEngine = com.example.model.MetaModelEngine.fromId(prefsStore?.selectedModelEngine),
+            isLocalLlamaPrivacyMode = prefsStore?.isLocalLlamaPrivacyMode ?: false,
             isKeyEncryptedInKeystore = true,
             hasConfiguredKey = prefsStore?.metaAiToken?.isNotBlank() == true
         )
@@ -991,6 +992,36 @@ class SerenityRepository(
         }
     }
 
+    fun selectModelEngine(engine: com.example.model.MetaModelEngine) {
+        prefsStore?.selectedModelEngine = engine.id
+        when (engine) {
+            com.example.model.MetaModelEngine.MUSE_SPARK_1_3 -> {
+                updateMetaAiConfig(
+                    newToken = _metaAiConfig.value.token,
+                    endpointUrl = engine.defaultEndpoint,
+                    modelName = engine.defaultModelName,
+                    isLocalPrivacyMode = false
+                )
+            }
+            com.example.model.MetaModelEngine.LLAMA_3_1_70B -> {
+                updateMetaAiConfig(
+                    newToken = _metaAiConfig.value.token,
+                    endpointUrl = engine.defaultEndpoint,
+                    modelName = engine.defaultModelName,
+                    isLocalPrivacyMode = false
+                )
+            }
+            com.example.model.MetaModelEngine.ON_DEVICE_LLAMA -> {
+                updateMetaAiConfig(
+                    newToken = _metaAiConfig.value.token,
+                    endpointUrl = engine.defaultEndpoint,
+                    modelName = engine.defaultModelName,
+                    isLocalPrivacyMode = true
+                )
+            }
+        }
+    }
+
     fun updateMetaAiConfig(
         newToken: String,
         endpointUrl: String = _metaAiConfig.value.endpointUrl,
@@ -998,17 +1029,25 @@ class SerenityRepository(
         isLocalPrivacyMode: Boolean = _metaAiConfig.value.isLocalLlamaPrivacyMode
     ) {
         val trimmedToken = newToken.trim()
-        val trimmedEndpoint = endpointUrl.trim().ifEmpty { "https://api.groq.com/openai/v1/chat/completions" }
-        val trimmedModel = modelName.trim().ifEmpty { "llama-3.1-70b-versatile" }
+        val trimmedEndpoint = endpointUrl.trim().ifEmpty { "https://api.meta.ai/v1/chat/completions" }
+        val trimmedModel = modelName.trim().ifEmpty { "muse-spark-1.3" }
+        val engine = if (isLocalPrivacyMode) {
+            com.example.model.MetaModelEngine.ON_DEVICE_LLAMA
+        } else {
+            com.example.model.MetaModelEngine.fromModelName(trimmedModel)
+        }
+
         prefsStore?.metaAiToken = trimmedToken
         prefsStore?.metaAiEndpoint = trimmedEndpoint
         prefsStore?.metaAiModel = trimmedModel
         prefsStore?.isLocalLlamaPrivacyMode = isLocalPrivacyMode
+        prefsStore?.selectedModelEngine = engine.id
 
         _metaAiConfig.value = _metaAiConfig.value.copy(
             token = trimmedToken,
             endpointUrl = trimmedEndpoint,
             modelName = trimmedModel,
+            selectedEngine = engine,
             isLocalLlamaPrivacyMode = isLocalPrivacyMode,
             isConnected = trimmedToken.isNotEmpty(),
             isKeyEncryptedInKeystore = true,
@@ -1021,8 +1060,7 @@ class SerenityRepository(
         _metaAiConfig.value = _metaAiConfig.value.copy(
             token = "",
             isConnected = false,
-            hasConfiguredKey = false,
-            isLocalLlamaPrivacyMode = true
+            hasConfiguredKey = false
         )
     }
 
@@ -1040,7 +1078,8 @@ class SerenityRepository(
             integrations = _integrations.value,
             telemetrySnapshot = _telemetrySnapshot.value,
             endpointUrl = _metaAiConfig.value.endpointUrl,
-            modelName = _metaAiConfig.value.modelName
+            modelName = _metaAiConfig.value.modelName,
+            isLocalPrivacyMode = _metaAiConfig.value.isLocalLlamaPrivacyMode
         )
         _latestMuseAdvice.value = advice
         _metaAiConfig.value = _metaAiConfig.value.copy(

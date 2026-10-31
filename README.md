@@ -41,18 +41,44 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
 
 **MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
 
-Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Llama 3.1** and **Llama Guard 3** to detect hidden life trade-offs *before* they turn into exhaustion. 
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** and **Llama Guard 3**) to detect hidden life trade-offs *before* they turn into exhaustion. 
 
-When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Llama 3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
+When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Muse Spark 1.3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
 
 ---
 
 ## 🌟 Key Highlights & Hackathon Innovation
 
-1. **Deterministic Multi-Channel Anomaly Detection**:
+### Official Meta AI Tooling Alignment (25% Judging Score)
+
+MetaMuse is architected specifically around the **Meta AI Tooling** stack recommended for the October 2026 Meta AI Hackathon:
+
+| Component | Technology / Meta Tooling | Hackathon Role |
+| :--- | :--- | :--- |
+| **Main Intelligence** | **Meta Muse Spark 1.3** (Meta Model API) | **Flagship Star**: Multi-stream cross-channel life synthesis and causal reasoning |
+| **AI Conversation** | **Meta Muse Spark 1.3** | Empathetic proactive dialogue and emotional reflection |
+| **Proactive Coaching** | **Meta Muse Spark 1.3** | Contextual intervention design, calendar buffers, and rest scheduling |
+| **Life-State Detection** | **Kotlin Deterministic Engine** | Rule-based anomaly evaluation driving the living Muse Charm state |
+| **Mobile Architecture** | **Kotlin + Jetpack Compose** | Reactive Android application with dynamic brand theming |
+| **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, resting heart rate, and hydration |
+| **Financial Balance** | **SeaWeed Finance / Plaid / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
+| **Social Connection** | **Facebook Graph API v21.0 / Contacts** | Social interaction cadence, starred circle contacts, and birthdays |
+| **Safety & Moderation** | **Meta Llama Guard 3** | Content moderation screening ensuring supportive, non-clinical advice |
+| **Voice Output** | **Android TextToSpeech** | Auditory companion readouts with tuned cadence |
+| **Open-Weight Alternative** | **Meta Llama 3.1 70B** | Secondary cloud inference option for deep open-weight reasoning |
+| **Future Privacy Mode** | **ExecuTorch Local Llama 3.2** | 100% zero-cloud on-device privacy mode |
+
+#### The Core Feedback Loop
+```
+Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Proactive Conversation ──► Muse Charm State
+   ▲                                                                                          │
+   └────────────────────── Verified Follow-Through (Real Recovery) ───────────────────────────┘
+```
+
+1. **Meta Muse Spark 1.3 as the Primary Star**:
+   Powered through the official **Meta Model API**, Muse Spark 1.3 acts as the central brain of MuseLife, identifying non-obvious conflicts across disparate life streams.
+2. **Deterministic Multi-Channel Life State Engine**:
    Cross-references asynchronous biometric, schedule, spending, and relationship metrics in real time.
-2. **Meta Llama 3.1 Reasoning Brain**:
-   Executes structured JSON reasoning prompts that analyze holistic telemetry against the user's pinned core values.
 3. **Llama Guard 3 Responsible AI Verification**:
    Every coaching suggestion and proactive companion dialogue is screened against Llama Guard safety guidelines to ensure non-clinical, empathetic, and constructive guidance.
 4. **Frictionless Actionable Nudges via WhatsApp**:
@@ -63,7 +89,9 @@ When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates
    Agreement does not heal Lumi—**verified follow-through does**. Lumi's health, glow, and halo blossom only when subsequent sensor telemetry confirms recovery.
 7. **Official Meta Horizon Design System**:
    Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
-8. **Zero-Knowledge Privacy-First Architecture**:
+8. **Direct BYOK Cryptographic Architecture**:
+   All API keys are entered directly by the user. Zero keys exist in the APK or repository, and credentials are encrypted at rest with hardware-backed Android Keystore AES-256-GCM.
+9. **Zero-Knowledge Privacy-First Architecture**:
    Includes an offline rule-based privacy engine where sensitive health and financial numbers never leave the device, establishing a clean path to **ExecuTorch on-device Llama 3.2**.
 
 ---
@@ -85,11 +113,12 @@ flowchart TD
         RULES["Deterministic Trade-Off Rules<br/>(e.g., Success Trap, Money Leak)"]
     end
 
-    subgraph LlamaBrain["3. Meta Llama 3.1 Intelligence"]
+    subgraph MetaIntelligence["3. Meta Muse Spark 1.3 & Meta Tooling"]
         PROMPT["Structured Telemetry Payload<br/>(Companion state + 4 channels + Core Values)"]
-        LLAMA["Meta Llama 3.1 70B / 8B<br/>(Chain-of-Thought JSON Inference)"]
-        GUARD["Llama Guard 3<br/>(Content Safety & Empathy Screening)"]
-        LOCAL["Local Privacy Engine<br/>(ExecuTorch On-Device Fallback)"]
+        SPARK["Meta Muse Spark 1.3 ⭐<br/>(Flagship Meta Model API Inference)"]
+        LLAMA["Meta Llama 3.1 70B<br/>(Open-Weight Cloud Alternative)"]
+        GUARD["Meta Llama Guard 3<br/>(Responsible AI & Empathy Screening)"]
+        LOCAL["Zero-Cloud Privacy Engine<br/>(ExecuTorch On-Device Fallback)"]
     end
 
     subgraph UIExperience["4. Reactive Jetpack Compose UI"]
@@ -199,11 +228,15 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
 
 ---
 
-## 🧠 Meta Llama 3 Reasoning & Llama Guard Integration
+## 🧠 Meta Muse Spark 1.3 & Meta AI Tooling Stack
+
+### Flagship Intelligence: Meta Muse Spark 1.3 via Meta Model API
+
+**Meta Muse Spark 1.3** is the primary cognitive engine of MetaMuse, accessible via the official **Meta Model API**. Unlike generic chatbots, Muse Spark 1.3 is prompted to operate as an empathetic, bio-responsive life coach that synthesizes cross-stream friction across biometrics, schedules, spending, and human connections.
 
 ### Structured Telemetry Prompting
 
-When multi-channel telemetry suggests an emerging conflict, MetaMuse packages the complete state—including Lumi's hydration, energy, focus, channel reports, and user-pinned core values—into a structured JSON payload submitted to **Meta Llama 3.1**:
+When multi-channel telemetry suggests an emerging conflict, MetaMuse packages the complete state—including Lumi's hydration, energy, focus, channel reports, and user-pinned core values—into a structured JSON payload submitted to **Meta Muse Spark 1.3**:
 
 ```json
 {
@@ -433,7 +466,11 @@ adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 ## 🔒 Security, Privacy, Responsible AI & Direct BYOK Safeguards
 
 ### 1. Direct BYOK (Bring-Your-Own-Key) Cryptographic Architecture
-For users who connect their own Meta Llama 3.1 / provider API key, MetaMuse enforces strict defense-in-depth safeguards:
+
+> [!IMPORTANT]
+> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Llama, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with hardware-backed encryption.
+
+For users who configure their own Meta Model API / Muse Spark 1.3 or provider key, MetaMuse enforces strict defense-in-depth safeguards:
 * **Hardware-Backed Android Keystore Encryption**:
   The BYOK API key is encrypted at rest using **AES-256-GCM** with a hardware-backed key generated inside the `AndroidKeyStore` (isolated in the device's Trusted Execution Environment [TEE] or StrongBox Keymaster).
 * **Encrypted Jetpack DataStore**:

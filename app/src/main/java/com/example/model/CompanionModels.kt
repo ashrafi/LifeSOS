@@ -245,13 +245,60 @@ data class ActionableNudge(
     val isCompleted: Boolean = false
 )
 
+enum class MetaModelEngine(
+    val id: String,
+    val displayName: String,
+    val defaultModelName: String,
+    val defaultEndpoint: String,
+    val description: String,
+    val isPrimaryStar: Boolean = false
+) {
+    MUSE_SPARK_1_3(
+        id = "muse_spark_1_3",
+        displayName = "⭐ Meta Muse Spark 1.3",
+        defaultModelName = "muse-spark-1.3",
+        defaultEndpoint = "https://api.meta.ai/v1/chat/completions",
+        description = "Meta Model API flagship intelligence. Empathetic cross-stream life reasoning & proactive coaching.",
+        isPrimaryStar = true
+    ),
+    LLAMA_3_1_70B(
+        id = "llama_3_1_70b",
+        displayName = "☁️ Meta Llama 3.1 70B",
+        defaultModelName = "llama-3.1-70b-versatile",
+        defaultEndpoint = "https://api.groq.com/openai/v1/chat/completions",
+        description = "Meta open-weights cloud inference for general deep reasoning."
+    ),
+    ON_DEVICE_LLAMA(
+        id = "on_device_llama",
+        displayName = "🔒 On-Device Llama",
+        defaultModelName = "llama-3.2-1b-instruct",
+        defaultEndpoint = "local://executorch",
+        description = "Zero-Cloud privacy mode. Biometrics, finances, and calendars never leave your device."
+    );
+
+    companion object {
+        fun fromId(id: String?): MetaModelEngine {
+            return values().firstOrNull { it.id.equals(id, ignoreCase = true) } ?: MUSE_SPARK_1_3
+        }
+
+        fun fromModelName(modelName: String?): MetaModelEngine {
+            return when {
+                modelName?.contains("spark", ignoreCase = true) == true -> MUSE_SPARK_1_3
+                modelName?.contains("1b", ignoreCase = true) == true || modelName?.contains("local", ignoreCase = true) == true -> ON_DEVICE_LLAMA
+                else -> LLAMA_3_1_70B
+            }
+        }
+    }
+}
+
 data class MetaAiConfig(
     val token: String = "",
     val isConnected: Boolean = false,
     val lastSyncedAt: String? = null,
-    val endpointUrl: String = "https://api.groq.com/openai/v1/chat/completions",
-    val modelName: String = "llama-3.1-70b-versatile",
-    val isLocalLlamaPrivacyMode: Boolean = true,
+    val endpointUrl: String = "https://api.meta.ai/v1/chat/completions",
+    val modelName: String = "muse-spark-1.3",
+    val selectedEngine: MetaModelEngine = MetaModelEngine.MUSE_SPARK_1_3,
+    val isLocalLlamaPrivacyMode: Boolean = false,
     val isKeyEncryptedInKeystore: Boolean = true,
     val hasConfiguredKey: Boolean = false
 )
@@ -266,7 +313,7 @@ data class MuseLifeAdvice(
     val reasoningSteps: List<ThoughtStep> = emptyList(),
     val actionableNudge: ActionableNudge? = null,
     val llamaGuardStatus: String = "PASSED (Safe for Well-being & Guidance)",
-    val modelUsed: String = "Meta Llama 3.1"
+    val modelUsed: String = "Meta Muse Spark 1.3 (Meta Model API)"
 )
 
 data class MusePillarAdvice(

@@ -298,6 +298,10 @@ class SerenityViewModel(
         repository.updateMetaAiToken(token)
     }
 
+    fun selectModelEngine(engine: com.example.model.MetaModelEngine) {
+        repository.selectModelEngine(engine)
+    }
+
     fun updateMetaAiConfig(
         token: String,
         endpoint: String,
