@@ -24,9 +24,11 @@ empathy as the interface — is the soul of the project. Protect it.
 
 ## 2. What makes it winnable
 
-- **Verified follow-through is the standout mechanic.** Agreement doesn't heal Lumi;
-  telemetry-confirmed recovery does. It turns a Tamagotchi loop into an outcome loop,
-  and outcomes are ungameable, press-worthy, and clinically meaningful.
+- **Logged follow-through is the standout mechanic.** Agreement doesn't heal Lumi;
+  logged recovery does — and the design points at sensor-verified recovery as rung 3
+  of the Suggested → Logged → Sensor-Verified ladder. It turns a Tamagotchi loop into
+  an outcome loop, and verified outcomes would be ungameable, press-worthy, and
+  clinically meaningful. (Today's prototype measures rung 2; rung 3 is roadmap.)
 - **Connection debt is Meta's exclusive moat.** Only Meta's social graph can see
   loneliness forming. Apple and Google can count steps forever and never touch this.
   Lead with it in every pitch.

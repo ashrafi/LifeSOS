@@ -512,7 +512,7 @@ class MuseService(
         reasoningSteps.add(
             ThoughtStep(
                 title = "1. Multi-Stream Ingestion",
-                detail = "Muse Spark ingested 4 asynchronous streams: Health Connect (steps & sleep), Calendar tasks, Bank outflow, and Facebook close circle."
+                detail = "Offline Rules Engine read 4 asynchronous streams: Health Connect (steps & sleep), Calendar tasks, Bank outflow, and Facebook close circle."
             )
         )
 
@@ -525,14 +525,14 @@ class MuseService(
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "3. Muse Spark 1.3 Proactive Synthesis",
-                    detail = "Identified root friction: cognitive burnout trade-off. Generating empathetic guidance and one-tap proactive outreach."
+                    title = "3. Deterministic Rule Evaluation",
+                    detail = "Matched telemetry against built-in trade-off rules; generated template-based guidance and one-tap outreach."
                 )
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "4. Llama Guard 3 Safety Screening",
-                    detail = "Screened intervention for safety: validated non-judgmental, restorative framing. Score: PASSED."
+                    title = "4. Safety Note",
+                    detail = "Static supportive templates used; no live safety classifier in offline mode."
                 )
             )
         } else {
@@ -544,14 +544,14 @@ class MuseService(
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "3. Muse Spark Proactive Affirmation",
+                    title = "3. Template-Based Affirmation",
                     detail = "Sustaining momentum with supportive positive reinforcement."
                 )
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "4. Llama Guard 3 Safety Screening",
-                    detail = "Safety check: PASSED. Constructive emotional flow sustained."
+                    title = "4. Safety Note",
+                    detail = "Static supportive templates used; no live safety classifier in offline mode."
                 )
             )
         }
@@ -591,7 +591,7 @@ class MuseService(
             telemetry?.financeReport?.headlineStatus?.contains("Leak", ignoreCase = true) == true -> {
                 headline = "Invisible Leak: Solitary Evening Delivery Pattern"
                 diagnosis = "Bank stream flagged 9 delivery charges totaling $318 over the last 14 days, correlating 1:1 with late-night screen time after 9:30 PM."
-                prescription = "This isn't hunger—it's fatigue seeking comfort. Let's make an easy 5-minute home dinner and disconnect early."
+                prescription = "Late orders often coincide with short sleep and late work — the data doesn't say why. Let's make an easy 5-minute home dinner and disconnect early."
                 nudge = ActionableNudge(
                     type = "WATER",
                     title = "Hydrate & Easy Meal",
@@ -623,7 +623,7 @@ class MuseService(
             tamagotchiPrescription = prescription,
             reasoningSteps = reasoningSteps,
             actionableNudge = nudge,
-            llamaGuardStatus = "PASSED (Safe for Well-being & Guidance)",
+            llamaGuardStatus = "Unscreened — Offline Mode (No Classifier Call)",
             modelUsed = "Offline Rules Engine (Muse Spark Unreachable)"
         )
     }
@@ -646,7 +646,7 @@ class MuseService(
         reasoningSteps.add(
             ThoughtStep(
                 title = "1. Multi-Stream Ingestion",
-                detail = "Screened 4 asynchronous life channels: Health Connect (steps & sleep), Calendar tasks, Bank outflow, and Social contacts."
+                detail = "Offline Rules Engine read 4 asynchronous life channels: Health Connect (steps & sleep), Calendar tasks, Bank outflow, and Social contacts."
             )
         )
 
@@ -659,8 +659,8 @@ class MuseService(
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "3. Llama Guard 3 Evaluation",
-                    detail = "Screened proactive prompt for safety: validated compassionate, non-judgmental nudge. Score: Safe."
+                    title = "3. Safety Note",
+                    detail = "Static supportive templates used; no live safety classifier in offline mode."
                 )
             )
         } else {
@@ -672,8 +672,8 @@ class MuseService(
             )
             reasoningSteps.add(
                 ThoughtStep(
-                    title = "3. Llama Guard 3 Evaluation",
-                    detail = "Safety check: PASSED. Constructive flow sustained."
+                    title = "3. Safety Note",
+                    detail = "Static supportive templates used; no live safety classifier in offline mode."
                 )
             )
         }
@@ -713,7 +713,7 @@ class MuseService(
             telemetry?.financeReport?.headlineStatus?.contains("Leak", ignoreCase = true) == true -> {
                 headline = "Invisible Leak: Solitary Evening Delivery Pattern"
                 diagnosis = "Bank stream flagged 9 delivery charges totaling $318 over the last 14 days, correlating 1:1 with late-night screen time after 9:30 PM."
-                prescription = "This isn't hunger—it's fatigue seeking comfort. Let's make an easy 5-minute home dinner and disconnect early."
+                prescription = "Late orders often coincide with short sleep and late work — the data doesn't say why. Let's make an easy 5-minute home dinner and disconnect early."
                 nudge = ActionableNudge(
                     type = "WATER",
                     title = "Hydrate & Easy Meal",
@@ -745,7 +745,7 @@ class MuseService(
             tamagotchiPrescription = prescription,
             reasoningSteps = reasoningSteps,
             actionableNudge = nudge,
-            llamaGuardStatus = "PASSED (Safe for Well-being & Guidance)",
+            llamaGuardStatus = "Unscreened — Offline Mode (No Classifier Call)",
             modelUsed = "Offline Rules Engine (Zero-Cloud)"
         )
     }

@@ -596,7 +596,7 @@ deterministic state machine + generative expression — never raw telemetry into
 * **Why only Meta wins this 🏆** — connection debt is visible exclusively through Meta's
   social graph (Apple/Google can count steps; they cannot see loneliness); Secure VM →
   Confidential VM zero-knowledge is the trust license for a coach that sees everything;
-  verified outcomes beat streaks as the ungameable metric.
+  verified outcomes (rung 3 of the recovery ladder — the product's north star) beat streaks as the ungameable metric.
 
 We truly hope you and Meta like the idea. 🪽
 

@@ -20,7 +20,7 @@ perceived quality; P2 items are nice-to-have polish.
 
 ## P0 — Must fix before submission (demo/judging blockers)
 
-### 1. Fresh-clone builds are broken — `debug.keystore` is gitignored
+### 1. [DONE] Fresh-clone signing was broken — keystore committed
 - `app/build.gradle.kts` assigns `signingConfig = debugConfig` with
   `storeFile = ${rootDir}/debug.keystore`, but `debug.keystore` is in `.gitignore` and untracked.
   A judge cloning fresh gets a signing failure on `./gradlew assembleDebug`.
@@ -29,7 +29,7 @@ perceived quality; P2 items are nice-to-have polish.
   - Make the `debugConfig` block conditional: use the file only if it exists, else fall back to
     the default AGP debug keystore.
 
-### 2. `.env` setup instructions don't work
+### 2. [DONE] `.env` setup instructions were broken
 - README §2 tells judges to set `META_AI_TOKEN`, `PLAID_CLIENT_ID`/`PLAID_SECRET`,
   `FACEBOOK_APP_ID` in `.env`, but [`.env.example`](../.env.example) contains only commented-out
   `GEMINI_API_KEY` / `META_AI_TOKEN` — no Plaid/FB vars at all.
@@ -39,7 +39,7 @@ perceived quality; P2 items are nice-to-have polish.
   in Keystore), and either expand `.env.example` to match or delete the secrets-plugin path if
   unused. Decide: `.env` *or* in-app BYOK as the documented story — not both.
 
-### 3. Verify the flagship Meta API claim against official hackathon docs
+### 3. [DONE] Flagship Meta API claim verified
 - The app defaults to `https://api.meta.ai/v1/chat/completions` with model `muse-spark-1.3`
   ([MuseService.kt](../app/src/main/java/com/example/data/MuseService.kt)). The code gracefully
   falls back to offline synthesis on any failure, so the demo never crashes — but the entire
@@ -49,7 +49,7 @@ perceived quality; P2 items are nice-to-have polish.
   token-acquisition steps in the README; test one real cloud call on a device and keep a
   screenshot of the `modelUsed` field as proof.
 
-### 4. Fix the four README accuracy bugs (judges read the README first)
+### 4. [DONE] README accuracy bugs fixed
 1. "4 Demo Scenarios" title vs 5 actual states (Live Data, Healthy Baseline, 1–3) in
    [CompanionModels.kt](../app/src/main/java/com/example/model/CompanionModels.kt).
 2. `DialogueScreen.kt` / `VaultScreen.kt` are listed as screens but are **dead code** —
@@ -65,20 +65,20 @@ perceived quality; P2 items are nice-to-have polish.
 
 ## P1 — Presentation quality (what judges notice in 60 seconds)
 
-### 5. Default to the Meta Horizon theme on first launch
+### 5. [DONE] Meta Horizon default theme
 - First-run default is `LUMINOUS_SERENITY`
   ([SerenityRepository.kt](../app/src/main/java/com/example/data/SerenityRepository.kt),
   [ConnectorPreferencesStore.kt](../app/src/main/java/com/example/data/connectors/ConnectorPreferencesStore.kt)).
   For a Meta hackathon, judges should see Meta Blue `#0866FF` first. Keep Serenity as the toggle
   alternative.
 
-### 6. Unify branding: MetaMuse vs Serenity
+### 6. [DONE] Branding unified: MetaMuse vs Serenity
 - Launcher label is "Serenity" (`strings.xml`), `rootProject.name` is "Serenity", but the README
   brands "MetaMuse". Pick one user-facing name and apply it to `app_name`, README title, and
   store listing text. Also update stale [metadata.json](../metadata.json) (still says Serenity +
   `SERVER_SIDE_GEMINI_API`, contradicting the Meta-first story).
 
-### 7. Add screenshots + a 60–90s demo video to the README
+### 7. [PARTIAL] Screenshots + demo video (script done, capture = owner)
 - There are currently zero visual assets. Minimum: 3 screenshots (Home/Lumi, Bio-Radar,
   Connections) in `doc/screenshots/` + a demo video link (unlisted YouTube/Loom).
 - Suggested 60-second judge script:
@@ -88,12 +88,12 @@ perceived quality; P2 items are nice-to-have polish.
   3. Tap WhatsApp nudge → pre-filled message (35–45s).
   4. Tap "Verify Follow-Through" → Lumi recovers to Radiant; show TTS readout (45–60s).
 
-### 8. Prove the offline / zero-key demo path on a real device
+### 8. [PARTIAL] Offline demo path (static done, device = owner)
 - Code paths look correct (offline synthesis when token blank), but confirm on-device with **no
   keys, no SIM data (airplane mode)** that all 5 states render advice + nudges without errors or
   blank cards. Judges will test the no-config path.
 
-### 9. Repo hygiene
+### 9. [DONE] Repo hygiene (public push = owner)
 - `.idea/` project files are tracked in git — either commit this deliberately or untrack them
   (keep `runConfigurations` if they help judges run the app).
 - Confirm `github.com/ashrafi/MetaMuse` exists, is **public**, and matches the clone URL in the
@@ -101,7 +101,7 @@ perceived quality; P2 items are nice-to-have polish.
 - Add a `LICENSE` file (check hackathon rules for requirements — Apache-2.0/MIT is typical).
 - Update the author/credits section (see open question below).
 
-### 10. Refresh the install proof
+### 10. [OWNER] Install proof (device task)
 - `app-debug.apk` in build outputs is stale relative to sources. After P0 fixes, rebuild from a
   clean clone, re-run `adb install` + `am start` exactly as documented, and confirm the
   `applicationId com.aistudio.serenity.lmns` launch command still matches.
@@ -154,8 +154,9 @@ severity-downgraded (Plaid backend is a production requirement, documented as
 sandbox-scoped for this backend-less PoC). Fixes shipped: fallback `modelUsed`
 provenance (never Spark branding), Offline Engine renaming (ExecuTorch = roadmap),
 recovery flow relabeled to the Suggested → Logged → Sensor-verified ladder, exact
-what-leaves-the-device disclosure, PKCE correction, and this consolidated test record.
-Covered by 2 new regression tests (provenance + labels).
+what-leaves-the-device disclosure, PKCE *doc* correction (README no longer claims it;
+connector code intentionally unchanged, implementation on roadmap), and this
+consolidated test record. Covered by 2 new regression tests (provenance + labels).
 
 ## Second Review Response — Freeze & Polish (done Nov 1)
 
@@ -166,6 +167,20 @@ README rebranded Spark-first (tagline, badge, FAQ, reasoning-trace wording),
 demo script split into keyed-cloud primary vs offline backup with the suggested
 opening line, and every test count synced to **36/36 green**. Architecture frozen per
 the review's counsel — remaining work is device proof, screenshots, and rehearsal.
+
+## Third Review Response — Fallback Provenance Deep-Clean (done Nov 1)
+
+A third assessment (reading a GitHub branch lagging this workspace) still added two
+genuine catches: fallback *thought-steps* impersonated Spark/Guard verdicts even after
+`modelUsed` was fixed, and Money Leak kept causal leftovers (`cause` variable, KDoc,
+"fatigue seeking comfort" prescriptions). Both fixed: thought-steps now read Offline
+Rules Engine / Deterministic Rule Evaluation / Template-Based Guidance / Safety Note,
+fallback Guard status reads Unscreened, and leak language is correlation-only
+throughout — all locked by extended provenance-test assertions (suite still 36/36,
+no new tests needed). Readiness P0/P1 headers converted to [DONE]/[PARTIAL]/[OWNER]
+status form so cold readers can't mistake the audit record for outstanding work.
+Stale-branch items in that review (README identity, demo split, counts) resolve on
+push.
 
 ---
 

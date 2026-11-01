@@ -95,10 +95,12 @@ This trajectory is not a feature — it is the *license* for the whole product.
 1. **The 40-Year Life Ledger.** Persistent, inspectable memory of values, nudges, and
    *verified* outcomes. Leaving Meta means abandoning the only entity that remembers
    your whole journey.
-2. **Loop latency as the North Star.** Minutes from detection → nudge → verified
-   follow-through, driven toward zero with band gestures. Nobody else measures this.
-3. **Verified outcomes, not streaks.** Recovery confirmed by telemetry (sleep logged,
-   call completed, delivery skipped) — ungameable and press-worthy.
+2. **Loop latency as the North Star.** Minutes from detection → nudge → logged →
+   sensor-verified follow-through, driven toward zero with band gestures. Nobody else
+   measures this.
+3. **Verified outcomes, not streaks.** Recovery confirmed — today user-logged,
+   roadmap: telemetry-confirmed sensor verification (sleep re-measured, call observed,
+   delivery absent) — ungameable and press-worthy once rung 3 ships.
 4. **The social-graph moat.** Only Meta sees Messenger/WhatsApp/Facebook event signals —
    connection debt is *exclusively* visible to Meta. Apple and Google can count steps;
    they cannot see loneliness.

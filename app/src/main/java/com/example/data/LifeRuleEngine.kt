@@ -102,8 +102,9 @@ object LifeRuleEngine {
     }
 
     /**
-     * Rule 2 — The Invisible Money Leak: repeated late-night delivery spend driven by
-     * evening exhaustion (poor sleep and/or late work), not hunger.
+     * Rule 2 — The Invisible Money Leak: repeated late-night delivery spend coinciding
+     * with reduced rest (poor sleep and/or late work). Correlation only — the rule
+     * makes no claim about why the orders happen.
      */
     private fun detectMoneyLeak(
         health: RealHealthSyncResult?,
@@ -118,21 +119,21 @@ object LifeRuleEngine {
         val lateWork = calendar?.isConnected == true && calendar.lateNightEvents7d >= 2
         if (!poorSleep && !lateWork) return null
 
-        val cause = when {
-            poorSleep && lateWork -> "evening exhaustion (${fmt1(health!!.avgSleepHours7d)}h sleep + ${calendar!!.lateNightEvents7d} late sessions)"
-            poorSleep -> "evening exhaustion (${fmt1(health!!.avgSleepHours7d)}h sleep)"
-            else -> "evening exhaustion (${calendar!!.lateNightEvents7d} late work sessions)"
+        val observedContext = when {
+            poorSleep && lateWork -> "reduced rest (${fmt1(health!!.avgSleepHours7d)}h sleep + ${calendar!!.lateNightEvents7d} late sessions)"
+            poorSleep -> "reduced rest (${fmt1(health!!.avgSleepHours7d)}h sleep)"
+            else -> "late-evening load (${calendar!!.lateNightEvents7d} late work sessions)"
         }
 
         return LiveRuleMatch(
             ruleId = "MONEY_LEAK",
             scenario = MuseDemoScenario.INVISIBLE_MONEY_LEAK,
             explanation = "LIVE RULE TRIGGERED: Money Leak — ${finance.deliveryOrderCount} delivery orders " +
-                "($${fmt0(finance.deliverySpendUsd)}) correlating with $cause.",
+                "($${fmt0(finance.deliverySpendUsd)}) observed alongside $observedContext. The data does not establish why.",
             mood = TamagotchiMood.TIRED,
             // Correlation, not causation: orders coincide with exhaustion; we don't claim why.
             speech = "Live Money Leak: ${finance.deliveryOrderCount} delivery orders ($${fmt0(finance.deliverySpendUsd)}) " +
-                "alongside $cause. Want a 5-minute home dinner and an early wind-down?"
+                "alongside $observedContext. The data does not establish why. Want a 5-minute home dinner and an early wind-down?"
         )
     }
 

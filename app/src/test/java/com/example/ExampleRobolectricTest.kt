@@ -17,6 +17,7 @@ import com.example.model.TamagotchiState
 import com.example.viewmodel.SerenityViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -88,6 +89,16 @@ class ExampleRobolectricTest {
             isLocalPrivacyMode = true
         )
         assertEquals("Offline Rules Engine (Zero-Cloud)", privacyFallback.modelUsed)
+
+        // No fallback thought-step may impersonate cloud inference or a safety verdict,
+        // and no fallback may claim a Guard screening that never ran.
+        val forbidden = listOf("Muse Spark", "Llama Guard", "PASSED", "Score:")
+        for (step in sparkFallback.reasoningSteps + privacyFallback.reasoningSteps) {
+            val text = step.title + " " + step.detail
+            assertFalse("Leaked attribution in: $text", forbidden.any { text.contains(it) })
+        }
+        assertTrue(sparkFallback.llamaGuardStatus.contains("Unscreened"))
+        assertTrue(privacyFallback.llamaGuardStatus.contains("Unscreened"))
     }
 
     @Test
