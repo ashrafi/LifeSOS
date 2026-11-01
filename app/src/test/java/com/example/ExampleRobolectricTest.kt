@@ -42,6 +42,24 @@ class ExampleRobolectricTest {
     }
 
     @Test
+    fun `live vitals persist across repository instances`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val store = ConnectorPreferencesStore(context)
+        store.vitalHydration = 0.42f
+        store.vitalFocus = 0.55f
+        store.liveMoodName = "SICK"
+        store.liveSpeech = "Persisted live speech"
+
+        // A fresh repository (as created after process death or background sync)
+        // must resume the persisted live body.
+        val repo = SerenityRepository(context)
+        assertEquals(0.42f, repo.tamagotchiState.value.hydration, 0.001f)
+        assertEquals(0.55f, repo.tamagotchiState.value.focus, 0.001f)
+        assertEquals(TamagotchiMood.SICK, repo.tamagotchiState.value.mood)
+        assertEquals("Persisted live speech", repo.tamagotchiState.value.speech)
+    }
+
+    @Test
     fun `tts voice settings persist with tuned defaults`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val store = ConnectorPreferencesStore(context)

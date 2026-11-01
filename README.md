@@ -213,6 +213,7 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
   * Resting and active heart rate (`HeartRateRecord`)
   * Hydration intake in liters (`HydrationRecord`)
 * **Permission Model**: Android 14+ system Health Connect permission dialogue with fallback for Android 13 APK.
+* **Background Sync**: `LumiBackgroundSyncWorker` (WorkManager, 6-hourly) re-runs the full live evaluation while the app is closed, persisting Lumi's vitals/mood/speech for next launch. Uses `READ_HEALTH_DATA_HISTORY` + `READ_HEALTH_DATA_IN_BACKGROUND` (background access is enabled by the user in Health Connect system settings; without it the worker safely no-ops).
 
 ### 2. Cognitive Tasks & Schedule (Android Calendar Provider & Google Tasks API)
 * **Provider**: `CalendarContract.Instances`, `CalendarContract.Events`
@@ -556,25 +557,32 @@ timeline
 ## 🎁 A Gift for Meta: Neural Band + Muse as the True Devices
 
 > **This project is a gift to Meta — a thank-you for the invitation to Meta Connect.**
-> The full product vision lives in [`doc/meta-product-vision.md`](doc/meta-product-vision.md),
-> inspired by [*Bio-Responsive Digital Companion*](https://zoewave.medium.com/bio-responsive-digital-companion-1c1b36f2788c).
+> It prototypes the architecture proposed in [*Bio-Responsive Digital Companion*](https://zoewave.medium.com/bio-responsive-digital-companion-1c1b36f2788c)
+> (local copy: [`doc/OrigArticle/zoewave-medium-com.md`](doc/OrigArticle/zoewave-medium-com.md));
+> the full product vision lives in [`doc/meta-product-vision.md`](doc/meta-product-vision.md).
 
 **Thesis: superintelligence as a life coach.** Human lives fail at the margin — one late
 night, one delivery order, one postponed call at a time. A companion that sees *all* life
 channels can spend tiny daily micro-optimizations to buy a global, long-term optimum:
 in 40 years, not overweight and not in debt. The Android app here proves the closed loop
-(sense → nudge → *verified* follow-through); Meta's own devices make it ambient:
+(sense → nudge → *verified* follow-through); Meta's own devices make it ambient.
 
-* **Meta Neural Band ⌚** — EMG micro-gestures turn Lumi's nudges from one-tap to zero-tap:
-  accept or snooze a check-in, dinner plan, or wind-down without unlocking a phone, plus a
-  private haptic back-channel and tomorrow's passive tension/stress signal.
-* **Meta Muse 🧠** — the 40-year brain: a persistent Life Ledger of values, nudges, and
-  verified outcomes that compounds across decades and lives on every Meta surface at once
-  (band, glasses, WhatsApp, Messenger, Quest).
+Grounded in the article's science and tripartite design (**Body → Life Engine → Creature**,
+deterministic state machine + generative expression — never raw telemetry into an LLM):
+
+* **Meta Neural Band ⌚** — sEMG muscle-activation sensing (not just movement) as Lumi's
+  real-time micro-state organ, plus pinch-and-drag micro-gestures turning nudges from
+  one-tap to zero-tap — a novel recontextualization of an input device into a sense organ.
+* **Meta Muse 🧠 + Muse Charm 🪆** — Muse Spark 1.3 as the 40-year brain (Life Ledger of
+  values and verified outcomes, 1M-token history); the palm-sized Charm totem as the
+  creature's permanent physical residency with instant voice — presence no phone app can bond.
+* **Why creatures beat dashboards 🧠** — the **Proteus Effect** (Stanford VHIL: users
+  conform behavior to avatars; the brain folds the creature into its body schema) and
+  **Bandura's Social Cognitive Theory** (virtual-pet trials with significant MVPA gains).
 * **Why only Meta wins this 🏆** — connection debt is visible exclusively through Meta's
-  social graph (Apple/Google can count steps; they cannot see loneliness), on-device
-  inference is the trust license for a coach that sees everything, and verified outcomes
-  beat streaks as the ungameable metric.
+  social graph (Apple/Google can count steps; they cannot see loneliness); Secure VM →
+  Confidential VM zero-knowledge is the trust license for a coach that sees everything;
+  verified outcomes beat streaks as the ungameable metric.
 
 We truly hope you and Meta like the idea. 🪽
 

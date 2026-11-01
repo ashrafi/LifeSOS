@@ -105,6 +105,14 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.room.ktx)
+  // lifecycle-service + lifecycle-livedata excluded: work-runtime only needs them for
+  // expedited-foreground workers and LiveData observers, neither of which this app uses
+  // (periodic CoroutineWorker + direct state reads). Both are also absent from
+  // staged/offline caches at the aligned 2.8.7 version.
+  implementation(libs.androidx.work.runtime.ktx) {
+    exclude(group = "androidx.lifecycle", module = "lifecycle-service")
+    exclude(group = "androidx.lifecycle", module = "lifecycle-livedata")
+  }
   implementation(libs.androidx.room.runtime)
   // implementation(libs.coil.compose)
   implementation(libs.converter.moshi)

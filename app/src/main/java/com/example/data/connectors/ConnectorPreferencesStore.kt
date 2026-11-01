@@ -119,6 +119,40 @@ class ConnectorPreferencesStore(context: Context) {
         get() = prefs.getFloat("tts_speech_rate", 0.96f)
         set(value) = prefs.edit().putFloat("tts_speech_rate", value.coerceIn(0.5f, 2.0f)).apply()
 
+    // Persisted live companion state: written by every live evaluation (foreground or
+    // background Worker) so Lumi's body survives process death and app-closed periods.
+    var vitalHydration: Float
+        get() = prefs.getFloat("live_vital_hydration", 0.85f)
+        set(value) = prefs.edit().putFloat("live_vital_hydration", value).apply()
+
+    var vitalFocus: Float
+        get() = prefs.getFloat("live_vital_focus", 0.90f)
+        set(value) = prefs.edit().putFloat("live_vital_focus", value).apply()
+
+    var vitalInnerPeace: Float
+        get() = prefs.getFloat("live_vital_inner_peace", 0.82f)
+        set(value) = prefs.edit().putFloat("live_vital_inner_peace", value).apply()
+
+    var vitalPhysicalEnergy: Float
+        get() = prefs.getFloat("live_vital_physical_energy", 0.78f)
+        set(value) = prefs.edit().putFloat("live_vital_physical_energy", value).apply()
+
+    var vitalConnection: Float
+        get() = prefs.getFloat("live_vital_connection", 0.80f)
+        set(value) = prefs.edit().putFloat("live_vital_connection", value).apply()
+
+    var liveMoodName: String
+        get() = prefs.getString("live_mood", "RADIANT") ?: "RADIANT"
+        set(value) = prefs.edit().putString("live_mood", value).apply()
+
+    var liveSpeech: String
+        get() = prefs.getString("live_speech", "") ?: ""
+        set(value) = prefs.edit().putString("live_speech", value).apply()
+
+    var lastLiveSyncEpochMillis: Long
+        get() = prefs.getLong("live_last_sync_epoch", 0L)
+        set(value) = prefs.edit().putLong("live_last_sync_epoch", value).apply()
+
     var userName: String
         get() = prefs.getString("user_name", "") ?: ""
         set(value) = prefs.edit().putString("user_name", value.trim()).apply()

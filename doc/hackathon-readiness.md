@@ -123,6 +123,20 @@ Connection Debt with pinned-value conflict). Matches drive Lumi's live mood/spee
 Covered by 6 JVM tests in `LifeRuleEngineTest`; full suite re-verified **25/25 green**
 (forced clean re-run, JBR 21, offline).
 
+## Article Gaps — Background Sync + Memory Moments (done Nov 1)
+
+Two more article requirements implemented: (1) `LumiBackgroundSyncWorker` (WorkManager,
+6-hourly, new `androidx.work:work-runtime-ktx:2.12.0` dep) re-runs live evaluation with
+the app closed — required new vitals/mood/speech persistence in prefs so the body
+survives process death, plus `READ_HEALTH_DATA_HISTORY`/`IN_BACKGROUND` manifest
+permissions; (2) `LifeMemoryMoments` gives Lumi trend-aware lines (sleep recovery,
+delivery-free stretches, active days) on the healthy path. Covered by 5 JVM tests +
+1 Robolectric persistence test; full suite re-verified **31/31 green** and
+`assembleDebug` builds clean (JBR 21, offline). Note: work-runtime excludes the unused
+`lifecycle-service`/`lifecycle-livedata` modules (see comment in `app/build.gradle.kts`).
+Device follow-ups for the owner: grant background access in Health Connect settings,
+then verify an overnight sync refreshes Lumi before the app opens.
+
 ---
 
 ## Pre-submission checklist

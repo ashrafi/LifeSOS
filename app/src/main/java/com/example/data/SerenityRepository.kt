@@ -134,13 +134,19 @@ class SerenityRepository(
             level = initialLevel,
             xp = initialXp,
             xpForNextLevel = 1000,
-            hydration = 0.85f,
-            focus = 0.90f,
-            innerPeace = 0.82f,
-            physicalEnergy = 0.78f,
-            connection = 0.80f,
-            mood = TamagotchiMood.RADIANT,
-            speech = if (appContext != null) {
+            hydration = prefsStore?.vitalHydration ?: 0.85f,
+            focus = prefsStore?.vitalFocus ?: 0.90f,
+            innerPeace = prefsStore?.vitalInnerPeace ?: 0.82f,
+            physicalEnergy = prefsStore?.vitalPhysicalEnergy ?: 0.78f,
+            connection = prefsStore?.vitalConnection ?: 0.80f,
+            mood = prefsStore?.liveMoodName?.let {
+                try {
+                    TamagotchiMood.valueOf(it)
+                } catch (e: Exception) {
+                    TamagotchiMood.RADIANT
+                }
+            } ?: TamagotchiMood.RADIANT,
+            speech = prefsStore?.liveSpeech?.takeIf { it.isNotBlank() } ?: if (appContext != null) {
                 "Ready for real-world telemetry! Connect Health Connect, Calendar, Facebook, or your Bank in Connections."
             } else {
                 "I feel so radiant today! You've nurtured our mind and body beautifully."
@@ -642,7 +648,8 @@ class SerenityRepository(
             )
             else -> Triple(
                 TamagotchiMood.RADIANT,
-                "Synced with $connectedCount live data stream${if (connectedCount == 1) "" else "s"}! Your real-world vitals are feeding my aura directly.",
+                LifeMemoryMoments.momentFor(h, c, f, s)
+                    ?: "Synced with $connectedCount live data stream${if (connectedCount == 1) "" else "s"}! Your real-world vitals are feeding my aura directly.",
                 DemoRecoveryStage.RECOVERED_HAPPY
             )
         }
@@ -659,6 +666,18 @@ class SerenityRepository(
             activeScenario = MuseDemoScenario.LIVE_REAL_DATA,
             recoveryStage = liveStage
         )
+
+        // Persist the live body so background syncs (and relaunches) resume it.
+        prefsStore?.let { prefs ->
+            prefs.vitalHydration = hydrationVital
+            prefs.vitalFocus = focusVital
+            prefs.vitalInnerPeace = peaceVital
+            prefs.vitalPhysicalEnergy = physicalVital
+            prefs.vitalConnection = connectionVital
+            prefs.liveMoodName = liveMood.name
+            prefs.liveSpeech = liveSpeech
+            prefs.lastLiveSyncEpochMillis = System.currentTimeMillis()
+        }
     }
 
     private fun buildLiveTelemetrySnapshot(): SyntheticTelemetrySnapshot {

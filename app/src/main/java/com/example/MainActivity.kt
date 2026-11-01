@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.data.LumiBackgroundSync
 import com.example.model.ScreenNav
 import com.example.ui.screens.AttuneScreen
 import com.example.ui.screens.PresenceScreen
@@ -71,6 +72,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        LumiBackgroundSync.schedule(this)
         intent?.data?.let { serenityViewModel.handleOAuthRedirect(it) }
         setContent {
             val themeMode by serenityViewModel.appThemeMode.collectAsState()
