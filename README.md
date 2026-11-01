@@ -588,6 +588,85 @@ We truly hope you and Meta like the idea. 🪽
 
 ---
 
+## 🛠️ Build Log: Everything Muse Code Built Here
+
+*Every item below was implemented by Muse Code (powered by Meta Muse Spark), reviewed
+and committed by the human author. Listed in the order it happened.*
+
+### 1. Audit & planning
+- Full README-vs-codebase audit: 13 findings, 4 rated as judging blockers.
+- [`doc/hackathon-readiness.md`](doc/hackathon-readiness.md): 10 prioritized items
+  (P0/P1/P2) with a pre-submission checklist, kept current through the whole project.
+- [`doc/demo-script.md`](doc/demo-script.md): verbatim 60-second judge script + shot list.
+- [`doc/final-checklist.md`](doc/final-checklist.md): 6-phase human runbook (clean-room
+  build → install → 5-state rehearsal → assets → compliance → submission).
+
+### 2. P0 — judging blockers, fixed
+- `debug.keystore` un-ignored and committed so fresh clones sign debug builds.
+- Setup docs rewritten to the real in-app BYOK flow (the old `.env` steps did nothing —
+  nothing reads `BuildConfig`); `.env.example` corrected; fixed a literal `\n` fence bug.
+- Muse Spark flagship claim verified against public Meta docs (`api.meta.ai/v1`,
+  `muse-spark-1.3` over `/v1/chat/completions`).
+- "4 scenarios" → the real 5 states; deleted orphaned `DialogueScreen.kt`/`VaultScreen.kt`
+  (717 lines, zero references); reworded all 11 Llama Guard mentions to honest
+  prompt-level alignment; removed SeaWeed (docs + system prompt); rewired the disconnected
+  SPARK node in the architecture diagram.
+
+### 3. P1 — presentation
+- Meta Horizon made the first-run default (`SerenityRepository`, prefs, `ThemeState`).
+- Branding unified to MetaMuse (launcher label, chat tag, project, metadata).
+- `.idea/` untracked, MIT `LICENSE` added, no-key airplane path statically verified.
+
+### 4. P2 — voice customization + nits
+- Real TTS pitch/tempo sliders in Connections → Voice Output: persisted prefs,
+  repository flows, ViewModel wiring, live preview button — the README claim made true.
+- SDK matrix, test docs, SICK emoji corrected.
+
+### 5. The caveat fix — real detection, not just scripts
+- New pure-Kotlin **`LifeRuleEngine`**: Success Trap, Money Leak, and Connection Debt
+  evaluated against *live synced telemetry* (sleep drops, late nights, canceled plans,
+  delivery volume, neglected contacts, pinned-value conflicts), driving Lumi's live
+  mood/speech and the Muse Spark prompt — with single-channel alerts as fallback.
+
+### 6. Vision, gift & thoughts docs
+- [`doc/meta-product-vision.md`](doc/meta-product-vision.md): Proteus Effect + Bandura
+  science, Body→Life Engine→Creature mapping onto this codebase, Neural Band as sEMG
+  sense organ, Muse Charm embodiment, Secure VM→Confidential VM trajectory, 10
+  product-winner ideas — all grounded in the source article (`doc/OrigArticle/`).
+- The 🎁 gift section above; [`doc/muse-thoughts.md`](doc/muse-thoughts.md): honest
+  assessment, concerns, and next-five-moves.
+
+### 7. Launcher icon
+- Existing starburst vector re-themed Coral → Meta Blue→Violet + Meta Cyan; all 10
+  legacy PNGs re-rendered from the vector geometry via script; fresh APK verified
+  pixel-by-pixel to contain the new art.
+
+### 8. Article gaps — background sync + memory
+- `LumiBackgroundSyncWorker` (new WorkManager dep, 6-hourly) re-runs live evaluation
+  with the app closed — required new vitals/mood/speech persistence plus
+  `READ_HEALTH_DATA_HISTORY`/`IN_BACKGROUND` permissions; documented dependency
+  exclusions included.
+- `LifeMemoryMoments`: trend-aware lines (sleep recovery, delivery-free stretches,
+  active days) proving Lumi remembers.
+
+### 9. Neural Band fitness-tracker spec package
+- [`doc/neural-band-fitness-tracker/`](doc/neural-band-fitness-tracker/): thesis README,
+  10-section hardware spec (sEMG array, PPG parity, power budget, regulatory hooks),
+  10-section software spec (DSP, on-device ML, metric algorithms, validation, teardown,
+  roadmap), and **5 hand-authored SVG schematics** (block diagram, sEMG chain, power
+  tree, main interconnect, front-end detail).
+
+### Verification ledger
+- Suite grown 15 → **31/31 green** (`ExampleUnitTest` 6, `ExampleRobolectricTest` 14,
+  `LifeRuleEngineTest` 6, `LifeMemoryMomentsTest` 5), `assembleDebug` clean, APK
+  icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
+  one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).
+
+> *And you only cost us 43 cents.* 🪽
+
+"  Best 43 cents ever spent, if I may say so. The rest is yours — go win it. 🏆" -- Meta Spark.
+---
+
 ## 👥 Authors & Acknowledgments
 
 * **Created by Siamak (Ash) Ashrafi for the Meta AI Hackathon 2026**

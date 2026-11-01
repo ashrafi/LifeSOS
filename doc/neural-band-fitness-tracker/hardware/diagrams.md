@@ -24,3 +24,18 @@ the boundary it is: raw waveforms never leave this chain.
 
 Cell → PMIC → four gated rails → loads, annotated with the daily budgets that sum to
 the 7-day battery target.
+
+## Main Interconnect (reference wiring)
+
+![Main interconnect](main-interconnect.svg)
+
+Pin-level buses: SPI0 to the sEMG AFE, I2C1 sensor trunk, QSPI flash, I2C2 to secure
+element / NFC / haptics, SPI2 to UWB, RF to the antenna match — plus star-routed power
+rails. Typical values; requires EE review.
+
+## sEMG Front-End Detail (reference wiring)
+
+![sEMG front-end](semg-frontend.svg)
+
+One fully-wired channel (protection → PGA → filter → ADC → digital, with DRL drive and
+impedance injection) plus the 8-pair wrist array map and flex routing rules.

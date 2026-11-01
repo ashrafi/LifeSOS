@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="890" height="780" viewBox="0 0 890 780" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="890" height="780" fill="#FFFFFF"/>
+  <text x="20" y="34" font-size="22" font-weight="bold" fill="#0F172A">Main Interconnect (reference)</text>
+  <text x="20" y="56" font-size="11" fill="#64748B">Typical values — requires EE review before layout. Dashed red = power rails.</text>
+
+  <!-- Left: analog + sensors -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="20" y="80" width="230" height="150" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="106">sEMG AFE</text>
+    <text x="34" y="128" font-size="11" font-weight="normal" fill="#64748B">8–16 ch differential</text>
+    <text x="34" y="148" font-size="11" font-weight="normal" fill="#64748B">SPI0 · DRDY · RST</text>
+    <text x="34" y="168" font-size="11" font-weight="normal" fill="#64748B">DVDD 1.8V (gated)</text>
+    <rect x="20" y="250" width="230" height="110" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="276">PPG Module</text>
+    <text x="34" y="298" font-size="11" font-weight="normal" fill="#64748B">G/R/IR + PDs · I2C1 · INT</text>
+    <rect x="20" y="380" width="230" height="100" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="406">IMU 6-Axis</text>
+    <text x="34" y="428" font-size="11" font-weight="normal" fill="#64748B">I2C1 · INT1 · 0x6A</text>
+    <rect x="20" y="500" width="230" height="100" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="526">Baro + Temp</text>
+    <text x="34" y="548" font-size="11" font-weight="normal" fill="#64748B">I2C1 · 0x5C / 0x48</text>
+  </g>
+
+  <!-- Center: compute -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="300" y="70" width="140" height="60" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="312" y="94" font-size="12">QSPI Flash</text>
+    <text x="312" y="112" font-size="10" font-weight="normal" fill="#64748B">FW + models</text>
+    <rect x="460" y="70" width="140" height="60" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="472" y="94" font-size="12">Secure El.</text>
+    <text x="472" y="112" font-size="10" font-weight="normal" fill="#64748B">I2C2 · 0x30</text>
+    <rect x="300" y="150" width="300" height="260" rx="10" fill="#E7F0FF" stroke="#7B61FF" stroke-width="2.5"/>
+    <text x="314" y="180">Main SoC + NPU</text>
+    <text x="314" y="202" font-size="11" font-weight="normal" fill="#64748B">apps + ≥1 TOPS INT8</text>
+    <text x="314" y="222" font-size="11" font-weight="normal" fill="#64748B">SPI0 · SPI1 · QSPI</text>
+    <text x="314" y="242" font-size="11" font-weight="normal" fill="#64748B">I2C2 · RF · SWD</text>
+    <rect x="300" y="430" width="300" height="120" rx="10" fill="#F3F6FA" stroke="#0866FF" stroke-width="2"/>
+    <text x="314" y="458">Sensor Hub MCU</text>
+    <text x="314" y="480" font-size="11" font-weight="normal" fill="#64748B">I2C1 host · SPI1 dev</text>
+    <text x="314" y="500" font-size="11" font-weight="normal" fill="#64748B">always-on &lt;100 µW</text>
+  </g>
+
+  <!-- Right: radios + haptics -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="650" y="80" width="220" height="100" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="664" y="108">Antenna + Match</text>
+    <text x="664" y="130" font-size="11" font-weight="normal" fill="#64748B">2.4 GHz · π-match · 50Ω</text>
+    <rect x="650" y="200" width="220" height="100" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="664" y="228">UWB Module</text>
+    <text x="664" y="250" font-size="11" font-weight="normal" fill="#64748B">SPI2 · INT · find-my</text>
+    <rect x="650" y="320" width="220" height="90" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="664" y="348">NFC Frontend</text>
+    <text x="664" y="370" font-size="11" font-weight="normal" fill="#64748B">I2C2 · 0x28</text>
+    <rect x="650" y="430" width="220" height="90" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="664" y="458">Haptics Driver</text>
+    <text x="664" y="480" font-size="11" font-weight="normal" fill="#64748B">I2C2 + EN · LRA</text>
+  </g>
+
+  <!-- Bottom: power -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="20" y="610" width="230" height="120" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="34" y="638">PMIC</text>
+    <text x="34" y="660" font-size="11" font-weight="normal" fill="#64748B">SENSE·HUB·SOC·RF rails</text>
+    <text x="34" y="680" font-size="11" font-weight="normal" fill="#64748B">star-routed · gated</text>
+    <rect x="270" y="610" width="190" height="120" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="284" y="638">Cell 1.4 Wh</text>
+    <text x="284" y="660" font-size="11" font-weight="normal" fill="#64748B">Li-Po · B+ · NTC</text>
+    <rect x="480" y="610" width="200" height="120" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="494" y="638">Charger</text>
+    <text x="494" y="660" font-size="11" font-weight="normal" fill="#64748B">magnetic · VBUS 5V</text>
+    <rect x="700" y="610" width="170" height="120" rx="10" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="714" y="638">Test Pogo</text>
+    <text x="714" y="660" font-size="11" font-weight="normal" fill="#64748B">SWD · factory</text>
+  </g>
+
+  <!-- Signal wires -->
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="250" y1="155" x2="298" y2="220" marker-end="url(#ah)"/>
+    <line x1="272" y1="300" x2="272" y2="550"/>
+    <line x1="250" y1="305" x2="272" y2="305"/>
+    <line x1="250" y1="430" x2="272" y2="430"/>
+    <line x1="250" y1="550" x2="272" y2="550"/>
+    <line x1="272" y1="490" x2="298" y2="490" marker-end="url(#ah)"/>
+    <line x1="430" y1="410" x2="430" y2="428" marker-end="url(#ah)"/>
+    <line x1="370" y1="150" x2="370" y2="132" marker-end="url(#ah)"/>
+    <line x1="520" y1="150" x2="520" y2="132" marker-end="url(#ah)"/>
+    <line x1="600" y1="200" x2="648" y2="132" marker-end="url(#ah)"/>
+    <line x1="600" y1="280" x2="648" y2="252" marker-end="url(#ah)"/>
+    <line x1="600" y1="360" x2="625" y2="360"/>
+    <line x1="625" y1="355" x2="625" y2="475"/>
+    <line x1="625" y1="365" x2="648" y2="365" marker-end="url(#ah)"/>
+    <line x1="625" y1="475" x2="648" y2="475" marker-end="url(#ah)"/>
+  </g>
+  <g font-size="9" fill="#64748B">
+    <text x="254" y="250">SPI0</text>
+    <text x="254" y="262">8M+DRDY</text>
+    <text x="280" y="572">I2C1 · 400 kHz</text>
+    <text x="436" y="424">SPI1+WAKE</text>
+    <text x="376" y="144">QSPI</text>
+    <text x="526" y="144">I2C2</text>
+    <text x="604" y="168">RF</text>
+    <text x="604" y="272">SPI2</text>
+    <text x="602" y="352">I2C2</text>
+  </g>
+
+  <!-- Power wires -->
+  <g stroke="#DC2626" stroke-width="2" fill="none" stroke-dasharray="7,4">
+    <line x1="60" y1="610" x2="60" y2="578"/>
+    <line x1="115" y1="610" x2="115" y2="578"/>
+    <line x1="170" y1="610" x2="170" y2="578"/>
+    <line x1="225" y1="610" x2="225" y2="578"/>
+    <line x1="580" y1="730" x2="580" y2="748"/>
+    <line x1="580" y1="748" x2="135" y2="748"/>
+    <line x1="135" y1="748" x2="135" y2="732"/>
+  </g>
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="270" y1="670" x2="252" y2="670" marker-end="url(#ah)"/>
+    <line x1="785" y1="610" x2="785" y2="588"/>
+  </g>
+  <g font-size="9" fill="#64748B">
+    <text x="585" y="744">VBUS 5V</text>
+    <text x="268" y="664" text-anchor="end">B+·TS</text>
+    <text x="791" y="602">SWD</text>
+  </g>
+
+  <text x="20" y="764" font-size="10" fill="#64748B">Star power · 100nF+10µF at each load · I2C 4.7kΩ pulls at hub/SoC · RF 50Ω · All values typical — EE review required</text>
+</svg>
