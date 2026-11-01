@@ -15,4 +15,6 @@
 .cxx
 local.properties
 .env
-debug.keystore
+# NOTE: debug.keystore is intentionally TRACKED (not ignored) so fresh clones
+# can sign debug builds. It holds only the well-known androiddebugkey
+# (android/android), which is safe to share.

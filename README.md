@@ -5,7 +5,7 @@
 
 [![Meta AI Hackathon](https://img.shields.io/badge/Meta_AI-Hackathon_2026-0866FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
 [![Llama 3.1](https://img.shields.io/badge/Powered_by-Meta_Llama_3.1-7B61FF?style=for-the-badge&logo=meta&logoColor=white)](https://llama.meta.com/)
-[![Llama Guard 3](https://img.shields.io/badge/Safety-Llama_Guard_3_PASSED-00B2FF?style=for-the-badge)](https://llama.meta.com/)
+[![Llama Guard 3 Aligned](https://img.shields.io/badge/Safety-Llama_Guard_3_Aligned-00B2FF?style=for-the-badge)](https://llama.meta.com/)
 [![Android Health Connect](https://img.shields.io/badge/Android-Health_Connect_SDK-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/health-and-fitness/guides/health-connect)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
@@ -41,7 +41,7 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
 
 **MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
 
-Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** and **Llama Guard 3**) to detect hidden life trade-offs *before* they turn into exhaustion. 
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** as the open-weight alternative and Llama Guard 3–aligned safety prompting) to detect hidden life trade-offs *before* they turn into exhaustion. 
 
 When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Muse Spark 1.3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
 
@@ -61,9 +61,9 @@ MetaMuse is architected specifically around the **Meta AI Tooling** stack recomm
 | **Life-State Detection** | **Kotlin Deterministic Engine** | Rule-based anomaly evaluation driving the living Muse Charm state |
 | **Mobile Architecture** | **Kotlin + Jetpack Compose** | Reactive Android application with dynamic brand theming |
 | **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, resting heart rate, and hydration |
-| **Financial Balance** | **SeaWeed Finance / Plaid / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
+| **Financial Balance** | **Plaid / SimpleFIN / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
 | **Social Connection** | **Facebook Graph API v21.0 / Contacts** | Social interaction cadence, starred circle contacts, and birthdays |
-| **Safety & Moderation** | **Meta Llama Guard 3** | Content moderation screening ensuring supportive, non-clinical advice |
+| **Safety & Moderation** | **Llama Guard 3–aligned prompting** | Prompt-level safety constraints ensuring supportive, non-clinical advice (no separate classifier call) |
 | **Voice Output** | **Android TextToSpeech** | Auditory companion readouts with tuned cadence |
 | **Open-Weight Alternative** | **Meta Llama 3.1 70B** | Secondary cloud inference option for deep open-weight reasoning |
 | **Future Privacy Mode** | **ExecuTorch Local Llama 3.2** | 100% zero-cloud on-device privacy mode |
@@ -79,8 +79,10 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    Powered through the official **Meta Model API**, Muse Spark 1.3 acts as the central brain of MuseLife, identifying non-obvious conflicts across disparate life streams.
 2. **Deterministic Multi-Channel Life State Engine**:
    Cross-references asynchronous biometric, schedule, spending, and relationship metrics in real time.
-3. **Llama Guard 3 Responsible AI Verification**:
-   Every coaching suggestion and proactive companion dialogue is screened against Llama Guard safety guidelines to ensure non-clinical, empathetic, and constructive guidance.
+3. **Llama Guard 3–Aligned Responsible AI Prompting**:
+   Every coaching suggestion and proactive companion dialogue is generated under Llama Guard 3–style
+   safety instructions (supportive, non-clinical, non-judgmental) embedded in the system prompt.
+   A dedicated Llama Guard classifier call is the planned next step on the roadmap.
 4. **Frictionless Actionable Nudges via WhatsApp**:
    Instead of passive advice, MetaMuse generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
 5. **Auditory Warmth (Native Text-To-Speech)**:
@@ -117,7 +119,7 @@ flowchart TD
         PROMPT["Structured Telemetry Payload<br/>(Companion state + 4 channels + Core Values)"]
         SPARK["Meta Muse Spark 1.3 ⭐<br/>(Flagship Meta Model API Inference)"]
         LLAMA["Meta Llama 3.1 70B<br/>(Open-Weight Cloud Alternative)"]
-        GUARD["Meta Llama Guard 3<br/>(Responsible AI & Empathy Screening)"]
+        GUARD["Llama Guard 3–Aligned<br/>(Prompt-Level Safety Screening)"]
         LOCAL["Zero-Cloud Privacy Engine<br/>(ExecuTorch On-Device Fallback)"]
     end
 
@@ -142,9 +144,11 @@ flowchart TD
     REPO --> RULES
 
     RULES --> PROMPT
-    PROMPT --> LLAMA
-    LLAMA --> GUARD
+    PROMPT --> SPARK
+    SPARK --> GUARD
     GUARD --> REPO
+    PROMPT -. Alternative .-> LLAMA
+    LLAMA -. Alternative .-> GUARD
     RULES -. Fallback .-> LOCAL
     LOCAL -. Offline .-> REPO
 
@@ -294,9 +298,12 @@ Llama 3.1 returns a deterministic JSON schema containing chain-of-thought analys
     "targetPayload": "Hey! Missing catching up—are you free for Saturday brunch?"
   },
   "llamaGuardStatus": "PASSED (Safe for Well-being & Guidance)",
-  "modelUsed": "Meta Llama 3.1"
+  "modelUsed": "Meta Muse Spark 1.3 (Meta Model API)"
 }
 ```
+
+> Note: `llamaGuardStatus` is self-reported by the model under Llama Guard 3–style prompt
+> instructions — it is not a separate classifier call (see 🔒 Security §3).
 
 ---
 
@@ -318,9 +325,10 @@ MetaMuse incorporates an official **Meta Horizon Brand Design System** configure
 
 ---
 
-## 🎭 The 4 Hackathon Demo Scenarios
+## 🎭 Demo States & Hackathon Scenarios
 
-MetaMuse features pre-configured interactive demo scenarios accessible with a single tap in the app header:
+MetaMuse ships five telemetry states — Live Real Data, a Healthy Baseline, and three
+pre-configured conflict scenarios — switchable from the discreet science-icon menu in the app header:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -365,7 +373,7 @@ MetaMuse/
 │   │   │       ├── model/
 │   │   │       │   └── CompanionModels.kt   # Telemetry, TamagotchiState, Nudges, Scenarios & Connectors
 │   │   │       ├── data/
-│   │   │       │   ├── MuseService.kt       # Meta Llama 3.1 API, Llama Guard & On-Device Engine
+│   │   │       │   ├── MuseService.kt       # Meta Model API (Muse Spark), Guard-aligned prompts & On-Device Engine
 │   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
 │   │   │       │   ├── security/
 │   │   │       │   │   └── SecureByokStore.kt       # Hardware Keystore AES-256-GCM + DataStore BYOK
@@ -381,9 +389,7 @@ MetaMuse/
 │   │   │           ├── screens/
 │   │   │           │   ├── AttuneScreen.kt    # Tab 1: Home habitat, Lumi creature & dialogue
 │   │   │           │   ├── VitalityScreen.kt  # Tab 2: 4-Channel concentric bio-radar telemetry
-│   │   │           │   ├── PresenceScreen.kt  # Tab 3: Connections, theme switcher & settings
-│   │   │           │   ├── DialogueScreen.kt  # Conversational history & thought streams
-│   │   │           │   └── VaultScreen.kt     # Pinned core values & life memory vault
+│   │   │           │   └── PresenceScreen.kt  # Tab 3: Connections, theme switcher & settings
 │   │   │           ├── components/
 │   │   │           │   ├── TamagotchiCreature.kt # Canvas rendering of Lumi, eyes, halo & motes
 │   │   │           │   ├── TamagotchiHabitat.kt  # Ambient environment, clouds & glowing aura
@@ -422,24 +428,23 @@ git clone https://github.com/ashrafi/MetaMuse.git
 cd MetaMuse
 ```
 
-### 2. Configure Environment Secrets
-Copy `.env.example` to `.env`:\n```bash
-cp .env.example .env
-```
+### 2. Configure API Keys (In-App BYOK — No `.env` Needed)
 
-Add your optional credentials:
-```properties
-# Meta Llama 3.1 Inference Token (Groq, Together AI, or Meta Model API)
-META_AI_TOKEN=your_llama_api_token_here
+MetaMuse uses strict client-side **Bring-Your-Own-Key**: no secrets are needed to build or run
+the app, and **zero keys exist in the repository or APK**. After installing:
 
-# (Optional) Plaid API Credentials for Live Bank Sync
-PLAID_CLIENT_ID=your_plaid_client_id
-PLAID_SECRET=your_plaid_secret
+1. Open the app → **Connections** tab → **AI Configuration**.
+2. Paste your **Meta Model API key** (from `dev.meta.ai`) to enable cloud inference with
+   **Meta Muse Spark 1.3** (`muse-spark-1.3` at `https://api.meta.ai/v1/chat/completions`).
+3. Optionally connect **Plaid** (Client ID + Secret), **SimpleFIN**, or a **Facebook token** in
+   their respective connector cards — or import a bank **CSV** with no credentials at all.
 
-# (Optional) Facebook App ID for Graph API v21.0
-FACEBOOK_APP_ID=your_facebook_app_id
-```
-*(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device Engine**, ensuring full offline functionality).*
+Keys are encrypted at rest with hardware-backed Android Keystore AES-256-GCM (see
+🔒 Security below) and can be wiped anytime via **"Remove Key"**.
+
+*(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device
+Engine**, ensuring full offline functionality. The `.env.example` file documents variable names
+for local tooling reference only — the app does not read `BuildConfig` secrets at runtime.)*
 
 ### 3. Build the Debug APK
 ```bash
@@ -485,8 +490,12 @@ For users who configure their own Meta Model API / Muse Spark 1.3 or provider ke
 ### 2. Zero-Knowledge On-Device Privacy Engine
 Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
 
-### 3. Responsible AI with Llama Guard 3
-All proactive conversational advice and Llama prescriptions are verified against Llama Guard 3 criteria. MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness pressure.
+### 3. Responsible AI with Llama Guard 3–Aligned Prompting
+All proactive conversational advice and Llama prescriptions are generated under Llama Guard 3–style
+safety instructions embedded in the system prompt (supportive, compassionate, non-clinical).
+MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness
+pressure. A dedicated Llama Guard classifier call in front of every response is the planned
+hardening step; today the `llamaGuardStatus` field is model self-report, not a separate gate.
 
 ### 4. Android Health Connect Compliance
 All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
@@ -503,7 +512,7 @@ timeline
     title MetaMuse Evolution Roadmap
     section Hackathon MVP (Today)
         Multi-Channel Telemetry Ingestion : Health Connect, Calendar, Facebook Graph, Plaid/CSV
-        Meta Llama 3.1 & Llama Guard 3   : Structured JSON multi-step reasoning
+        Meta Muse Spark 1.3 & Guard-Aligned Prompts : Structured JSON multi-step reasoning
         WhatsApp 1-Tap Nudges            : Deep-link integration
         Meta Horizon Brand Theme         : Dynamic reactive color system
     section Phase 1 (Near-Term)
@@ -527,7 +536,7 @@ timeline
 ## ⚖️ Hackathon Evaluation FAQ
 
 **Q: Why choose Meta Llama 3 instead of proprietary cloud APIs?**  
-**A:** Open weights allow MetaMuse to pioneer on-device edge AI via ExecuTorch, ensuring private health and financial data never leave the phone. Additionally, native **Llama Guard 3** provides specialized safety screening vital for empathetic lifestyle coaching.
+**A:** Open weights allow MetaMuse to pioneer on-device edge AI via ExecuTorch, ensuring private health and financial data never leave the phone. Additionally, **Llama Guard 3–style safety prompting** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
 
 **Q: How does the companion avoid becoming annoying or guilt-inducing?**  
 **A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
@@ -540,7 +549,8 @@ timeline
 ## 👥 Authors & Acknowledgments
 
 * **Created by Siamak (Ash) Ashrafi for the Meta AI Hackathon 2026**
-* Special thanks to the amazing orgs that make all this cool tech **Meta Super Intelligence**,  **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
+* Developed with AI assistance from **Muse Code powered by Meta Muse Spark** (code review, documentation, and submission readiness)
+* Special thanks to the amazing orgs that make all this cool tech **Meta Super Intelligence**, **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
 
 ---
 *MetaMuse — Empathetic AI that cares about the whole human.* 🪽
