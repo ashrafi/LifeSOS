@@ -33,9 +33,15 @@ import com.example.model.ThoughtStep
 import com.example.model.ThoughtStream
 import com.example.model.VitalityCheckin
 import com.example.ui.theme.AppThemeMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -44,6 +50,8 @@ import java.util.UUID
 class SerenityRepository(
     private val appContext: Context? = null
 ) {
+
+    private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val prefsStore: ConnectorPreferencesStore? =
         appContext?.applicationContext?.let { ConnectorPreferencesStore(it) }
@@ -63,6 +71,27 @@ class SerenityRepository(
 
     private val initialScenario =
         if (appContext != null) MuseDemoScenario.LIVE_REAL_DATA else MuseDemoScenario.NONE
+
+    private val _userName = MutableStateFlow(prefsStore?.userName.orEmpty())
+    val userName: StateFlow<String> = _userName.asStateFlow()
+
+    private val _companionName = MutableStateFlow(prefsStore?.companionName ?: "Lumi")
+    val companionName: StateFlow<String> = _companionName.asStateFlow()
+
+    fun getDisplayName(): String = prefsStore?.getDisplayName() ?: _userName.value.ifBlank { "Friend" }
+
+    fun setUserName(name: String) {
+        val trimmed = name.trim()
+        _userName.value = trimmed
+        prefsStore?.userName = trimmed
+    }
+
+    fun setCompanionName(name: String) {
+        val trimmed = name.trim().ifEmpty { "Lumi" }
+        _companionName.value = trimmed
+        prefsStore?.companionName = trimmed
+        _tamagotchiState.value = _tamagotchiState.value.copy(name = trimmed)
+    }
 
     private val _realConnectorState = MutableStateFlow(
         RealConnectorState(
@@ -87,12 +116,23 @@ class SerenityRepository(
     )
     val realConnectorState: StateFlow<RealConnectorState> = _realConnectorState.asStateFlow()
 
+    private val initialLevel = prefsStore?.companionLevel ?: 1
+    private val initialXp = prefsStore?.companionXp ?: 0
+    private val initialPets = prefsStore?.totalPets ?: 0
+    private val compName = prefsStore?.companionName ?: "Lumi"
+
     private val _tamagotchiState = MutableStateFlow(
         TamagotchiState(
-            name = "Lumi",
-            evolution = "Luminous Luminary (Stage 3)",
-            level = 4,
-            xp = 740,
+            name = compName,
+            evolution = when (initialLevel) {
+                1 -> "Sprout Spirit (Stage 1)"
+                2 -> "Radiant Wisp (Stage 2)"
+                3 -> "Luminous Bloom (Stage 3)"
+                4 -> "Harmonic Luminary (Stage 4)"
+                else -> "Celestial Ascendant (Stage 5)"
+            },
+            level = initialLevel,
+            xp = initialXp,
             xpForNextLevel = 1000,
             hydration = 0.85f,
             focus = 0.90f,
@@ -107,7 +147,7 @@ class SerenityRepository(
             },
             equippedAccessory = "Celestial Halo",
             isSleeping = false,
-            totalPets = 42,
+            totalPets = initialPets,
             activeScenario = initialScenario,
             recoveryStage = DemoRecoveryStage.RECOVERED_HAPPY
         )
@@ -132,7 +172,7 @@ class SerenityRepository(
     private val _messages = MutableStateFlow<List<ChatMessage>>(initialMessages())
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
 
-    private val _memories = MutableStateFlow<List<MemoryItem>>(initialMemories())
+    private val _memories = MutableStateFlow<List<MemoryItem>>(loadMemories())
     val memories: StateFlow<List<MemoryItem>> = _memories.asStateFlow()
 
     private val _selectedMode = MutableStateFlow(PresenceMode.MINDFUL_GUIDE)
@@ -143,10 +183,10 @@ class SerenityRepository(
 
     private val _vitalityCheckin = MutableStateFlow(
         VitalityCheckin(
-            clarityScore = 91,
-            emotionalEquilibrium = 88,
-            restorativePeace = 84,
-            moodWord = "Radiant Equilibrium"
+            clarityScore = prefsStore?.clarityScore ?: 85,
+            emotionalEquilibrium = prefsStore?.emotionalEquilibrium ?: 85,
+            restorativePeace = prefsStore?.restorativePeace ?: 85,
+            moodWord = prefsStore?.moodWord ?: "Balanced Attunement"
         )
     )
     val vitalityCheckin: StateFlow<VitalityCheckin> = _vitalityCheckin.asStateFlow()
@@ -1182,6 +1222,7 @@ class SerenityRepository(
         val curr = _tamagotchiState.value
         val newPets = curr.totalPets + 1
         val newPeace = (curr.innerPeace + 0.04f).coerceAtMost(1.0f)
+        prefsStore?.totalPets = newPets
         val petPhrases = listOf(
             "*chirp!* Your touch fills my aura with warm sparkles! ✨",
             "I love being your life companion. We're thriving together! 💖",
@@ -1204,8 +1245,9 @@ class SerenityRepository(
     fun toggleSleepMode() {
         val curr = _tamagotchiState.value
         val newSleep = !curr.isSleeping
+        val name = getDisplayName()
         val speech = if (newSleep) {
-            "Resting our eyes in gentle twilight... Sweet dreams, Maya. 🌙"
+            "Resting our eyes in gentle twilight... Sweet dreams, $name. 🌙"
         } else {
             "Awake and refreshed! Ready to craft a radiant day with you! ☀️"
         }
@@ -1226,13 +1268,15 @@ class SerenityRepository(
 
     fun toggleQuest(questId: String) {
         var completedQuest: LifeQuest? = null
-        _lifeQuests.value = _lifeQuests.value.map { quest ->
+        val updated = _lifeQuests.value.map { quest ->
             if (quest.id == questId) {
                 val newState = !quest.isCompleted
                 if (newState) completedQuest = quest
                 quest.copy(isCompleted = newState)
             } else quest
         }
+        _lifeQuests.value = updated
+        prefsStore?.completedQuestIds = updated.filter { it.isCompleted }.map { it.id }.toSet()
 
         completedQuest?.let { quest ->
             val curr = _tamagotchiState.value
@@ -1268,6 +1312,11 @@ class SerenityRepository(
                 4 -> "Harmonic Luminary (Stage 4)"
                 else -> "Celestial Ascendant (Stage 5)"
             }
+        }
+
+        prefsStore?.let {
+            it.companionLevel = newLevel
+            it.companionXp = newXp
         }
 
         val reevaluatedMood = if (
@@ -1318,6 +1367,12 @@ class SerenityRepository(
 
     fun logVitalityCheckin(clarity: Int, equilibrium: Int, peace: Int, mood: String) {
         _vitalityCheckin.value = VitalityCheckin(clarity, equilibrium, peace, mood)
+        prefsStore?.let {
+            it.clarityScore = clarity
+            it.emotionalEquilibrium = equilibrium
+            it.restorativePeace = peace
+            it.moodWord = mood
+        }
     }
 
     fun getThoughtStreams(): List<ThoughtStream> = listOf(
@@ -1389,13 +1444,17 @@ class SerenityRepository(
             date = "Today",
             isPinned = isPinned
         )
-        _memories.value = listOf(newItem) + _memories.value
+        val updated = listOf(newItem) + _memories.value
+        _memories.value = updated
+        persistMemories(updated)
     }
 
     fun toggleMemoryPin(id: String) {
-        _memories.value = _memories.value.map {
+        val updated = _memories.value.map {
             if (it.id == id) it.copy(isPinned = !it.isPinned) else it
         }
+        _memories.value = updated
+        persistMemories(updated)
     }
 
     fun sendMessage(userText: String) {
@@ -1425,10 +1484,31 @@ class SerenityRepository(
         val currentList = _messages.value.toMutableList()
         currentList.add(userMsg)
 
-        val companionReply = generateCompanionReply(userText, _selectedMode.value)
-        currentList.add(companionReply)
-
-        _messages.value = currentList
+        val scenario = _activeDemoScenario.value
+        if (scenario == MuseDemoScenario.LIVE_REAL_DATA && _metaAiConfig.value.token.isNotBlank()) {
+            _messages.value = currentList
+            repositoryScope.launch {
+                val companionReply = museService.chatWithMuseSpark(
+                    metaAiToken = _metaAiConfig.value.token,
+                    userMessage = userText,
+                    history = _messages.value,
+                    tamagotchiState = _tamagotchiState.value,
+                    telemetrySnapshot = _telemetrySnapshot.value,
+                    endpointUrl = _metaAiConfig.value.endpointUrl,
+                    modelName = _metaAiConfig.value.modelName,
+                    isLocalPrivacyMode = _metaAiConfig.value.isLocalLlamaPrivacyMode,
+                    userName = getDisplayName()
+                )
+                _messages.value = _messages.value + companionReply
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    speech = companionReply.content.take(120) + if (companionReply.content.length > 120) "..." else ""
+                )
+            }
+        } else {
+            val companionReply = generateCompanionReply(userText, _selectedMode.value)
+            currentList.add(companionReply)
+            _messages.value = currentList
+        }
     }
 
     private fun currentTimeFormatted(): String {
@@ -2063,56 +2143,88 @@ class SerenityRepository(
         CareActionLog("c3", "Mindful Intention Setting", "+20% Inner Peace", "9:05 AM", 25)
     )
 
-    private fun initialLifeQuests(): List<LifeQuest> = listOf(
-        LifeQuest("q1", "Drink 2 tall glasses of water", "+20% Hydration • +30 XP", "Physical", true),
-        LifeQuest("q2", "Complete 45-min deep focus sprint", "+25% Mind Flow • +40 XP", "Mind", false),
-        LifeQuest("q3", "3-Minute mindful breath pause", "+20% Inner Peace • +25 XP", "Spirit", false),
-        LifeQuest("q4", "Send a warm message to a loved one", "+25% Connection • +35 XP", "Social", false),
-        LifeQuest("q5", "Gentle spine stretch & shoulder roll", "+15% Physical • +20 XP", "Physical", false)
-    )
-
-    private fun initialMessages(): List<ChatMessage> = listOf(
-        ChatMessage(
-            id = "m1",
-            isFromUser = false,
-            content = "Hello, Maya! I am Lumi, your bio-responsive life companion. My vitality, aura glow, and mood directly respond to your Health, Tasks, Finance, and Social patterns. Select any of the 3 MuseLife Demos above to see how I detect hidden life conflicts and initiate a conversation!",
-            timestamp = "9:00 AM",
-            thoughtSteps = listOf(
-                ThoughtStep("Tamagotchi Life Sync", "Reading current life balance: 83% harmonious"),
-                ThoughtStep("Deterministic Rules Engine", "Monitoring Health, Tasks, Finance, and Social telemetry streams"),
-                ThoughtStep("Presence Readiness", "Attuned to Bio-Responsive Companion state")
-            ),
-            suggestedPrompts = listOf(
-                "Try Demo 1: The Success Trap",
-                "Try Demo 2: The Invisible Money Leak",
-                "Try Demo 3: The Connection Debt"
-            ),
-            category = "Bio-Responsive Companion"
-        ),
-        ChatMessage(
-            id = "m2",
-            isFromUser = true,
-            content = "I want to make sure I don't get overwhelmed with too many tasks today.",
-            timestamp = "9:02 AM"
-        ),
-        ChatMessage(
-            id = "m3",
-            isFromUser = false,
-            content = "When you feel overwhelmed, my aura dims slightly. Let's protect both of us: pick just one single focal task this morning, hydrate, and let me hold the rest of your mental load. I am right here with you.",
-            timestamp = "9:03 AM",
-            thoughtSteps = listOf(
-                ThoughtStep("Cognitive Load Assessment", "User experiencing mild task fragmentation"),
-                ThoughtStep("Boundary Architecture", "Protecting attention container from multi-task scatter"),
-                ThoughtStep("Emotional Resonation", "Offering unconditional reassurance and mental offloading")
-            ),
-            suggestedPrompts = listOf(
-                "Log a water break for Lumi",
-                "Define my single focal task",
-                "Take a 3-minute mindful pause"
-            ),
-            category = "Cognitive Protection"
+    private fun initialLifeQuests(): List<LifeQuest> {
+        val completed = prefsStore?.completedQuestIds ?: emptySet()
+        val baseQuests = listOf(
+            LifeQuest("q1", "Drink 2 tall glasses of water", "+20% Hydration • +30 XP", "Physical", false),
+            LifeQuest("q2", "Complete 45-min deep focus sprint", "+25% Mind Flow • +40 XP", "Mind", false),
+            LifeQuest("q3", "3-Minute mindful breath pause", "+20% Inner Peace • +25 XP", "Spirit", false),
+            LifeQuest("q4", "Send a warm message to a loved one", "+25% Connection • +35 XP", "Social", false),
+            LifeQuest("q5", "Gentle spine stretch & shoulder roll", "+15% Physical • +20 XP", "Physical", false)
         )
-    )
+        return baseQuests.map { it.copy(isCompleted = completed.contains(it.id)) }
+    }
+
+    private fun initialMessages(): List<ChatMessage> {
+        val name = getDisplayName()
+        val companion = _companionName.value
+        return listOf(
+            ChatMessage(
+                id = "m1",
+                isFromUser = false,
+                content = "Hello, $name! I am $companion, your bio-responsive life companion. My vitality, aura glow, and mood directly respond to your Health, Tasks, Finance, and Social patterns. Chat with me anytime or select a scenario above to explore how I safeguard your life balance!",
+                timestamp = currentTimeFormatted(),
+                thoughtSteps = listOf(
+                    ThoughtStep("Tamagotchi Life Sync", "Reading current life balance: ${_tamagotchiState.value.overallLifeScore}% harmonious"),
+                    ThoughtStep("Bio-Responsive Intelligence", "Monitoring Health, Tasks, Finance, and Social telemetry streams"),
+                    ThoughtStep("Presence Readiness", "Attuned to Bio-Responsive Companion state")
+                ),
+                suggestedPrompts = listOf(
+                    "How are my vitals today?",
+                    "Let's do a mindful breath reset",
+                    "What should I focus on next?"
+                ),
+                category = "Bio-Responsive Companion"
+            )
+        )
+    }
+
+    private fun loadMemories(): List<MemoryItem> {
+        val json = prefsStore?.savedMemoriesJson
+        if (!json.isNullOrBlank()) {
+            try {
+                val array = JSONArray(json)
+                val list = mutableListOf<MemoryItem>()
+                for (i in 0 until array.length()) {
+                    val obj = array.getJSONObject(i)
+                    list.add(
+                        MemoryItem(
+                            id = obj.optString("id", UUID.randomUUID().toString()),
+                            title = obj.optString("title", ""),
+                            content = obj.optString("content", ""),
+                            category = obj.optString("category", "Reflections"),
+                            date = obj.optString("date", "Recent"),
+                            isPinned = obj.optBoolean("isPinned", false)
+                        )
+                    )
+                }
+                if (list.isNotEmpty()) return list
+            } catch (_: Exception) {
+                // fallback to initial
+            }
+        }
+        return initialMemories()
+    }
+
+    private fun persistMemories(memories: List<MemoryItem>) {
+        try {
+            val array = JSONArray()
+            for (m in memories) {
+                val obj = JSONObject().apply {
+                    put("id", m.id)
+                    put("title", m.title)
+                    put("content", m.content)
+                    put("category", m.category)
+                    put("date", m.date)
+                    put("isPinned", m.isPinned)
+                }
+                array.put(obj)
+            }
+            prefsStore?.savedMemoriesJson = array.toString()
+        } catch (_: Exception) {
+            // ignore
+        }
+    }
 
     private fun initialMemories(): List<MemoryItem> = listOf(
         MemoryItem(

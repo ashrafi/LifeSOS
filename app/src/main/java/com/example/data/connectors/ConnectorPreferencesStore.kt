@@ -110,4 +110,58 @@ class ConnectorPreferencesStore(context: Context) {
     var appThemeMode: String
         get() = prefs.getString("app_theme_mode", "LUMINOUS_SERENITY") ?: "LUMINOUS_SERENITY"
         set(value) = prefs.edit().putString("app_theme_mode", value).apply()
+
+    var userName: String
+        get() = prefs.getString("user_name", "") ?: ""
+        set(value) = prefs.edit().putString("user_name", value.trim()).apply()
+
+    fun getDisplayName(): String {
+        val custom = userName.trim()
+        if (custom.isNotEmpty()) return custom
+        val fb = facebookUserName?.trim()
+        if (!fb.isNullOrEmpty()) {
+            return fb.split(" ").firstOrNull() ?: fb
+        }
+        return "Friend"
+    }
+
+    var companionName: String
+        get() = prefs.getString("companion_name", "Lumi") ?: "Lumi"
+        set(value) = prefs.edit().putString("companion_name", value.trim().ifEmpty { "Lumi" }).apply()
+
+    var totalPets: Int
+        get() = prefs.getInt("total_pets", 0)
+        set(value) = prefs.edit().putInt("total_pets", value).apply()
+
+    var companionXp: Int
+        get() = prefs.getInt("companion_xp", 0)
+        set(value) = prefs.edit().putInt("companion_xp", value).apply()
+
+    var companionLevel: Int
+        get() = prefs.getInt("companion_level", 1)
+        set(value) = prefs.edit().putInt("companion_level", value).apply()
+
+    var clarityScore: Int
+        get() = prefs.getInt("vitality_clarity_score", 85)
+        set(value) = prefs.edit().putInt("vitality_clarity_score", value).apply()
+
+    var emotionalEquilibrium: Int
+        get() = prefs.getInt("vitality_emotional_equilibrium", 85)
+        set(value) = prefs.edit().putInt("vitality_emotional_equilibrium", value).apply()
+
+    var restorativePeace: Int
+        get() = prefs.getInt("vitality_restorative_peace", 85)
+        set(value) = prefs.edit().putInt("vitality_restorative_peace", value).apply()
+
+    var moodWord: String
+        get() = prefs.getString("vitality_mood_word", "Harmonious Flow") ?: "Harmonious Flow"
+        set(value) = prefs.edit().putString("vitality_mood_word", value).apply()
+
+    var savedMemoriesJson: String
+        get() = prefs.getString("saved_memories_json", "") ?: ""
+        set(value) = prefs.edit().putString("saved_memories_json", value).apply()
+
+    var completedQuestIds: Set<String>
+        get() = prefs.getStringSet("completed_quest_ids", emptySet()) ?: emptySet()
+        set(value) = prefs.edit().putStringSet("completed_quest_ids", value).apply()
 }

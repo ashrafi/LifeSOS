@@ -80,6 +80,12 @@ class SerenityViewModel(
     val auraIntensity: StateFlow<Float> = repository.auraIntensity
     val vitalityCheckin: StateFlow<VitalityCheckin> = repository.vitalityCheckin
 
+    val userName: StateFlow<String> = repository.userName
+    val companionName: StateFlow<String> = repository.companionName
+    fun getDisplayName(): String = repository.getDisplayName()
+    fun setUserName(name: String) = repository.setUserName(name)
+    fun setCompanionName(name: String) = repository.setCompanionName(name)
+
     val thoughtStreams: List<ThoughtStream> = repository.getThoughtStreams()
     val dailyRhythm: List<DailyRhythmBlock> = repository.getDailyRhythm()
 

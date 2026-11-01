@@ -2,6 +2,7 @@ package com.example.data
 
 import com.example.model.ActionableNudge
 import com.example.model.CareActionLog
+import com.example.model.ChatMessage
 import com.example.model.LifeQuest
 import com.example.model.MemoryItem
 import com.example.model.MuseLifeAdvice
@@ -222,6 +223,186 @@ class MuseService(
             synthesizeMuseSparkAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         } else {
             synthesizeOnDeviceLlamaAdvice(tamagotchiState, telemetrySnapshot, currentTime)
+        }
+    }
+
+    suspend fun chatWithMuseSpark(
+        metaAiToken: String,
+        userMessage: String,
+        history: List<ChatMessage>,
+        tamagotchiState: TamagotchiState,
+        telemetrySnapshot: SyntheticTelemetrySnapshot?,
+        endpointUrl: String = "https://api.meta.ai/v1/chat/completions",
+        modelName: String = "muse-spark-1.3",
+        isLocalPrivacyMode: Boolean = false,
+        userName: String = "Friend"
+    ): ChatMessage = withContext(Dispatchers.IO) {
+        val currentTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
+        val cleanToken = metaAiToken.trim()
+        val isSpark = modelName.contains("spark", ignoreCase = true)
+        val id = UUID.randomUUID().toString()
+
+        if (!isLocalPrivacyMode && cleanToken.isNotBlank()) {
+            try {
+                val systemPrompt = """
+                    You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach companion named ${tamagotchiState.name}.
+                    You are speaking directly with $userName.
+                    Their current overall life score is ${tamagotchiState.overallLifeScore}%, mood is ${tamagotchiState.mood.title}, hydration ${(tamagotchiState.hydration * 100).toInt()}%, focus ${(tamagotchiState.focus * 100).toInt()}%.
+                    ${telemetrySnapshot?.let { "Current real telemetry: Health score ${it.healthReport.scorePercent}%, Tasks ${it.tasksReport.scorePercent}%, Finance ${it.financeReport.scorePercent}%, Social ${it.socialReport.scorePercent}%." } ?: ""}
+                    Respond warmly, empathetically, and conversationally in 2-4 sentences.
+                    Follow Meta Llama Guard safety standards.
+                    Return ONLY a JSON object:
+                    {
+                      "reply": "Warm companion response directly addressing $userName",
+                      "thoughtSteps": [
+                        {"title": "Sensory Assessment", "detail": "What was noted in the user's message and life telemetry"},
+                        {"title": "Empathetic Formulation", "detail": "How the response was framed to nurture well-being"}
+                      ],
+                      "suggestedPrompts": ["Short response 1", "Short response 2", "Short response 3"]
+                    }
+                """.trimIndent()
+
+                val messagesArray = JSONArray().apply {
+                    put(JSONObject().apply {
+                        put("role", "system")
+                        put("content", systemPrompt)
+                    })
+                    // Add recent chat context (up to 4 recent messages)
+                    history.takeLast(4).forEach { msg ->
+                        put(JSONObject().apply {
+                            put("role", if (msg.isFromUser) "user" else "assistant")
+                            put("content", msg.content)
+                        })
+                    }
+                    put(JSONObject().apply {
+                        put("role", "user")
+                        put("content", userMessage)
+                    })
+                }
+
+                val requestPayload = JSONObject().apply {
+                    put("model", modelName.ifBlank { if (isSpark) "muse-spark-1.3" else "llama-3.1-70b-versatile" })
+                    put("messages", messagesArray)
+                    put("temperature", 0.7)
+                    put("response_format", JSONObject().apply {
+                        put("type", "json_object")
+                    })
+                }
+
+                val mediaType = "application/json; charset=utf-8".toMediaType()
+                val request = Request.Builder()
+                    .url(endpointUrl.ifBlank { if (isSpark) "https://api.meta.ai/v1/chat/completions" else "https://api.groq.com/openai/v1/chat/completions" })
+                    .addHeader("Authorization", "Bearer $cleanToken")
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("X-Meta-Client", if (isSpark) "MetaMuse-Spark-1.3" else "MetaMuse-Llama")
+                    .post(requestPayload.toString().toRequestBody(mediaType))
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    val bodyString = response.body?.string()
+                    if (!bodyString.isNullOrBlank()) {
+                        val root = JSONObject(bodyString)
+                        val choices = root.optJSONArray("choices")
+                        if (choices != null && choices.length() > 0) {
+                            var content = choices.getJSONObject(0).optJSONObject("message")?.optString("content", "") ?: ""
+                            if (content.startsWith("```")) {
+                                content = content.removePrefix("```json").removePrefix("```").substringBeforeLast("```").trim()
+                            }
+                            val parsedJson = JSONObject(content)
+                            val replyText = parsedJson.optString("reply", "").ifBlank { content }
+                            val thoughtList = mutableListOf<ThoughtStep>()
+                            val stepsArray = parsedJson.optJSONArray("thoughtSteps")
+                            if (stepsArray != null) {
+                                for (i in 0 until stepsArray.length()) {
+                                    val obj = stepsArray.getJSONObject(i)
+                                    thoughtList.add(ThoughtStep(obj.optString("title", "Thought"), obj.optString("detail", "")))
+                                }
+                            }
+                            val promptsList = mutableListOf<String>()
+                            val pArray = parsedJson.optJSONArray("suggestedPrompts")
+                            if (pArray != null) {
+                                for (i in 0 until pArray.length()) {
+                                    promptsList.add(pArray.getString(i))
+                                }
+                            }
+                            return@withContext ChatMessage(
+                                id = id,
+                                isFromUser = false,
+                                content = replyText,
+                                timestamp = currentTime,
+                                thoughtSteps = thoughtList,
+                                suggestedPrompts = promptsList,
+                                category = if (isSpark) "Meta Muse Spark 1.3" else "Meta Llama 3"
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Fallback below
+            }
+        }
+
+        // Offline / Unconfigured / Privacy Mode dynamic contextual synthesis
+        val lower = userMessage.lowercase()
+        return@withContext when {
+            cleanToken.isBlank() && !isLocalPrivacyMode -> {
+                ChatMessage(
+                    id = id,
+                    isFromUser = false,
+                    content = "I hear you, $userName! To activate full real-time conversational intelligence with Meta Muse Spark 1.3, configure your BYOK token in Connections → AI Configuration. (Or select 'On-Device Llama' to chat completely offline).",
+                    timestamp = currentTime,
+                    thoughtSteps = listOf(
+                        ThoughtStep("BYOK Readiness Check", "No Meta Model API key configured in Keystore"),
+                        ThoughtStep("Privacy First", "Awaiting user token or switch to on-device mode")
+                    ),
+                    suggestedPrompts = listOf("Open Connections", "Switch to On-Device Llama", "How are my vitals?"),
+                    category = "Configuration Guide"
+                )
+            }
+            lower.contains("water") || lower.contains("drink") || lower.contains("hydrate") -> {
+                ChatMessage(
+                    id = id,
+                    isFromUser = false,
+                    content = "Hydrating clears brain fog and restores cellular fluidity, $userName! Every glass of water elevates our vitality.",
+                    timestamp = currentTime,
+                    thoughtSteps = listOf(
+                        ThoughtStep("Hydration Telemetry", "Checking cellular fluid state: ${(tamagotchiState.hydration * 100).toInt()}%"),
+                        ThoughtStep("Restorative Prompting", "Encouraging +1 glass of water")
+                    ),
+                    suggestedPrompts = listOf("Log water break", "Check my life score", "What's my next quest?"),
+                    category = "Hydration"
+                )
+            }
+            lower.contains("breath") || lower.contains("calm") || lower.contains("anxious") || lower.contains("stress") -> {
+                ChatMessage(
+                    id = id,
+                    isFromUser = false,
+                    content = "Let's pause together, $userName. Inhale softly for 4 counts, hold for 2, and release with an easy exhale. I am right here with you.",
+                    timestamp = currentTime,
+                    thoughtSteps = listOf(
+                        ThoughtStep("Autonomic Regulation", "Guiding parasympathetic nervous system down-regulation"),
+                        ThoughtStep("Symbiotic Calm", "Pacing breath with aura glow")
+                    ),
+                    suggestedPrompts = listOf("Take another breath", "I feel more grounded", "What should I focus on?"),
+                    category = "Mindful Pause"
+                )
+            }
+            else -> {
+                val modeLabel = if (isLocalPrivacyMode) "On-Device Llama (Zero-Cloud)" else "Meta Muse Spark 1.3"
+                ChatMessage(
+                    id = id,
+                    isFromUser = false,
+                    content = "I'm attuned to you, $userName. Looking at our balance today (${tamagotchiState.overallLifeScore}% harmony), what matters most to your focus right now?",
+                    timestamp = currentTime,
+                    thoughtSteps = listOf(
+                        ThoughtStep("Context Assessment", "Attuned to current life harmony: ${tamagotchiState.overallLifeScore}%"),
+                        ThoughtStep("Empathetic Formulation", "Offering supportive presence and intention alignment")
+                    ),
+                    suggestedPrompts = listOf("Review my priorities", "How can I boost my energy?", "Log a check-in"),
+                    category = modeLabel
+                )
+            }
         }
     }
 

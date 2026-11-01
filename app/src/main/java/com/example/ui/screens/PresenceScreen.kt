@@ -143,6 +143,13 @@ fun PresenceScreen(
     val integrations by viewModel.integrations.collectAsState()
     val realState by viewModel.realConnectorState.collectAsState()
     val currentTheme by viewModel.appThemeMode.collectAsState()
+    val currentUserName by viewModel.userName.collectAsState()
+    val currentCompanionName by viewModel.companionName.collectAsState()
+    val tamagotchiState by viewModel.tamagotchiState.collectAsState()
+
+    var userNameInput by remember(currentUserName) { mutableStateOf(currentUserName) }
+    var companionNameInput by remember(currentCompanionName) { mutableStateOf(currentCompanionName) }
+    var showProfileSavedBanner by remember { mutableStateOf(false) }
 
     var tokenInput by remember(metaAiConfig.token) { mutableStateOf(metaAiConfig.token) }
     var endpointInput by remember(metaAiConfig.endpointUrl) { mutableStateOf(metaAiConfig.endpointUrl) }
@@ -412,7 +419,29 @@ fun PresenceScreen(
                 }
 
                 // =============================================================
-                // 0. COMPANION THEME & APPEARANCE (Meta Colors vs Luminous Serenity)
+                // 0A. USER & COMPANION PROFILE CARD (Dynamic Personalization)
+                // =============================================================
+                item {
+                    UserProfileCard(
+                        userName = userNameInput,
+                        companionName = companionNameInput,
+                        onUserNameChange = { userNameInput = it },
+                        onCompanionNameChange = { companionNameInput = it },
+                        onSaveProfile = {
+                            viewModel.setUserName(userNameInput)
+                            viewModel.setCompanionName(companionNameInput)
+                            showProfileSavedBanner = true
+                        },
+                        showSavedBanner = showProfileSavedBanner,
+                        companionLevel = tamagotchiState.level,
+                        companionXp = tamagotchiState.xp,
+                        totalPets = tamagotchiState.totalPets,
+                        evolution = tamagotchiState.evolution
+                    )
+                }
+
+                // =============================================================
+                // 0B. COMPANION THEME & APPEARANCE (Meta Colors vs Luminous Serenity)
                 // =============================================================
                 item {
                     ThemeAppearanceCard(
@@ -2381,6 +2410,243 @@ private fun ThemeOptionTile(
                     lineHeight = 15.sp
                 )
             )
+        }
+    }
+}
+
+@Composable
+private fun UserProfileCard(
+    userName: String,
+    companionName: String,
+    onUserNameChange: (String) -> Unit,
+    onCompanionNameChange: (String) -> Unit,
+    onSaveProfile: () -> Unit,
+    showSavedBanner: Boolean,
+    companionLevel: Int,
+    companionXp: Int,
+    totalPets: Int,
+    evolution: String
+) {
+    SerenityCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("section_user_profile")
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MintSecondary.copy(alpha = 0.14f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = DarkSageText,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Identity & Companion Profile",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = DeepEspresso
+                            )
+                        )
+                        Text(
+                            text = "Dynamic Persona & Bio-Responsive Vitals",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = DarkSageText,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        )
+                    }
+                }
+
+                Surface(
+                    shape = CircleShape,
+                    color = MintContainer
+                ) {
+                    Text(
+                        text = "Level $companionLevel",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = DarkSageText,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Progression stats row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(SubtleContainer)
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Evolution Stage",
+                        style = MaterialTheme.typography.labelSmall.copy(color = SoftMutedText)
+                    )
+                    Text(
+                        text = evolution,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = DeepEspresso
+                        )
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(28.dp)
+                        .width(1.dp)
+                        .background(WarmBorder)
+                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "XP Progress",
+                        style = MaterialTheme.typography.labelSmall.copy(color = SoftMutedText)
+                    )
+                    Text(
+                        text = "$companionXp / 1000",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = DeepEspresso
+                        )
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .height(28.dp)
+                        .width(1.dp)
+                        .background(WarmBorder)
+                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Care & Pets",
+                        style = MaterialTheme.typography.labelSmall.copy(color = SoftMutedText)
+                    )
+                    Text(
+                        text = "$totalPets",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = DeepEspresso
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Text(
+                text = "Your Display Name",
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = DeepEspresso
+                )
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            OutlinedTextField(
+                value = userName,
+                onValueChange = onUserNameChange,
+                placeholder = { Text("Your name (e.g. Alex, Maya)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("user_name_input"),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MintSecondary,
+                    unfocusedBorderColor = WarmBorder,
+                    focusedContainerColor = FloatingSurface,
+                    unfocusedContainerColor = FloatingSurface
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = "Companion Name",
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = DeepEspresso
+                )
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            OutlinedTextField(
+                value = companionName,
+                onValueChange = onCompanionNameChange,
+                placeholder = { Text("Companion name (defaults to Lumi)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("companion_name_input"),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MintSecondary,
+                    unfocusedBorderColor = WarmBorder,
+                    focusedContainerColor = FloatingSurface,
+                    unfocusedContainerColor = FloatingSurface
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (showSavedBanner) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = DarkSageText,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "Profile saved & active!",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = DarkSageText,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(1.dp))
+                }
+
+                SerenityPrimaryButton(
+                    text = "Save Profile",
+                    onClick = onSaveProfile,
+                    modifier = Modifier.testTag("save_profile_button")
+                )
+            }
         }
     }
 }
