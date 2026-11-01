@@ -163,7 +163,7 @@ private fun AiThoughtBubble(
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        // AI Header tag with Serenity Star
+        // AI Header tag with MetaMuse Star
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = 6.dp, bottom = 6.dp)
@@ -184,7 +184,7 @@ private fun AiThoughtBubble(
             }
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = "Serenity",
+                text = "MetaMuse",
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold,
                     color = DeepEspresso

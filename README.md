@@ -86,7 +86,8 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
 4. **Frictionless Actionable Nudges via WhatsApp**:
    Instead of passive advice, MetaMuse generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
 5. **Auditory Warmth (Native Text-To-Speech)**:
-   Lumi speaks her prescriptions out loud using tuned voice synthesis with customizable pitch and tempo.
+   Lumi speaks her prescriptions out loud using voice synthesis with user-customizable pitch and
+   tempo sliders (Connections → Voice Output, with live preview and persistence across launches).
 6. **Closed-Loop Symbiotic Healing**:
    Agreement does not heal Lumi—**verified follow-through does**. Lumi's health, glow, and halo blossom only when subsequent sensor telemetry confirms recovery.
 7. **Official Meta Horizon Design System**:
@@ -338,7 +339,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 
 ### Scenario 1: The Success Trap
 * **The Conflict**: High productivity (98% tasks completed) and +20% monthly savings, but sleep drops from 7.5h to 5.0h with 3 canceled social plans.
-* **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤢)**, dimming her vibrant aura to a tired violet.
+* **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤒)**, dimming her vibrant aura to a tired violet.
 * **Llama's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
 * **WhatsApp Nudge**: Pre-drafts a message to friends: *"Free for Saturday brunch? Missing catching up!"*
 * **Verified Follow-Through**: Verifying 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
@@ -402,7 +403,8 @@ MetaMuse/
 │   │   │               └── Type.kt              # Typography styles
 │   │   └── test/
 │   │       └── java/com/example/
-│   │           └── ExampleUnitTest.kt       # Unit tests verifying theme switching & token resolution
+│   │           ├── ExampleUnitTest.kt       # Theme, model-engine, BYOK & TTS voice unit tests
+│   │           └── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows & nav
 │   ├── build.gradle.kts                     # App dependencies & SDK configuration
 │   └── proguard-rules.pro
 ├── gradle/
@@ -419,7 +421,7 @@ MetaMuse/
 ### Prerequisites
 * **Android Studio**: Ladybug (2024.2.1) or newer
 * **Java Development Kit**: JDK 17 or JDK 21 (configured as `JAVA_HOME`)
-* **Android Target**: Android 14 (API 34) or Android 15 (API 35/36) physical device (e.g., Google Pixel 8/9) or emulator with Google APIs
+* **Android SDK**: `compileSdk 37`, `targetSdk 36`, `minSdk 26` — test on an Android 14 (API 34) or Android 15 (API 35/36) physical device (e.g., Google Pixel 8/9) or emulator with Google APIs
 * **Android Debug Bridge (ADB)**: Installed and added to system path
 
 ### 1. Clone the Repository

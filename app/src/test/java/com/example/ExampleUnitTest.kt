@@ -90,4 +90,24 @@ class ExampleUnitTest {
     assertEquals(false, repo.metaAiConfig.value.isConnected)
     assertEquals("", repo.metaAiConfig.value.token)
   }
+
+  @Test
+  fun testDefaultThemeIsMetaHorizon() {
+    // Fresh installs (no saved preference) must open on the Meta Horizon brand theme
+    val repo = com.example.data.SerenityRepository(null)
+    assertEquals(AppThemeMode.META_HORIZON, repo.appThemeMode.value)
+  }
+
+  @Test
+  fun testTtsVoiceDefaultsAndCoercion() {
+    val repo = com.example.data.SerenityRepository(null)
+    assertEquals(1.04f, repo.ttsPitch.value, 0.001f)
+    assertEquals(0.96f, repo.ttsSpeechRate.value, 0.001f)
+
+    // Out-of-range values are coerced into the 0.5–2.0 slider range
+    repo.setTtsPitch(5.0f)
+    repo.setTtsSpeechRate(-1.0f)
+    assertEquals(2.0f, repo.ttsPitch.value, 0.001f)
+    assertEquals(0.5f, repo.ttsSpeechRate.value, 0.001f)
+  }
 }

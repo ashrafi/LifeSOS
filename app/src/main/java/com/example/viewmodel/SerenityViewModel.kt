@@ -98,6 +98,12 @@ class SerenityViewModel(
         repository.setAppThemeMode(mode)
     }
 
+    val ttsPitch = repository.ttsPitch
+    val ttsSpeechRate = repository.ttsSpeechRate
+
+    fun setTtsPitch(value: Float) = repository.setTtsPitch(value)
+    fun setTtsSpeechRate(value: Float) = repository.setTtsSpeechRate(value)
+
     init {
         syncAllRealChannels()
     }
@@ -217,11 +223,15 @@ class SerenityViewModel(
             textToSpeech = TextToSpeech(context.applicationContext) { status ->
                 if (status == TextToSpeech.SUCCESS) {
                     textToSpeech?.language = Locale.US
-                    textToSpeech?.setPitch(1.04f)
-                    textToSpeech?.setSpeechRate(0.96f)
+                    applyTtsVoiceSettings()
                 }
             }
         }
+    }
+
+    private fun applyTtsVoiceSettings() {
+        textToSpeech?.setPitch(ttsPitch.value)
+        textToSpeech?.setSpeechRate(ttsSpeechRate.value)
     }
 
     fun speakPrescription(text: String, context: Context) {
@@ -234,6 +244,7 @@ class SerenityViewModel(
         val cleanText = text.replace("**", "").replace("💡", "").replace("✨", "").replace("🛡️", "").trim()
         if (cleanText.isNotBlank()) {
             _isSpeaking.value = true
+            applyTtsVoiceSettings()
             textToSpeech?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "muse_speech_id")
             viewModelScope.launch {
                 delay(7500)

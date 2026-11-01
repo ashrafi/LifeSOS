@@ -9,6 +9,9 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
+# NOTE: IDE project files are intentionally untracked; judges open the project
+# with stock Android Studio settings.
+/.idea/
 /build
 /captures
 .externalNativeBuild

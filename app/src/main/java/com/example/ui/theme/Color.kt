@@ -97,7 +97,7 @@ val SerenityErrorContainer = Color(0xFFFFDAD6)
 // 3. REACTIVE THEME STATE & DYNAMIC COLOR RESOLUTION
 // =========================================================================
 object ThemeState {
-    var currentTheme by mutableStateOf(AppThemeMode.LUMINOUS_SERENITY)
+    var currentTheme by mutableStateOf(AppThemeMode.META_HORIZON)
 }
 
 val CoralPrimary: Color

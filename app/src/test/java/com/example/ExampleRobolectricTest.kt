@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.example.data.SerenityRepository
 import com.example.data.connectors.BankFinanceConnector
+import com.example.data.connectors.ConnectorPreferencesStore
 import com.example.data.connectors.FacebookSocialConnector
 import com.example.model.DemoRecoveryStage
 import com.example.model.MuseDemoScenario
@@ -30,7 +31,27 @@ class ExampleRobolectricTest {
     fun `read string from context`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val appName = context.getString(R.string.app_name)
-        assertEquals("Serenity", appName)
+        assertEquals("MetaMuse", appName)
+    }
+
+    @Test
+    fun `fresh install defaults to Meta Horizon theme`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val store = ConnectorPreferencesStore(context)
+        assertEquals("META_HORIZON", store.appThemeMode)
+    }
+
+    @Test
+    fun `tts voice settings persist with tuned defaults`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val store = ConnectorPreferencesStore(context)
+        assertEquals(1.04f, store.ttsPitch, 0.001f)
+        assertEquals(0.96f, store.ttsSpeechRate, 0.001f)
+
+        store.ttsPitch = 1.5f
+        store.ttsSpeechRate = 0.7f
+        assertEquals(1.5f, store.ttsPitch, 0.001f)
+        assertEquals(0.7f, store.ttsSpeechRate, 0.001f)
     }
 
     @Test

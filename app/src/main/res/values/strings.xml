@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Serenity</string>
+    <string name="app_name">MetaMuse</string>
     <string name="presence_status_active">Harmonic Presence • Deep Reflection Mode</string>
     <string name="greeting_title">Good morning</string>
-    <string name="greeting_subtitle">Serenity is attuned to your cognitive flow today.</string>
+    <string name="greeting_subtitle">MetaMuse is attuned to your cognitive flow today.</string>
 </resources>

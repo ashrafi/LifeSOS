@@ -99,20 +99,18 @@ perceived quality; P2 items are nice-to-have polish.
 
 ---
 
-## P2 — Polish if time allows
+## P2 — Polish (all done)
 
-- **TTS wording:** README says "customizable pitch and tempo" but values are hardcoded
-  (`1.04`/`0.96` in `SerenityViewModel`). Add sliders or reword to "tuned".
-- **Mermaid diagram:** the `SPARK` node has no edges; the reasoning path goes through `LLAMA`.
-  Rewire the diagram to match the flagship narrative.
-- **SDK versions:** README omits `compileSdk 37` and `minSdk 26`; state the real matrix.
-- **Tests section:** README undersells — `ExampleUnitTest` also covers model-engine selection
-  and BYOK revocation, and `ExampleRobolectricTest` (11 tests) isn't mentioned at all.
-- **Trivia:** SICK emoji is 🤒 in code vs 🤢 in README; example JSON shows
-  `"modelUsed": "Meta Llama 3.1"` while code resolves `"Meta Muse Spark 1.3 (Meta Model API)"`.
-- **No-Java note:** this environment has no JDK, so the build/test evidence above comes from the
-  repo's last recorded run (15/15 green on Nov 1). Re-verify on a machine with JDK 17/21 +
-  Android SDK before submitting.
+- [x] **TTS customization implemented** — pitch/tempo sliders in Connections → Voice Output
+  with live preview, persisted prefs, ViewModel wiring, and 2 new tests (was: hardcoded
+  `1.04`/`0.96`, README claim now true).
+- [x] **Mermaid diagram** — `SPARK` node wired as the primary path, Llama as alternative.
+- [x] **SDK versions** — README states `compileSdk 37`, `targetSdk 36`, `minSdk 26`.
+- [x] **Tests section** — README structure lists both test files with real coverage.
+- [x] **Trivia** — SICK emoji 🤒 and `modelUsed` string match the code.
+- **Test note:** suite verified 19/19 green via `./gradlew testDebugUnitTest --offline`
+  (Nov 1, Android Studio JBR 21). Two `@Composable` annotation fixes in `PresenceScreen.kt`
+  were required and corrected during that run. Remaining testing is device/field work (below).
 
 ---
 
@@ -122,9 +120,9 @@ perceived quality; P2 items are nice-to-have polish.
 - [x] README setup rewritten to in-app BYOK; `.env.example` corrected (P0-2). Still needed: verbatim run-through on a fresh machine
 - [x] Muse Spark endpoint externally verified — Meta Model API at `api.meta.ai/v1` serving `muse-spark-1.3` confirmed via public docs (P0-3). Still needed: one real on-device cloud call + screenshot
 - [x] README accuracy bugs fixed — 5 states, dead screens deleted, Guard reworded, SeaWeed removed (P0-4)
-- [ ] Meta Horizon is the first-run theme (P1-5)
-- [ ] Single product name everywhere (P1-6)
-- [ ] Screenshots + demo video linked (P1-7)
-- [ ] Airplane-mode demo passes on all 5 states (P1-8)
-- [ ] Repo public, license added, credits final (P1-9)
+- [x] Meta Horizon is the first-run theme — repo, prefs, and ThemeState defaults flipped + 2 new tests (P1-5). Verified: `./gradlew testDebugUnitTest` 19/19 green (Nov 1, JDK 21)
+- [x] Single product name — launcher, chat tag, project, metadata now MetaMuse (P1-6). Kept deliberately: `applicationId`, code identifiers, "Luminous Serenity" theme name, AI-Studio `majorCapabilities`
+- [x] Demo script written — [demo-script.md](demo-script.md) + `screenshots/` shot list (P1-7). Still needed: capture 6 shots + record/link video, link from README
+- [x] No-key path statically verified — blank token → offline synthesis → full card render, no blank states (P1-8). Still needed: airplane-mode pass on all 5 states on-device
+- [x] `.idea` untracked, MIT LICENSE added (P1-9). Still needed: push repo public, confirm credits
 - [ ] Fresh-APK install proof re-run (P1-10)

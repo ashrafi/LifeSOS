@@ -59,11 +59,13 @@ import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -93,6 +95,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import java.util.Locale
 import com.example.model.LifeSyncIntegrations
 import com.example.model.MetaModelEngine
 import com.example.model.MuseLifeAdvice
@@ -143,6 +146,8 @@ fun PresenceScreen(
     val integrations by viewModel.integrations.collectAsState()
     val realState by viewModel.realConnectorState.collectAsState()
     val currentTheme by viewModel.appThemeMode.collectAsState()
+    val ttsPitch by viewModel.ttsPitch.collectAsState()
+    val ttsSpeechRate by viewModel.ttsSpeechRate.collectAsState()
     val currentUserName by viewModel.userName.collectAsState()
     val currentCompanionName by viewModel.companionName.collectAsState()
     val tamagotchiState by viewModel.tamagotchiState.collectAsState()
@@ -447,6 +452,24 @@ fun PresenceScreen(
                     ThemeAppearanceCard(
                         currentTheme = currentTheme,
                         onSelectTheme = { viewModel.setAppThemeMode(it) }
+                    )
+                }
+
+                // =============================================================
+                // 0C. VOICE OUTPUT (TTS Pitch & Tempo)
+                // =============================================================
+                item {
+                    VoiceSettingsCard(
+                        pitch = ttsPitch,
+                        speechRate = ttsSpeechRate,
+                        onPitchChange = { viewModel.setTtsPitch(it) },
+                        onRateChange = { viewModel.setTtsSpeechRate(it) },
+                        onPreview = {
+                            viewModel.speakPrescription(
+                                "Hi, I'm Lumi, your MetaMuse companion. Let's protect your rest tonight.",
+                                context
+                            )
+                        }
                     )
                 }
 
@@ -2209,6 +2232,108 @@ private fun MuseAdviceSnippet(advice: MuseLifeAdvice) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun VoiceSettingsCard(
+    pitch: Float,
+    speechRate: Float,
+    onPitchChange: (Float) -> Unit,
+    onRateChange: (Float) -> Unit,
+    onPreview: () -> Unit
+) {
+    SerenityCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("section_voice_settings")
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            Text(
+                text = "🔊 Voice Output",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = DeepEspresso
+                )
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Tune Lumi's speaking voice. Changes apply instantly and persist across launches.",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = WarmSlateCharcoal,
+                    lineHeight = 19.sp
+                )
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Pitch",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = DeepEspresso
+                    )
+                )
+                Text(
+                    text = String.format(Locale.US, "%.2f", pitch),
+                    style = MaterialTheme.typography.bodyMedium.copy(color = CoralPrimary)
+                )
+            }
+            Slider(
+                value = pitch,
+                onValueChange = onPitchChange,
+                valueRange = 0.5f..2.0f,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("voice_pitch_slider")
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Tempo",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = DeepEspresso
+                    )
+                )
+                Text(
+                    text = String.format(Locale.US, "%.2f", speechRate),
+                    style = MaterialTheme.typography.bodyMedium.copy(color = CoralPrimary)
+                )
+            }
+            Slider(
+                value = speechRate,
+                onValueChange = onRateChange,
+                valueRange = 0.5f..2.0f,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("voice_tempo_slider")
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SerenitySecondaryButton(
+                text = "Preview Voice",
+                icon = Icons.Default.VolumeUp,
+                onClick = onPreview,
+                modifier = Modifier.fillMaxWidth(),
+                testTag = "voice_preview_button"
+            )
         }
     }
 }

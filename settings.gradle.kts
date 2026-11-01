@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Serenity"
+rootProject.name = "MetaMuse"
 
 include(":app")

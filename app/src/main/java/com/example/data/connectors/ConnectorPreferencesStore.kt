@@ -108,8 +108,16 @@ class ConnectorPreferencesStore(context: Context) {
         set(value) = prefs.edit().putString("cached_csv_label", value).apply()
 
     var appThemeMode: String
-        get() = prefs.getString("app_theme_mode", "LUMINOUS_SERENITY") ?: "LUMINOUS_SERENITY"
+        get() = prefs.getString("app_theme_mode", "META_HORIZON") ?: "META_HORIZON"
         set(value) = prefs.edit().putString("app_theme_mode", value).apply()
+
+    var ttsPitch: Float
+        get() = prefs.getFloat("tts_pitch", 1.04f)
+        set(value) = prefs.edit().putFloat("tts_pitch", value.coerceIn(0.5f, 2.0f)).apply()
+
+    var ttsSpeechRate: Float
+        get() = prefs.getFloat("tts_speech_rate", 0.96f)
+        set(value) = prefs.edit().putFloat("tts_speech_rate", value.coerceIn(0.5f, 2.0f)).apply()
 
     var userName: String
         get() = prefs.getString("user_name", "") ?: ""

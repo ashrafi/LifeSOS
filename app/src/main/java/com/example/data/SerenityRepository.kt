@@ -225,15 +225,33 @@ class SerenityRepository(
             try {
                 AppThemeMode.valueOf(it)
             } catch (e: Exception) {
-                AppThemeMode.LUMINOUS_SERENITY
+                AppThemeMode.META_HORIZON
             }
-        } ?: AppThemeMode.LUMINOUS_SERENITY
+        } ?: AppThemeMode.META_HORIZON
     )
     val appThemeMode: StateFlow<AppThemeMode> = _appThemeMode.asStateFlow()
 
     fun setAppThemeMode(mode: AppThemeMode) {
         _appThemeMode.value = mode
         prefsStore?.appThemeMode = mode.name
+    }
+
+    private val _ttsPitch = MutableStateFlow(prefsStore?.ttsPitch ?: 1.04f)
+    val ttsPitch: StateFlow<Float> = _ttsPitch.asStateFlow()
+
+    private val _ttsSpeechRate = MutableStateFlow(prefsStore?.ttsSpeechRate ?: 0.96f)
+    val ttsSpeechRate: StateFlow<Float> = _ttsSpeechRate.asStateFlow()
+
+    fun setTtsPitch(value: Float) {
+        val coerced = value.coerceIn(0.5f, 2.0f)
+        _ttsPitch.value = coerced
+        prefsStore?.ttsPitch = coerced
+    }
+
+    fun setTtsSpeechRate(value: Float) {
+        val coerced = value.coerceIn(0.5f, 2.0f)
+        _ttsSpeechRate.value = coerced
+        prefsStore?.ttsSpeechRate = coerced
     }
 
     // =========================================================================
@@ -550,7 +568,21 @@ class SerenityRepository(
         )
 
         val liveSnap = buildLiveTelemetrySnapshot()
-        _telemetrySnapshot.value = liveSnap
+        val ruleMatch = LifeRuleEngine.evaluateLiveRules(
+            health = h,
+            calendar = c,
+            finance = f,
+            social = s,
+            pinnedValues = _memories.value.filter { it.isPinned }
+        )
+        _telemetrySnapshot.value = if (ruleMatch != null) {
+            liveSnap.copy(
+                deterministicTriggerActive = true,
+                triggeredRuleExplanation = ruleMatch.explanation
+            )
+        } else {
+            liveSnap
+        }
 
         val connectedCount = listOf(
             h?.isConnected == true,
@@ -582,6 +614,11 @@ class SerenityRepository(
                 TamagotchiMood.BALANCED,
                 "Live mode active! Open the Connections tab to authorize Health Connect, Calendar, Facebook, or your Bank account.",
                 DemoRecoveryStage.RECOVERED_HAPPY
+            )
+            ruleMatch != null -> Triple(
+                ruleMatch.mood,
+                ruleMatch.speech,
+                ruleMatch.stage
             )
             h?.report?.isAlert == true && (c?.report?.isAlert == true || s?.report?.isAlert == true) -> Triple(
                 TamagotchiMood.SICK,
