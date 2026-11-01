@@ -58,7 +58,7 @@ MetaMuse is architected specifically around the **Meta AI Tooling** stack recomm
 | **Main Intelligence** | **Meta Muse Spark 1.3** (Meta Model API) | **Flagship Star**: Multi-stream cross-channel life synthesis and causal reasoning |
 | **AI Conversation** | **Meta Muse Spark 1.3** | Empathetic proactive dialogue and emotional reflection |
 | **Proactive Coaching** | **Meta Muse Spark 1.3** | Contextual intervention design, calendar buffers, and rest scheduling |
-| **Life-State Detection** | **Kotlin Deterministic Engine** | Rule-based anomaly evaluation driving the living Muse Charm state |
+| **Life-State Detection** | **Kotlin LifeRuleEngine** | Named cross-channel rules (Success Trap, Money Leak, Connection Debt) evaluated on live telemetry |
 | **Mobile Architecture** | **Kotlin + Jetpack Compose** | Reactive Android application with dynamic brand theming |
 | **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, resting heart rate, and hydration |
 | **Financial Balance** | **Plaid / SimpleFIN / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
@@ -79,6 +79,9 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    Powered through the official **Meta Model API**, Muse Spark 1.3 acts as the central brain of MuseLife, identifying non-obvious conflicts across disparate life streams.
 2. **Deterministic Multi-Channel Life State Engine**:
    Cross-references asynchronous biometric, schedule, spending, and relationship metrics in real time.
+   `LifeRuleEngine` evaluates the named trade-off rules against **live synced telemetry** (e.g. real
+   sleep drop + late-night sessions + canceled plans → Success Trap), driving Lumi's mood and the
+   Muse Spark prompt with genuine detections — not just scripted scenarios.
 3. **Llama Guard 3–Aligned Responsible AI Prompting**:
    Every coaching suggestion and proactive companion dialogue is generated under Llama Guard 3–style
    safety instructions (supportive, non-clinical, non-judgmental) embedded in the system prompt.
@@ -375,6 +378,7 @@ MetaMuse/
 │   │   │       │   └── CompanionModels.kt   # Telemetry, TamagotchiState, Nudges, Scenarios & Connectors
 │   │   │       ├── data/
 │   │   │       │   ├── MuseService.kt       # Meta Model API (Muse Spark), Guard-aligned prompts & On-Device Engine
+│   │   │       │   ├── LifeRuleEngine.kt    # Pure-Kotlin cross-channel trade-off rules on live telemetry
 │   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
 │   │   │       │   ├── security/
 │   │   │       │   │   └── SecureByokStore.kt       # Hardware Keystore AES-256-GCM + DataStore BYOK
@@ -404,7 +408,8 @@ MetaMuse/
 │   │   └── test/
 │   │       └── java/com/example/
 │   │           ├── ExampleUnitTest.kt       # Theme, model-engine, BYOK & TTS voice unit tests
-│   │           └── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows & nav
+│   │           ├── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows & nav
+│   │           └── LifeRuleEngineTest.kt    # JVM tests for live cross-channel rule detection
 │   ├── build.gradle.kts                     # App dependencies & SDK configuration
 │   └── proguard-rules.pro
 ├── gradle/
@@ -545,6 +550,33 @@ timeline
 
 **Q: How does the WhatsApp integration work?**  
 **A:** When Llama spots social isolation, it drafts an empathetic message and triggers an Android Intent to `https://api.whatsapp.com/send?text=...`. The user is taken directly into WhatsApp with the message pre-filled, reducing the cognitive friction of reconnecting to a single tap.
+
+---
+
+## 🎁 A Gift for Meta: Neural Band + Muse as the True Devices
+
+> **This project is a gift to Meta — a thank-you for the invitation to Meta Connect.**
+> The full product vision lives in [`doc/meta-product-vision.md`](doc/meta-product-vision.md),
+> inspired by [*Bio-Responsive Digital Companion*](https://zoewave.medium.com/bio-responsive-digital-companion-1c1b36f2788c).
+
+**Thesis: superintelligence as a life coach.** Human lives fail at the margin — one late
+night, one delivery order, one postponed call at a time. A companion that sees *all* life
+channels can spend tiny daily micro-optimizations to buy a global, long-term optimum:
+in 40 years, not overweight and not in debt. The Android app here proves the closed loop
+(sense → nudge → *verified* follow-through); Meta's own devices make it ambient:
+
+* **Meta Neural Band ⌚** — EMG micro-gestures turn Lumi's nudges from one-tap to zero-tap:
+  accept or snooze a check-in, dinner plan, or wind-down without unlocking a phone, plus a
+  private haptic back-channel and tomorrow's passive tension/stress signal.
+* **Meta Muse 🧠** — the 40-year brain: a persistent Life Ledger of values, nudges, and
+  verified outcomes that compounds across decades and lives on every Meta surface at once
+  (band, glasses, WhatsApp, Messenger, Quest).
+* **Why only Meta wins this 🏆** — connection debt is visible exclusively through Meta's
+  social graph (Apple/Google can count steps; they cannot see loneliness), on-device
+  inference is the trust license for a coach that sees everything, and verified outcomes
+  beat streaks as the ungameable metric.
+
+We truly hope you and Meta like the idea. 🪽
 
 ---
 

@@ -112,6 +112,17 @@ perceived quality; P2 items are nice-to-have polish.
   (Nov 1, Android Studio JBR 21). Two `@Composable` annotation fixes in `PresenceScreen.kt`
   were required and corrected during that run. Remaining testing is device/field work (below).
 
+## Caveat Fix — Live Cross-Channel Rule Engine (done Nov 1)
+
+The "superintelligence is scripted scenarios" gap is closed at the detection layer:
+new pure-Kotlin `LifeRuleEngine` evaluates the three named trade-off rules against real
+synced telemetry (sleep drop + late nights + canceled plans → Success Trap with savings
+contrast; delivery volume + exhaustion → Money Leak; neglected contacts + stable vitals →
+Connection Debt with pinned-value conflict). Matches drive Lumi's live mood/speech and the
+`triggeredRuleExplanation` fed to Muse Spark, with single-channel alerts as fallback.
+Covered by 6 JVM tests in `LifeRuleEngineTest`; full suite re-verified **25/25 green**
+(forced clean re-run, JBR 21, offline).
+
 ---
 
 ## Pre-submission checklist
