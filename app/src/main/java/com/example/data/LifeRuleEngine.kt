@@ -68,20 +68,27 @@ object LifeRuleEngine {
         val overwork = calendar.lateNightEvents7d >= 2
         if (!overwork) return null
 
+        // Canceled plans and neglected contacts are distinct signals: count both toward
+        // the trigger, but never describe one as the other.
         val canceledPlans = calendar.canceledOrDeclined14d +
-            (social?.facebookDeclinedEvents ?: 0) +
-            (social?.neglectedStarredContacts ?: 0)
-        if (canceledPlans < 2) return null
+            (social?.facebookDeclinedEvents ?: 0)
+        val neglectedContacts = social?.neglectedStarredContacts ?: 0
+        if (canceledPlans + neglectedContacts < 2) return null
 
         val savingsNote = if (finance?.isConnected == true && finance.totalInflow30dUsd > 0) {
             val rate = (finance.totalInflow30dUsd - finance.totalSpend30dUsd) / finance.totalInflow30dUsd
             if (rate >= 0.10) " despite +${(rate * 100).toInt()}% savings" else ""
         } else ""
 
+        val socialDetail = buildList {
+            if (canceledPlans > 0) add("$canceledPlans canceled/declined plan${if (canceledPlans == 1) "" else "s"}")
+            if (neglectedContacts > 0) add("$neglectedContacts neglected close contact${if (neglectedContacts == 1) "" else "s"}")
+        }.joinToString(" + ")
+
         val explanation = "LIVE RULE TRIGGERED: Success Trap — sleep dropped " +
             "${fmt1(health.priorAvgSleepHours7d)}h → ${fmt1(health.avgSleepHours7d)}h " +
             "+ ${calendar.lateNightEvents7d} late-night work sessions " +
-            "+ $canceledPlans canceled/declined social plans$savingsNote."
+            "+ $socialDetail$savingsNote."
 
         return LiveRuleMatch(
             ruleId = "SUCCESS_TRAP",
@@ -89,7 +96,7 @@ object LifeRuleEngine {
             explanation = explanation,
             mood = TamagotchiMood.SICK,
             speech = "Live Success Trap: you're pushing ${calendar.lateNightEvents7d} late nights on " +
-                "${fmt1(health.avgSleepHours7d)}h sleep and $canceledPlans plans fell away. " +
+                "${fmt1(health.avgSleepHours7d)}h sleep while $socialDetail piled up. " +
                 "Let's protect tonight's rest and reconnect this weekend!"
         )
     }
@@ -123,8 +130,9 @@ object LifeRuleEngine {
             explanation = "LIVE RULE TRIGGERED: Money Leak — ${finance.deliveryOrderCount} delivery orders " +
                 "($${fmt0(finance.deliverySpendUsd)}) correlating with $cause.",
             mood = TamagotchiMood.TIRED,
+            // Correlation, not causation: orders coincide with exhaustion; we don't claim why.
             speech = "Live Money Leak: ${finance.deliveryOrderCount} delivery orders ($${fmt0(finance.deliverySpendUsd)}) " +
-                "fueled by $cause. Want a 5-minute home dinner and an early wind-down?"
+                "alongside $cause. Want a 5-minute home dinner and an early wind-down?"
         )
     }
 
@@ -159,11 +167,21 @@ object LifeRuleEngine {
             if (declined >= 1) add("$declined declined/canceled plan${if (declined == 1) "" else "s"}")
         }.joinToString(" + ")
 
+        // Never claim stability without evidence: unconnected channels are unknown.
+        val healthKnownStable = health?.isConnected == true
+        val budgetKnownStable = finance?.isConnected == true
+        val stabilityNote = when {
+            healthKnownStable && budgetKnownStable -> "health and budget channels look stable"
+            healthKnownStable -> "health looks stable but budget is unknown (bank not connected)"
+            budgetKnownStable -> "budget looks stable but health is unknown (Health Connect not linked)"
+            else -> "health and budget are both unknown (connect Health Connect and your bank to complete the picture)"
+        }
+
         return LiveRuleMatch(
             ruleId = "CONNECTION_DEBT",
             scenario = MuseDemoScenario.CONNECTION_DEBT,
-            explanation = "LIVE RULE TRIGGERED: Connection Debt — $driftDetail$valuesNote " +
-                "while health and budget channels look stable.",
+            explanation = "LIVE RULE TRIGGERED: Connection Debt — $driftDetail$valuesNote; " +
+                "$stabilityNote.",
             mood = TamagotchiMood.SAD,
             speech = "Live Connection Debt: $driftDetail$valuesNote. " +
                 "Want to send a 1-tap check-in to someone who matters?"

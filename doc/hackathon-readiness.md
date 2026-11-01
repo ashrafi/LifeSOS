@@ -2,13 +2,13 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 33/33 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 36/36 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **33/33 green**,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **36/36 green**,
   zero failures/errors: `ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
-  `LifeRuleEngineTest` 6, `LifeMemoryMomentsTest` 5.
+  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
   earlier in the day, not conflicting claims — this section is the current truth.
@@ -155,7 +155,17 @@ sandbox-scoped for this backend-less PoC). Fixes shipped: fallback `modelUsed`
 provenance (never Spark branding), Offline Engine renaming (ExecuTorch = roadmap),
 recovery flow relabeled to the Suggested → Logged → Sensor-verified ladder, exact
 what-leaves-the-device disclosure, PKCE correction, and this consolidated test record.
-Covered by 2 new regression tests (provenance + labels); suite at **33/33 green**.
+Covered by 2 new regression tests (provenance + labels).
+
+## Second Review Response — Freeze & Polish (done Nov 1)
+
+A follow-up assessment ("do not build anything major") was verified the same way:
+all three `LifeRuleEngine` credibility fixes shipped (separated canceled-vs-neglected
+counts, correlation-not-causation leak language, unknown-not-stable debt vitals),
+README rebranded Spark-first (tagline, badge, FAQ, reasoning-trace wording),
+demo script split into keyed-cloud primary vs offline backup with the suggested
+opening line, and every test count synced to **36/36 green**. Architecture frozen per
+the review's counsel — remaining work is device proof, screenshots, and rehearsal.
 
 ---
 

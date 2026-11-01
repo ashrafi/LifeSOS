@@ -62,7 +62,7 @@ dead screens, unified branding to MetaMuse, defaulted the Meta Horizon theme, bu
 voice customization end-to-end, re-themed the launcher icon, wrote the demo script,
 readiness plan, product vision, and final runbook — and, most importantly, built the
 **live cross-channel rule engine** so the flagship claim is literally true. The suite
-stands at 25/25 green with the engine covered by dedicated tests.
+stands at 36/36 green with the engine, memory moments, provenance, and labels covered by dedicated tests.
 
 ## 5. If I were continuing: my next five moves
 

@@ -9,6 +9,7 @@ import com.example.model.ChannelTelemetryReport
 import com.example.model.MemoryItem
 import com.example.model.TamagotchiMood
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -170,6 +171,49 @@ class LifeRuleEngineTest {
     )
 
     assertNull(match)
+  }
+
+  @Test
+  fun successTrapSeparatesCanceledPlansFromNeglectedContacts() {
+    // Neglected contacts count toward the trigger but must never be called canceled plans.
+    val match = LifeRuleEngine.evaluateLiveRules(
+      health = health(sleep = 5.0f, priorSleep = 7.5f),
+      calendar = calendar(lateNights = 3, canceled = 0),
+      finance = finance(),
+      social = social(neglected = 2)
+    )
+
+    assertNotNull(match)
+    assertTrue(match!!.explanation.contains("2 neglected close contacts"))
+    assertFalse(match.explanation.contains("canceled"))
+  }
+
+  @Test
+  fun moneyLeakClaimsCorrelationNotCausation() {
+    val match = LifeRuleEngine.evaluateLiveRules(
+      health = health(sleep = 6.0f, priorSleep = 6.2f),
+      calendar = calendar(),
+      finance = finance(deliveries = 4, deliverySpend = 130.0),
+      social = social()
+    )
+
+    assertNotNull(match)
+    assertTrue(match!!.speech.contains("alongside"))
+    assertFalse(match.speech.contains("fueled by"))
+  }
+
+  @Test
+  fun connectionDebtMarksUnconnectedChannelsUnknown() {
+    val match = LifeRuleEngine.evaluateLiveRules(
+      health = null,
+      calendar = null,
+      finance = null,
+      social = social(neglected = 2)
+    )
+
+    assertNotNull(match)
+    assertTrue(match!!.explanation.contains("unknown"))
+    assertFalse(match.explanation.contains("look stable"))
   }
 
   @Test

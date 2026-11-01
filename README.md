@@ -1,10 +1,10 @@
 # MetaMuse 🪽
 
-> **Bio-Responsive Personal Superintelligence & Life Companion powered by Meta Llama 3**  
+> **Bio-Responsive Personal Intelligence & Life Companion — powered by Meta Muse Spark 1.3**  
 > *Connecting Health Connect, Calendar, Financial Outflows, and Social Ties into an Empathetic, Living Virtual Companion.*
 
 [![Meta AI Hackathon](https://img.shields.io/badge/Meta_AI-Hackathon_2026-0866FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
-[![Llama 3.1](https://img.shields.io/badge/Powered_by-Meta_Llama_3.1-7B61FF?style=for-the-badge&logo=meta&logoColor=white)](https://llama.meta.com/)
+[![Muse Spark 1.3](https://img.shields.io/badge/Powered_by-Meta_Muse_Spark_1.3-7B61FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
 [![Llama Guard 3 Aligned](https://img.shields.io/badge/Safety-Llama_Guard_3_Aligned-00B2FF?style=for-the-badge)](https://llama.meta.com/)
 [![Android Health Connect](https://img.shields.io/badge/Android-Health_Connect_SDK-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/health-and-fitness/guides/health-connect)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
@@ -280,9 +280,9 @@ When multi-channel telemetry suggests an emerging conflict, MetaMuse packages th
 }
 ```
 
-### Llama Structured JSON Output Schema
+### Structured JSON Output Schema
 
-Llama 3.1 returns a deterministic JSON schema containing chain-of-thought analysis, pillar scores, a companion message, and an actionable nudge:
+Muse Spark returns a deterministic JSON schema containing a brief reasoning trace, pillar scores, a companion message, and an actionable nudge:
 
 ```json
 {
@@ -557,8 +557,8 @@ timeline
 
 ## ⚖️ Hackathon Evaluation FAQ
 
-**Q: Why choose Meta Llama 3 instead of proprietary cloud APIs?**  
-**A:** Open weights allow MetaMuse to pioneer on-device edge AI via ExecuTorch, ensuring private health and financial data never leave the phone. Additionally, **Llama Guard 3–style safety prompting** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
+**Q: Why is Meta Muse Spark 1.3 the flagship instead of open-weights Llama?**  
+**A:** Muse Spark's frontier reasoning and structured outputs via the Meta Model API make it the best cross-stream life analyst available. Open-weights Llama stays in the architecture two ways: as the alternative cloud engine (Llama 3.1 70B) and as the future of zero-cloud privacy via ExecuTorch on-device weights. **Llama Guard 3–style safety prompting** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
 
 **Q: How does the companion avoid becoming annoying or guilt-inducing?**  
 **A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
@@ -679,8 +679,8 @@ and committed by the human author. Listed in the order it happened.*
   Plaid-backend production note, and PKCE correction.
 
 ### Verification ledger
-- Suite grown 15 → **33/33 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
-  `LifeRuleEngineTest` 6, `LifeMemoryMomentsTest` 5), `assembleDebug` clean, APK
+- Suite grown 15 → **36/36 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
+  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).
 

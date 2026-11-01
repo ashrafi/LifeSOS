@@ -9,5 +9,6 @@ device (Pixel 8/9, light mode, Meta Horizon theme) and place them here:
 - `04-follow-through-radiant.png`
 - `05-bio-radar.png`
 - `06-connections.png`
+- `07-spark-proof.png`
 
 Then link them from the README's Three-Tab Interface section.
