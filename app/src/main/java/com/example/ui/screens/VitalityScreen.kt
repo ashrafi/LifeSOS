@@ -10,8 +10,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -46,7 +48,10 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material.icons.filled.Warning
@@ -66,6 +71,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -245,75 +251,137 @@ fun VitalityScreen(
 
         // 2. Pump Synthetic Data Switcher (Switch between the 3 MuseLife Demos right on Data tab)
         item {
+            var isExpanded by rememberSaveable { mutableStateOf(false) }
+
             SerenityCard(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Pump Synthetic Telemetry Dataset",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = DeepEspresso
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        val scenarios = listOf(
-                            MuseDemoScenario.LIVE_REAL_DATA,
-                            MuseDemoScenario.SUCCESS_TRAP,
-                            MuseDemoScenario.INVISIBLE_MONEY_LEAK,
-                            MuseDemoScenario.CONNECTION_DEBT,
-                            MuseDemoScenario.NONE
-                        )
-                        items(scenarios) { scenario ->
-                            val isSelected = activeScenario == scenario
-                            Surface(
-                                shape = CircleShape,
-                                color = if (isSelected) CoralPrimary else SubtleContainer,
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { isExpanded = !isExpanded },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Box(
                                 modifier = Modifier
-                                    .border(1.dp, if (isSelected) CoralPrimary else WarmBorder, CircleShape)
-                                    .clip(CircleShape)
-                                    .clickable { viewModel.activateDemoScenario(scenario) }
+                                    .size(34.dp)
+                                    .background(SubtleContainer, CircleShape)
+                                    .border(1.dp, WarmBorder, CircleShape),
+                                contentAlignment = Alignment.Center
                             ) {
+                                Icon(
+                                    imageVector = Icons.Default.Science,
+                                    contentDescription = "Synthetic Datasets",
+                                    tint = CoralPrimary,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                            Column {
                                 Text(
-                                    text = scenario.title,
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        color = if (isSelected) Color.White else DeepEspresso,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                    ),
-                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+                                    text = "Pump Synthetic Telemetry Dataset",
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        color = DeepEspresso
+                                    )
+                                )
+                                Text(
+                                    text = if (isExpanded) {
+                                        "Switch datasets for live evaluation"
+                                    } else {
+                                        "Demo tooling • Active: ${activeScenario.title}"
+                                    },
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        color = WarmSlateCharcoal
+                                    )
                                 )
                             }
                         }
+
+                        IconButton(
+                            onClick = { isExpanded = !isExpanded },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                                tint = WarmSlateCharcoal
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(if (telemetry.deterministicTriggerActive) SerenityErrorContainer else MintContainer)
-                            .padding(12.dp)
+                    AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = if (telemetry.deterministicTriggerActive) Icons.Default.Warning else Icons.Default.CheckCircle,
-                                contentDescription = null,
-                                tint = if (telemetry.deterministicTriggerActive) SerenityError else DarkSageText,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = telemetry.triggeredRuleExplanation,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    color = if (telemetry.deterministicTriggerActive) SerenityError else DarkSageText,
-                                    fontWeight = FontWeight.Bold,
-                                    lineHeight = 16.sp
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                val scenarios = listOf(
+                                    MuseDemoScenario.LIVE_REAL_DATA,
+                                    MuseDemoScenario.SUCCESS_TRAP,
+                                    MuseDemoScenario.INVISIBLE_MONEY_LEAK,
+                                    MuseDemoScenario.CONNECTION_DEBT,
+                                    MuseDemoScenario.NONE
                                 )
-                            )
+                                items(scenarios) { scenario ->
+                                    val isSelected = activeScenario == scenario
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = if (isSelected) CoralPrimary else SubtleContainer,
+                                        modifier = Modifier
+                                            .border(1.dp, if (isSelected) CoralPrimary else WarmBorder, CircleShape)
+                                            .clip(CircleShape)
+                                            .clickable { viewModel.activateDemoScenario(scenario) }
+                                    ) {
+                                        Text(
+                                            text = scenario.title,
+                                            style = MaterialTheme.typography.labelMedium.copy(
+                                                color = if (isSelected) Color.White else DeepEspresso,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                            ),
+                                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(if (telemetry.deterministicTriggerActive) SerenityErrorContainer else MintContainer)
+                                    .padding(12.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = if (telemetry.deterministicTriggerActive) Icons.Default.Warning else Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = if (telemetry.deterministicTriggerActive) SerenityError else DarkSageText,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = telemetry.triggeredRuleExplanation,
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = if (telemetry.deterministicTriggerActive) SerenityError else DarkSageText,
+                                            fontWeight = FontWeight.Bold,
+                                            lineHeight = 16.sp
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -831,6 +899,8 @@ private fun SimpleDataGraphicView(
             telemetry.socialReport.scorePercent
         ) / 4
 
+    var showDemoScenarios by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -845,55 +915,98 @@ private fun SimpleDataGraphicView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // 1. Top Status Chip & Synthetic Dataset Switcher
+        // 1. Top Status Chip & Discreet Demo Dataset Switcher Icon
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SerenityStatusChip(
-                text = if (telemetry.deterministicTriggerActive) {
-                    "Anomaly Detected • ${activeScenario.title}"
-                } else {
-                    "4-Channel Bio-Telemetry • $compositeScore% Harmony"
-                },
-                pulseColor = if (telemetry.deterministicTriggerActive) SerenityError else MintSecondary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val scenarios = listOf(
-                MuseDemoScenario.LIVE_REAL_DATA to "🟢 Live Data",
-                MuseDemoScenario.NONE to "Healthy",
-                MuseDemoScenario.SUCCESS_TRAP to "1. Success Trap",
-                MuseDemoScenario.INVISIBLE_MONEY_LEAK to "2. Money Leak",
-                MuseDemoScenario.CONNECTION_DEBT to "3. Connection Debt"
-            )
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                items(scenarios) { (scenario, shortLabel) ->
-                    val isSelected = activeScenario == scenario
-                    Surface(
-                        shape = CircleShape,
-                        color = if (isSelected) CoralPrimary else FloatingSurface,
-                        modifier = Modifier
-                            .border(
-                                1.dp,
-                                if (isSelected) CoralPrimary else WarmBorder,
-                                CircleShape
-                            )
-                            .clip(CircleShape)
-                            .clickable { onSelectScenario(scenario) }
-                    ) {
-                        Text(
-                            text = shortLabel,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = if (isSelected) Color.White else DeepEspresso,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                fontSize = 11.sp
-                            ),
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                SerenityStatusChip(
+                    text = if (telemetry.deterministicTriggerActive) {
+                        "Anomaly Detected • ${activeScenario.title}"
+                    } else {
+                        "4-Channel Bio-Telemetry • $compositeScore% Harmony"
+                    },
+                    pulseColor = if (telemetry.deterministicTriggerActive) SerenityError else MintSecondary,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+                val isSimulatedScenario = activeScenario != MuseDemoScenario.LIVE_REAL_DATA && activeScenario != MuseDemoScenario.NONE
+                Surface(
+                    shape = CircleShape,
+                    color = if (showDemoScenarios || isSimulatedScenario) CoralPrimary.copy(alpha = 0.15f) else FloatingSurface,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(36.dp)
+                        .border(
+                            1.dp,
+                            if (showDemoScenarios || isSimulatedScenario) CoralPrimary else WarmBorder,
+                            CircleShape
                         )
+                        .clip(CircleShape)
+                        .clickable { showDemoScenarios = !showDemoScenarios }
+                        .testTag("toggle_demo_scenarios_button_data")
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Science,
+                            contentDescription = "Demo Datasets",
+                            tint = if (showDemoScenarios || isSimulatedScenario) CoralPrimary else DeepEspresso.copy(alpha = 0.55f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
+
+            AnimatedVisibility(
+                visible = showDemoScenarios,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val scenarios = listOf(
+                        MuseDemoScenario.LIVE_REAL_DATA to "🟢 Live Data",
+                        MuseDemoScenario.NONE to "Healthy Baseline",
+                        MuseDemoScenario.SUCCESS_TRAP to "1. Success Trap",
+                        MuseDemoScenario.INVISIBLE_MONEY_LEAK to "2. Money Leak",
+                        MuseDemoScenario.CONNECTION_DEBT to "3. Debt"
+                    )
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        contentPadding = PaddingValues(horizontal = 4.dp)
+                    ) {
+                        items(scenarios) { (scenario, shortLabel) ->
+                            val isSelected = activeScenario == scenario
+                            Surface(
+                                shape = CircleShape,
+                                color = if (isSelected) CoralPrimary else FloatingSurface,
+                                modifier = Modifier
+                                    .border(
+                                        1.dp,
+                                        if (isSelected) CoralPrimary else WarmBorder,
+                                        CircleShape
+                                    )
+                                    .clip(CircleShape)
+                                    .clickable { onSelectScenario(scenario) }
+                            ) {
+                                Text(
+                                    text = shortLabel,
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        color = if (isSelected) Color.White else DeepEspresso,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        fontSize = 11.sp
+                                    ),
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }

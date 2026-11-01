@@ -3,8 +3,10 @@ package com.example.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,8 +40,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.Verified
@@ -57,6 +62,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -696,6 +702,8 @@ private fun AvatarOnlyHomeView(
         else -> CoralPrimary
     }
 
+    var showDemoScenarios by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -710,56 +718,95 @@ private fun AvatarOnlyHomeView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // 1. Top Bio-Responsive Status Header + 1-Tap Demo Scenario Switcher
+        // 1. Top Bio-Responsive Status Header + Discreet Demo Scenarios Icon
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+            Box(
+                modifier = Modifier.fillMaxWidth()
             ) {
                 SerenityStatusChip(
                     text = "${tamagotchi.mood.emoji} ${tamagotchi.name} is ${tamagotchi.mood.title} • ${tamagotchi.overallLifeScore}%",
-                    pulseColor = moodPulseColor
+                    pulseColor = moodPulseColor,
+                    modifier = Modifier.align(Alignment.Center)
                 )
+
+                val isSimulatedScenario = activeScenario != MuseDemoScenario.LIVE_REAL_DATA && activeScenario != MuseDemoScenario.NONE
+                Surface(
+                    shape = CircleShape,
+                    color = if (showDemoScenarios || isSimulatedScenario) CoralPrimary.copy(alpha = 0.15f) else FloatingSurface,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(36.dp)
+                        .border(
+                            1.dp,
+                            if (showDemoScenarios || isSimulatedScenario) CoralPrimary else WarmBorder,
+                            CircleShape
+                        )
+                        .clip(CircleShape)
+                        .clickable { showDemoScenarios = !showDemoScenarios }
+                        .testTag("toggle_demo_scenarios_button")
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Science,
+                            contentDescription = "Demo Scenarios",
+                            tint = if (showDemoScenarios || isSimulatedScenario) CoralPrimary else DeepEspresso.copy(alpha = 0.55f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val scenarios = listOf(
-                MuseDemoScenario.LIVE_REAL_DATA to "🟢 Live Data",
-                MuseDemoScenario.NONE to "Healthy",
-                MuseDemoScenario.SUCCESS_TRAP to "1. Success Trap",
-                MuseDemoScenario.INVISIBLE_MONEY_LEAK to "2. Money Leak",
-                MuseDemoScenario.CONNECTION_DEBT to "3. Connection Debt"
-            )
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            AnimatedVisibility(
+                visible = showDemoScenarios,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
             ) {
-                items(scenarios) { (scenario, shortLabel) ->
-                    val isSelected = activeScenario == scenario
-                    Surface(
-                        shape = CircleShape,
-                        color = if (isSelected) CoralPrimary else FloatingSurface,
-                        modifier = Modifier
-                            .border(
-                                1.dp,
-                                if (isSelected) CoralPrimary else WarmBorder,
-                                CircleShape
-                            )
-                            .clip(CircleShape)
-                            .clickable { onSelectScenario(scenario) }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val scenarios = listOf(
+                        MuseDemoScenario.LIVE_REAL_DATA to "🟢 Live Data",
+                        MuseDemoScenario.NONE to "Healthy Baseline",
+                        MuseDemoScenario.SUCCESS_TRAP to "1. Success Trap",
+                        MuseDemoScenario.INVISIBLE_MONEY_LEAK to "2. Money Leak",
+                        MuseDemoScenario.CONNECTION_DEBT to "3. Debt"
+                    )
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        contentPadding = PaddingValues(horizontal = 4.dp)
                     ) {
-                        Text(
-                            text = shortLabel,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = if (isSelected) Color.White else DeepEspresso,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                fontSize = 11.sp
-                            ),
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
+                        items(scenarios) { (scenario, shortLabel) ->
+                            val isSelected = activeScenario == scenario
+                            Surface(
+                                shape = CircleShape,
+                                color = if (isSelected) CoralPrimary else FloatingSurface,
+                                modifier = Modifier
+                                    .border(
+                                        1.dp,
+                                        if (isSelected) CoralPrimary else WarmBorder,
+                                        CircleShape
+                                    )
+                                    .clip(CircleShape)
+                                    .clickable { onSelectScenario(scenario) }
+                                    .testTag("demo_chip_${scenario.id}")
+                            ) {
+                                Text(
+                                    text = shortLabel,
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        color = if (isSelected) Color.White else DeepEspresso,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        fontSize = 11.sp
+                                    ),
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -1059,6 +1106,8 @@ private fun MuseDemoSelectorCard(
     onVerifyFollowThrough: () -> Unit,
     onOpenDataTab: () -> Unit
 ) {
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+
     SerenityCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -1067,141 +1116,186 @@ private fun MuseDemoSelectorCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(18.dp)
+                .padding(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { isExpanded = !isExpanded },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "MuseLife Proactive Demos",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = DeepEspresso
-                        )
-                    )
-                    Text(
-                        text = "Pump synthetic data → Deterministic rule triggers sick state → Muse initiates care",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = WarmSlateCharcoal
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            val scenarios = listOf(
-                MuseDemoScenario.LIVE_REAL_DATA,
-                MuseDemoScenario.SUCCESS_TRAP,
-                MuseDemoScenario.INVISIBLE_MONEY_LEAK,
-                MuseDemoScenario.CONNECTION_DEBT,
-                MuseDemoScenario.NONE
-            )
-
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(scenarios) { scenario ->
-                    val isSelected = activeScenario == scenario
-                    Surface(
-                        shape = CircleShape,
-                        color = if (isSelected) CoralPrimary else SubtleContainer,
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
                         modifier = Modifier
-                            .border(
-                                1.dp,
-                                if (isSelected) CoralPrimary else WarmBorder,
-                                CircleShape
-                            )
-                            .clip(CircleShape)
-                            .clickable { onSelectScenario(scenario) }
-                            .testTag("demo_chip_${scenario.id}")
+                            .size(34.dp)
+                            .background(SubtleContainer, CircleShape)
+                            .border(1.dp, WarmBorder, CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
+                        Icon(
+                            imageVector = Icons.Default.Science,
+                            contentDescription = "Demo Scenarios",
+                            tint = CoralPrimary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Column {
                         Text(
-                            text = scenario.title,
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = if (isSelected) Color.White else DeepEspresso,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                            ),
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                            text = "MuseLife Proactive Demos",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = DeepEspresso
+                            )
+                        )
+                        Text(
+                            text = if (isExpanded) {
+                                "Pump synthetic data → Deterministic rule triggers sick state → Muse initiates care"
+                            } else {
+                                "Demo tooling • Active: ${activeScenario.title}"
+                            },
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = WarmSlateCharcoal
+                            )
                         )
                     }
                 }
+
+                IconButton(
+                    onClick = { isExpanded = !isExpanded },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = WarmSlateCharcoal
+                    )
+                }
             }
 
-            if (activeScenario != MuseDemoScenario.NONE) {
-                Spacer(modifier = Modifier.height(12.dp))
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                val bannerBg = when (recoveryStage) {
-                    DemoRecoveryStage.RECOVERED_HAPPY -> MintContainer
-                    DemoRecoveryStage.HOPEFUL_COMMITTED -> AmberContainer
-                    else -> SerenityErrorContainer
-                }
-                val bannerTextCol = when (recoveryStage) {
-                    DemoRecoveryStage.RECOVERED_HAPPY -> DarkSageText
-                    DemoRecoveryStage.HOPEFUL_COMMITTED -> OnAmberContainer
-                    else -> SerenityError
-                }
+                    val scenarios = listOf(
+                        MuseDemoScenario.LIVE_REAL_DATA,
+                        MuseDemoScenario.SUCCESS_TRAP,
+                        MuseDemoScenario.INVISIBLE_MONEY_LEAK,
+                        MuseDemoScenario.CONNECTION_DEBT,
+                        MuseDemoScenario.NONE
+                    )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(bannerBg)
-                        .padding(12.dp)
-                ) {
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = if (recoveryStage == DemoRecoveryStage.RECOVERED_HAPPY) {
-                                    Icons.Default.Verified
-                                } else {
-                                    Icons.Default.Warning
-                                },
-                                contentDescription = null,
-                                tint = bannerTextCol,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "${activeScenario.intelligenceKind} • ${recoveryStage.label}",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    color = bannerTextCol,
-                                    fontWeight = FontWeight.Bold
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(scenarios) { scenario ->
+                            val isSelected = activeScenario == scenario
+                            Surface(
+                                shape = CircleShape,
+                                color = if (isSelected) CoralPrimary else SubtleContainer,
+                                modifier = Modifier
+                                    .border(
+                                        1.dp,
+                                        if (isSelected) CoralPrimary else WarmBorder,
+                                        CircleShape
+                                    )
+                                    .clip(CircleShape)
+                                    .clickable { onSelectScenario(scenario) }
+                                    .testTag("demo_chip_${scenario.id}")
+                            ) {
+                                Text(
+                                    text = scenario.title,
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        color = if (isSelected) Color.White else DeepEspresso,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                    ),
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                                 )
-                            )
+                            }
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = activeScenario.detectedRuleSummary,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = DeepEspresso,
-                                lineHeight = 17.sp
-                            )
-                        )
+                    }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    if (activeScenario != MuseDemoScenario.NONE) {
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        val bannerBg = when (recoveryStage) {
+                            DemoRecoveryStage.RECOVERED_HAPPY -> MintContainer
+                            DemoRecoveryStage.HOPEFUL_COMMITTED -> AmberContainer
+                            else -> SerenityErrorContainer
+                        }
+                        val bannerTextCol = when (recoveryStage) {
+                            DemoRecoveryStage.RECOVERED_HAPPY -> DarkSageText
+                            DemoRecoveryStage.HOPEFUL_COMMITTED -> OnAmberContainer
+                            else -> SerenityError
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(bannerBg)
+                                .padding(12.dp)
                         ) {
-                            if (recoveryStage == DemoRecoveryStage.HOPEFUL_COMMITTED) {
-                                SerenityPrimaryButton(
-                                    text = activeScenario.followThroughButtonLabel,
-                                    onClick = onVerifyFollowThrough,
-                                    modifier = Modifier.weight(1f),
-                                    testTag = "verify_follow_through_button"
+                            Column {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = if (recoveryStage == DemoRecoveryStage.RECOVERED_HAPPY) {
+                                            Icons.Default.Verified
+                                        } else {
+                                            Icons.Default.Warning
+                                        },
+                                        contentDescription = null,
+                                        tint = bannerTextCol,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "${activeScenario.intelligenceKind} • ${recoveryStage.label}",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = bannerTextCol,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = activeScenario.detectedRuleSummary,
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        color = DeepEspresso,
+                                        lineHeight = 17.sp
+                                    )
                                 )
-                            } else {
-                                SerenitySecondaryButton(
-                                    text = "Inspect 4-Channel Data",
-                                    onClick = onOpenDataTab,
-                                    modifier = Modifier.weight(1f),
-                                    testTag = "inspect_demo_data_button"
-                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    if (recoveryStage == DemoRecoveryStage.HOPEFUL_COMMITTED) {
+                                        SerenityPrimaryButton(
+                                            text = activeScenario.followThroughButtonLabel,
+                                            onClick = onVerifyFollowThrough,
+                                            modifier = Modifier.weight(1f),
+                                            testTag = "verify_follow_through_button"
+                                        )
+                                    } else {
+                                        SerenitySecondaryButton(
+                                            text = "Inspect 4-Channel Data",
+                                            onClick = onOpenDataTab,
+                                            modifier = Modifier.weight(1f),
+                                            testTag = "inspect_demo_data_button"
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
