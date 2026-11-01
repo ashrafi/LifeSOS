@@ -72,7 +72,7 @@ MetaMuse is architected specifically around the **Meta AI Tooling** stack recomm
 ```
 Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Proactive Conversation ──► Muse Charm State
    ▲                                                                                          │
-   └────────────────────── Verified Follow-Through (Real Recovery) ───────────────────────────┘
+   └────────────────────── Logged Follow-Through (Self-Reported)   ───────────────────────────┘
 ```
 
 1. **Meta Muse Spark 1.3 as the Primary Star**:
@@ -92,7 +92,11 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    Lumi speaks her prescriptions out loud using voice synthesis with user-customizable pitch and
    tempo sliders (Connections → Voice Output, with live preview and persistence across launches).
 6. **Closed-Loop Symbiotic Healing**:
-   Agreement does not heal Lumi—**verified follow-through does**. Lumi's health, glow, and halo blossom only when subsequent sensor telemetry confirms recovery.
+   Agreement does not heal Lumi — **logged follow-through does**. Tapping a recovery action
+   records the user's self-report and restores Lumi's glow. Recovery evidence follows a
+   three-rung ladder: **Suggested** (Lumi recommends) → **Logged / Self-reported** (user
+   confirms — today's demo behavior) → **Sensor-verified** (a later re-sync shows the
+   telemetry actually improved — the roadmap differentiator).
 7. **Official Meta Horizon Design System**:
    Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
 8. **Direct BYOK Cryptographic Architecture**:
@@ -137,7 +141,7 @@ flowchart TD
     subgraph Actions["5. Closed-Loop Real-World Execution"]
         WA["WhatsApp Intent Deep Link<br/>(1-Tap Reconnect Message)"]
         VOICE["Android TextToSpeech<br/>(Warm Auditory Companion Readout)"]
-        VERIFY["Verified Follow-Through<br/>(Sleep check + Event confirmation -> Radiant)"]
+        VERIFY["Logged Follow-Through<br/>(User logs action -> Radiant · sensor check roadmap)"]
     end
 
     HC --> REPO
@@ -227,11 +231,12 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
 * **API**: Facebook Graph API v21.0 OAuth + Native Android `ContactsContract`
 * **Two-Tier Resilient Design**:
   * **Tier 1 (Android Contacts Provider)**: Reads starred/favorite close contacts and computes interaction recency. Runs with zero external API dependencies or review hurdles for 100% demo reliability.
-  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 PKCE flow for public profile, family circles, and social events.
+  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 token flow (system browser + `metamuse://oauth` deep-link callback) for public profile, family circles, and social events. PKCE code-verifier hardening is on the roadmap.
 
 ### 4. Financial Equilibrium (Plaid API, SimpleFIN & Zero-Cloud CSV)
 * **Connectors**:
   * **Plaid API v2020-09-14**: Sandbox and production institution linking with 30-day transaction sync.
+  * ⚠️ **PoC security scope**: this build calls Plaid directly from the app (sandbox by default), which is acceptable for a hackathon demo but **not for production** — a production release must move link-token creation and secret exchange to a backend server per Plaid's architecture, since any secret shipped in a mobile app is extractable.
   * **SimpleFIN Bridge**: Standard read-only open banking protocol.
   * **Zero-Cloud Bank CSV Importer**: Complete client-side CSV parser that scans transaction descriptions for late-night food delivery (`DoorDash`, `Uber Eats`, `Deliveroo`, `Grubhub`) without sending financial data over the Internet.
 
@@ -346,7 +351,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 * **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤒)**, dimming her vibrant aura to a tired violet.
 * **Llama's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
 * **WhatsApp Nudge**: Pre-drafts a message to friends: *"Free for Saturday brunch? Missing catching up!"*
-* **Verified Follow-Through**: Verifying 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
+* **Logged Follow-Through**: Logging 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
 
 ### Scenario 2: The Invisible Money Leak
 * **The Conflict**: Consecutive late-night work sessions past 9:30 PM correlate 1:1 with 9 convenience delivery orders ($318/mo).
@@ -497,6 +502,15 @@ For users who configure their own Meta Model API / Muse Spark 1.3 or provider ke
 
 ### 2. Zero-Knowledge On-Device Privacy Engine
 Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
+
+**What leaves the device — stated precisely.** In zero-cloud/offline mode: nothing.
+In cloud mode (Meta Muse Spark via your BYOK key), each consult transmits a *derived*
+telemetry payload only: companion scores/mood, the active scenario + triggered rule
+explanation, per-channel score/status/summary lines, your pinned core-value titles and
+contents, and connector status lines. Raw Health Connect records, full calendar bodies,
+complete transaction histories, and all credentials/API secrets are never transmitted.
+Derived summaries can still be sensitive — treat the cloud path as "de-identified
+telemetry + your own pinned values," and stay offline whenever that bar isn't met.
 
 ### 3. Responsible AI with Llama Guard 3–Aligned Prompting
 All proactive conversational advice and Llama prescriptions are generated under Llama Guard 3–style
@@ -656,8 +670,16 @@ and committed by the human author. Listed in the order it happened.*
   roadmap), and **5 hand-authored SVG schematics** (block diagram, sEMG chain, power
   tree, main interconnect, front-end detail).
 
+### 10. External-review honesty pass
+- Answered an 8.5/10 external review point-by-point (verified 6 of 8 claims in code,
+  refuted 1): fallback advice now discloses `Offline Rules Engine` provenance instead
+  of Spark branding; "On-Device Llama" renamed to Offline Engine everywhere (ExecuTorch
+  kept as roadmap); recovery flow relabeled logged/self-reported with a
+  Suggested→Logged→Sensor-verified ladder; added exact what-leaves-the-device disclosure,
+  Plaid-backend production note, and PKCE correction.
+
 ### Verification ledger
-- Suite grown 15 → **31/31 green** (`ExampleUnitTest` 6, `ExampleRobolectricTest` 14,
+- Suite grown 15 → **33/33 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
   `LifeRuleEngineTest` 6, `LifeMemoryMomentsTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).

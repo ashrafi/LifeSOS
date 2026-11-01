@@ -11,6 +11,8 @@ import com.example.ui.theme.SerenityCoralPrimary
 import com.example.ui.theme.SerenityMintSecondary
 import com.example.ui.theme.ThemeState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ExampleUnitTest {
@@ -109,5 +111,17 @@ class ExampleUnitTest {
     repo.setTtsSpeechRate(-1.0f)
     assertEquals(2.0f, repo.ttsPitch.value, 0.001f)
     assertEquals(0.5f, repo.ttsSpeechRate.value, 0.001f)
+  }
+
+  @Test
+  fun testRecoveryLabelsSayLoggedNotVerified() {
+    // Demo recovery is self-reported logging, not sensor verification.
+    // Sensor-confirmed states are the roadmap (Suggested → Logged → Sensor-Verified).
+    val recovered = com.example.model.DemoRecoveryStage.RECOVERED_HAPPY
+    assertTrue(recovered.label.contains("Logged"))
+    assertFalse(recovered.label.contains("Verified"))
+    val committed = com.example.model.DemoRecoveryStage.HOPEFUL_COMMITTED
+    assertTrue(committed.label.contains("Logged"))
+    assertFalse(committed.label.contains("Verified"))
   }
 }

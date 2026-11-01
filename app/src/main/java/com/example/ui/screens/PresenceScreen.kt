@@ -859,7 +859,7 @@ fun PresenceScreen(
                                         .padding(12.dp)
                                 ) {
                                     Text(
-                                        text = "🛡️ 100% On-Device Privacy Mode: Your bank balances, Health Connect biometrics, and calendars never leave your phone. Evaluated locally via ExecuTorch / on-device weights.",
+                                        text = "🛡️ 100% Offline Privacy Mode: Your bank balances, Health Connect biometrics, and calendars never leave your phone. Evaluated locally by the rule-based offline engine (local Llama weights via ExecuTorch on the roadmap).",
                                         style = MaterialTheme.typography.bodySmall.copy(
                                             color = DarkSageText,
                                             fontSize = 11.sp,
@@ -1068,7 +1068,7 @@ fun PresenceScreen(
                                                "• Encrypted DataStore: Excluded from Google Drive backups and device-to-device transfers.\n" +
                                                "• Zero Exfiltration: Keys are never logged to Logcat, analytics, or crash reports.\n" +
                                                "• Instant Revocation: Remove the key anytime using the Remove Key button above to immediately clear memory and DataStore.\n" +
-                                               "• Threat Model Notice: While Keystore encryption protects against unprivileged apps and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For untrusted devices, use 100% On-Device Privacy Mode.",
+                                               "• Threat Model Notice: While Keystore encryption protects against unprivileged apps and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For untrusted devices, use 100% Offline Privacy Mode.",
                                         style = MaterialTheme.typography.bodySmall.copy(
                                             color = WarmSlateCharcoal,
                                             fontSize = 11.sp,

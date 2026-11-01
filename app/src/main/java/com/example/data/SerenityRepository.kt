@@ -960,27 +960,27 @@ class SerenityRepository(
         val (speechText, actionTitle, actionDetail) = when (scenario) {
             MuseDemoScenario.SUCCESS_TRAP -> Triple(
                 "You logged a full 7.5 hours of sleep and locked in your weekend plans with friends! My glow is completely restored—that sounds like a life worth building! ✨",
-                "Verified Follow-Through: 11 PM Cutoff & Weekend Friends Plan",
+                "Logged Follow-Through: 11 PM Cutoff & Weekend Friends Plan",
                 "7.5h sleep restored • Calendar block set for close friends"
             )
             MuseDemoScenario.INVISIBLE_MONEY_LEAK -> Triple(
                 "You made your 5-minute easy dinner at home and took a relaxing evening off! The delivery cycle is broken and we're thriving together! ✨",
-                "Verified Follow-Through: 5-Min Easy Dinner & Evening Unwind",
+                "Logged Follow-Through: 5-Min Easy Dinner & Evening Unwind",
                 "Skipped late-night delivery (+$34 saved) • Peaceful evening routine"
             )
             MuseDemoScenario.CONNECTION_DEBT -> Triple(
                 "You called your sibling and reconnected from the heart! My aura is bouncing with joy—you made room for the people who make life meaningful! 💖",
-                "Verified Follow-Through: 14-Min Call with Sibling Logged",
+                "Logged Follow-Through: 14-Min Call with Sibling Logged",
                 "Reconnected with sibling & sent warm birthday note to friend"
             )
             MuseDemoScenario.LIVE_REAL_DATA -> Triple(
                 "Live channels refreshed and aligned! Your real-world health, schedule, finance, and social streams are powering my aura! ✨",
-                "Verified Live Telemetry Check-In",
+                "Live Telemetry Check-In",
                 "Live bio-responsive sync verified across real device channels"
             )
             MuseDemoScenario.NONE -> Triple(
-                "Verified daily balance across all channels! Our bio-responsive harmony is in full bloom! ✨",
-                "Verified Daily Harmony",
+                "Logged daily balance across all channels! Our bio-responsive harmony is in full bloom! ✨",
+                "Logged Daily Harmony",
                 "+25% Bio-Responsive Vitality"
             )
         }
@@ -1016,7 +1016,7 @@ class SerenityRepository(
         val followThroughMsg = ChatMessage(
             id = UUID.randomUUID().toString(),
             isFromUser = false,
-            content = "🌟 **Follow-Through Verified:** $actionDetail\n\n$speechText",
+            content = "🌟 **Follow-Through Logged:** $actionDetail\n\n$speechText",
             timestamp = timeStr,
             thoughtSteps = listOf(
                 ThoughtStep("Telemetry Verification", actionDetail),
@@ -1027,7 +1027,7 @@ class SerenityRepository(
                 "Try Demo 2: The Invisible Money Leak",
                 "Try Demo 3: The Connection Debt"
             ),
-            category = "Verified Follow-Through"
+            category = "Logged Follow-Through"
         )
         _messages.value = _messages.value + followThroughMsg
     }
@@ -1674,7 +1674,7 @@ class SerenityRepository(
                     mood = TamagotchiMood.HOPEFUL,
                     innerPeace = 0.66f,
                     physicalEnergy = 0.64f,
-                    speech = "$replyText (I'm feeling hopeful! Verify your easy evening follow-through to complete recovery.)",
+                    speech = "$replyText (I'm feeling hopeful! Log your easy evening follow-through to complete recovery.)",
                     recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
                 )
                 return ChatMessage(

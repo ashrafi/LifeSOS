@@ -2,7 +2,16 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 15/15 passing).
+connectors, `SecureByokStore`, UI screens, tests: 33/33 passing — see record below).
+
+## Current Verification Record (single source of truth, Nov 1)
+
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **33/33 green**,
+  zero failures/errors: `ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
+  `LifeRuleEngineTest` 6, `LifeMemoryMomentsTest` 5.
+- `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
+- Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
+  earlier in the day, not conflicting claims — this section is the current truth.
 
 Items are ordered by priority. P0 items can break judging or the live demo; P1 items affect
 perceived quality; P2 items are nice-to-have polish.
@@ -108,9 +117,9 @@ perceived quality; P2 items are nice-to-have polish.
 - [x] **SDK versions** — README states `compileSdk 37`, `targetSdk 36`, `minSdk 26`.
 - [x] **Tests section** — README structure lists both test files with real coverage.
 - [x] **Trivia** — SICK emoji 🤒 and `modelUsed` string match the code.
-- **Test note:** suite verified 19/19 green via `./gradlew testDebugUnitTest --offline`
-  (Nov 1, Android Studio JBR 21). Two `@Composable` annotation fixes in `PresenceScreen.kt`
-  were required and corrected during that run. Remaining testing is device/field work (below).
+- **Test note:** then-current suite verified green (see Current Verification Record).
+  Two `@Composable` annotation fixes in `PresenceScreen.kt` were required and corrected
+  during that run. Remaining testing is device/field work (below).
 
 ## Caveat Fix — Live Cross-Channel Rule Engine (done Nov 1)
 
@@ -120,8 +129,8 @@ synced telemetry (sleep drop + late nights + canceled plans → Success Trap wit
 contrast; delivery volume + exhaustion → Money Leak; neglected contacts + stable vitals →
 Connection Debt with pinned-value conflict). Matches drive Lumi's live mood/speech and the
 `triggeredRuleExplanation` fed to Muse Spark, with single-channel alerts as fallback.
-Covered by 6 JVM tests in `LifeRuleEngineTest`; full suite re-verified **25/25 green**
-(forced clean re-run, JBR 21, offline).
+Covered by 6 JVM tests in `LifeRuleEngineTest`; then-current suite re-verified green
+(forced clean re-run — see Current Verification Record).
 
 ## Article Gaps — Background Sync + Memory Moments (done Nov 1)
 
@@ -131,11 +140,22 @@ the app closed — required new vitals/mood/speech persistence in prefs so the b
 survives process death, plus `READ_HEALTH_DATA_HISTORY`/`IN_BACKGROUND` manifest
 permissions; (2) `LifeMemoryMoments` gives Lumi trend-aware lines (sleep recovery,
 delivery-free stretches, active days) on the healthy path. Covered by 5 JVM tests +
-1 Robolectric persistence test; full suite re-verified **31/31 green** and
-`assembleDebug` builds clean (JBR 21, offline). Note: work-runtime excludes the unused
+1 Robolectric persistence test; then-current suite re-verified green and
+`assembleDebug` clean (see Current Verification Record). Note: work-runtime excludes the unused
 `lifecycle-service`/`lifecycle-livedata` modules (see comment in `app/build.gradle.kts`).
 Device follow-ups for the owner: grant background access in Health Connect settings,
 then verify an overnight sync refreshes Lumi before the app opens.
+
+## External Review Response (done Nov 1)
+
+An 8.5/10 external review was verified claim-by-claim against the code: 6 confirmed,
+1 refuted (neglected-contact count is computed, zero only when disconnected), 1
+severity-downgraded (Plaid backend is a production requirement, documented as
+sandbox-scoped for this backend-less PoC). Fixes shipped: fallback `modelUsed`
+provenance (never Spark branding), Offline Engine renaming (ExecuTorch = roadmap),
+recovery flow relabeled to the Suggested → Logged → Sensor-verified ladder, exact
+what-leaves-the-device disclosure, PKCE correction, and this consolidated test record.
+Covered by 2 new regression tests (provenance + labels); suite at **33/33 green**.
 
 ---
 
@@ -145,7 +165,7 @@ then verify an overnight sync refreshes Lumi before the app opens.
 - [x] README setup rewritten to in-app BYOK; `.env.example` corrected (P0-2). Still needed: verbatim run-through on a fresh machine
 - [x] Muse Spark endpoint externally verified — Meta Model API at `api.meta.ai/v1` serving `muse-spark-1.3` confirmed via public docs (P0-3). Still needed: one real on-device cloud call + screenshot
 - [x] README accuracy bugs fixed — 5 states, dead screens deleted, Guard reworded, SeaWeed removed (P0-4)
-- [x] Meta Horizon is the first-run theme — repo, prefs, and ThemeState defaults flipped + 2 new tests (P1-5). Verified: `./gradlew testDebugUnitTest` 19/19 green (Nov 1, JDK 21)
+- [x] Meta Horizon is the first-run theme — repo, prefs, and ThemeState defaults flipped + 2 new tests (P1-5). Verified green (see Current Verification Record)
 - [x] Single product name — launcher, chat tag, project, metadata now MetaMuse (P1-6). Kept deliberately: `applicationId`, code identifiers, "Luminous Serenity" theme name, AI-Studio `majorCapabilities`
 - [x] Demo script written — [demo-script.md](demo-script.md) + `screenshots/` shot list (P1-7). Still needed: capture 6 shots + record/link video, link from README
 - [x] No-key path statically verified — blank token → offline synthesis → full card render, no blank states (P1-8). Still needed: airplane-mode pass on all 5 states on-device

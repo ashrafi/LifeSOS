@@ -80,7 +80,7 @@ enum class MuseDemoScenario(
         intelligenceKind = "Symbiotic Equilibrium",
         detectedRuleSummary = "All 4 telemetry channels are balanced and aligned with your core values.",
         followThroughButtonLabel = "Log Mindful Check-in",
-        followThroughEventDetail = "Verified daily balance across sleep, tasks, budget, and relationships"
+        followThroughEventDetail = "Logged daily balance across sleep, tasks, budget, and relationships"
     ),
     SUCCESS_TRAP(
         id = "success_trap",
@@ -88,8 +88,8 @@ enum class MuseDemoScenario(
         subtitle = "High productivity & +20% savings, but 5h sleep & 3 canceled friend plans",
         intelligenceKind = "Multi-Channel Trade-off Intelligence",
         detectedRuleSummary = "Rule Triggered: Sleep dropped 7.5h → 5.0h (14d) + Late-night tasks (98%) + 3 canceled social plans despite +20% savings.",
-        followThroughButtonLabel = "Verify Follow-Through: Log 11 PM Cutoff & Weekend Plan",
-        followThroughEventDetail = "Verified: Stopped working before midnight (7.5h sleep logged) & confirmed weekend brunch with close friends"
+        followThroughButtonLabel = "Log Follow-Through: 11 PM Cutoff & Weekend Plan",
+        followThroughEventDetail = "Logged: Stopped working before midnight (7.5h sleep logged) & confirmed weekend brunch with close friends"
     ),
     INVISIBLE_MONEY_LEAK(
         id = "money_leak",
@@ -97,8 +97,8 @@ enum class MuseDemoScenario(
         subtitle = "Exhausted solitary evenings driving convenience delivery spend",
         intelligenceKind = "Cross-Channel Behavioral Pattern Intelligence",
         detectedRuleSummary = "Rule Triggered: Consecutive poor sleep + high evening task stress + solo evenings correlating with 9 late-night delivery orders.",
-        followThroughButtonLabel = "Verify Follow-Through: Log 5-Min Easy Dinner & Evening Unwind",
-        followThroughEventDetail = "Verified: Prepared 5-minute home meal, skipped delivery order (+$34 saved), and enjoyed a relaxing evening read"
+        followThroughButtonLabel = "Log Follow-Through: 5-Min Easy Dinner & Evening Unwind",
+        followThroughEventDetail = "Logged: Prepared 5-minute home meal, skipped delivery order (+$34 saved), and enjoyed a relaxing evening read"
     ),
     CONNECTION_DEBT(
         id = "connection_debt",
@@ -106,16 +106,16 @@ enum class MuseDemoScenario(
         subtitle = "Healthy body, tasks & budget, but drifting from sibling & close friends",
         intelligenceKind = "Values-vs-Behavior Alignment Intelligence",
         detectedRuleSummary = "Rule Triggered: Stated value 'Family & Close Friends First' conflicts with 3 postponed sibling calls, missed birthday, & 2 rescheduled visits.",
-        followThroughButtonLabel = "Verify Follow-Through: Record 10-Min Call with Sibling",
-        followThroughEventDetail = "Verified: Completed 14-minute catch-up call with sibling and sent birthday voice note to close friend"
+        followThroughButtonLabel = "Log Follow-Through: Record 10-Min Call with Sibling",
+        followThroughEventDetail = "Logged: Completed 14-minute catch-up call with sibling and sent birthday voice note to close friend"
     )
 }
 
 enum class DemoRecoveryStage(val label: String) {
     PROACTIVE_CONCERN("Muse Initiated Concern (Step 1 of 2)"),
     AWAITING_COMMITMENT("Exploring Context (Step 2 of 2)"),
-    HOPEFUL_COMMITTED("Committed — Awaiting Verified Follow-Through"),
-    RECOVERED_HAPPY("Verified Follow-Through — Healthy & Happy")
+    HOPEFUL_COMMITTED("Committed — Awaiting Logged Follow-Through"),
+    RECOVERED_HAPPY("Logged Recovery — Healthy & Happy")
 }
 
 data class ChannelMetricItem(
@@ -270,10 +270,10 @@ enum class MetaModelEngine(
     ),
     ON_DEVICE_LLAMA(
         id = "on_device_llama",
-        displayName = "🔒 On-Device Llama",
-        defaultModelName = "llama-3.2-1b-instruct",
-        defaultEndpoint = "local://executorch",
-        description = "Zero-Cloud privacy mode. Biometrics, finances, and calendars never leave your device."
+        displayName = "🔒 Offline Engine",
+        defaultModelName = "offline-rules-v1",
+        defaultEndpoint = "local://offline-engine",
+        description = "Zero-Cloud privacy mode: rule-based synthesis, nothing leaves your device. Local Llama weights via ExecuTorch on the roadmap."
     );
 
     companion object {
@@ -284,7 +284,7 @@ enum class MetaModelEngine(
         fun fromModelName(modelName: String?): MetaModelEngine {
             return when {
                 modelName?.contains("spark", ignoreCase = true) == true -> MUSE_SPARK_1_3
-                modelName?.contains("1b", ignoreCase = true) == true || modelName?.contains("local", ignoreCase = true) == true -> ON_DEVICE_LLAMA
+                modelName?.contains("1b", ignoreCase = true) == true || modelName?.contains("local", ignoreCase = true) == true || modelName?.contains("offline", ignoreCase = true) == true -> ON_DEVICE_LLAMA
                 else -> LLAMA_3_1_70B
             }
         }

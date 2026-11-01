@@ -3,6 +3,7 @@ package com.example
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.example.data.MuseService
 import com.example.data.SerenityRepository
 import com.example.data.connectors.BankFinanceConnector
 import com.example.data.connectors.ConnectorPreferencesStore
@@ -12,6 +13,7 @@ import com.example.model.MuseDemoScenario
 import com.example.model.PresenceMode
 import com.example.model.ScreenNav
 import com.example.model.TamagotchiMood
+import com.example.model.TamagotchiState
 import com.example.viewmodel.SerenityViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -57,6 +59,35 @@ class ExampleRobolectricTest {
         assertEquals(0.55f, repo.tamagotchiState.value.focus, 0.001f)
         assertEquals(TamagotchiMood.SICK, repo.tamagotchiState.value.mood)
         assertEquals("Persisted live speech", repo.tamagotchiState.value.speech)
+    }
+
+    @Test
+    fun `fallback advice discloses offline provenance, never cloud identity`() = runTest {
+        val service = MuseService()
+        val state = TamagotchiState()
+
+        // Blank token on the Spark path: must disclose the fallback, never Spark branding.
+        val sparkFallback = service.sendLifeTelemetryToMuse(
+            metaAiToken = "",
+            tamagotchiState = state,
+            quests = emptyList(),
+            recentLogs = emptyList(),
+            valuesAndMemories = emptyList(),
+            modelName = "muse-spark-1.3",
+            isLocalPrivacyMode = false
+        )
+        assertEquals("Offline Rules Engine (Muse Spark Unreachable)", sparkFallback.modelUsed)
+
+        // Zero-cloud privacy mode: must disclose rule-based offline synthesis.
+        val privacyFallback = service.sendLifeTelemetryToMuse(
+            metaAiToken = "",
+            tamagotchiState = state,
+            quests = emptyList(),
+            recentLogs = emptyList(),
+            valuesAndMemories = emptyList(),
+            isLocalPrivacyMode = true
+        )
+        assertEquals("Offline Rules Engine (Zero-Cloud)", privacyFallback.modelUsed)
     }
 
     @Test

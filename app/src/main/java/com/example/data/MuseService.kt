@@ -48,7 +48,7 @@ class MuseService(
         val currentTime = SimpleDateFormat("h:mm a, MMM d", Locale.getDefault()).format(Date())
 
         if (isLocalPrivacyMode) {
-            return@withContext synthesizeOnDeviceLlamaAdvice(tamagotchiState, telemetrySnapshot, currentTime)
+            return@withContext synthesizeOfflinePrivacyAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         }
 
         // 1. Construct Telemetry Payload for Muse Spark reasoning
@@ -218,11 +218,11 @@ class MuseService(
             }
         }
 
-        // 3. Fallback to Meta Muse Spark 1.3 Synthesis or On-Device Privacy Engine
+        // 3. Fallback to offline flagship-style synthesis or the offline privacy engine
         if (isSparkModel) {
-            synthesizeMuseSparkAdvice(tamagotchiState, telemetrySnapshot, currentTime)
+            synthesizeOfflineFlagshipAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         } else {
-            synthesizeOnDeviceLlamaAdvice(tamagotchiState, telemetrySnapshot, currentTime)
+            synthesizeOfflinePrivacyAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         }
     }
 
@@ -350,13 +350,13 @@ class MuseService(
                 ChatMessage(
                     id = id,
                     isFromUser = false,
-                    content = "I hear you, $userName! To activate full real-time conversational intelligence with Meta Muse Spark 1.3, configure your BYOK token in Connections → AI Configuration. (Or select 'On-Device Llama' to chat completely offline).",
+                    content = "I hear you, $userName! To activate full real-time conversational intelligence with Meta Muse Spark 1.3, configure your BYOK token in Connections → AI Configuration. (Or select 'Offline Engine' to chat completely offline).",
                     timestamp = currentTime,
                     thoughtSteps = listOf(
                         ThoughtStep("BYOK Readiness Check", "No Meta Model API key configured in Keystore"),
                         ThoughtStep("Privacy First", "Awaiting user token or switch to on-device mode")
                     ),
-                    suggestedPrompts = listOf("Open Connections", "Switch to On-Device Llama", "How are my vitals?"),
+                    suggestedPrompts = listOf("Open Connections", "Switch to Offline Engine", "How are my vitals?"),
                     category = "Configuration Guide"
                 )
             }
@@ -389,7 +389,7 @@ class MuseService(
                 )
             }
             else -> {
-                val modeLabel = if (isLocalPrivacyMode) "On-Device Llama (Zero-Cloud)" else "Meta Muse Spark 1.3"
+                val modeLabel = if (isLocalPrivacyMode) "Offline Engine (Zero-Cloud)" else "Offline Engine (Cloud Unreachable)"
                 ChatMessage(
                     id = id,
                     isFromUser = false,
@@ -496,10 +496,11 @@ class MuseService(
     }
 
     /**
-     * Meta Muse Spark 1.3 Flagship Reasoning Engine (Meta Model API).
-     * Empathetic multi-stream cross-channel life synthesis and proactive coaching.
+     * Offline flagship-style fallback: deterministic template synthesis used ONLY when
+     * the Muse Spark cloud call is unavailable (blank token, offline, or error).
+     * modelUsed must always disclose the fallback — never the Spark identity.
      */
-    private fun synthesizeMuseSparkAdvice(
+    private fun synthesizeOfflineFlagshipAdvice(
         state: TamagotchiState,
         telemetry: SyntheticTelemetrySnapshot?,
         currentTime: String
@@ -623,15 +624,17 @@ class MuseService(
             reasoningSteps = reasoningSteps,
             actionableNudge = nudge,
             llamaGuardStatus = "PASSED (Safe for Well-being & Guidance)",
-            modelUsed = "Meta Muse Spark 1.3 (Meta Model API)"
+            modelUsed = "Offline Rules Engine (Muse Spark Unreachable)"
         )
     }
 
     /**
-     * High-fidelity On-Device Llama Engine (ExecuTorch Mode: Zero-Cloud Privacy).
+     * Offline privacy fallback: deterministic rule-based synthesis used when the user
+     * selects zero-cloud mode. No local LLM weights run here yet (ExecuTorch is the
+     * roadmap path) — the modelUsed string must always disclose this.
      * Sensitive health and bank data are evaluated locally without ever transmitting over the Internet.
      */
-    private fun synthesizeOnDeviceLlamaAdvice(
+    private fun synthesizeOfflinePrivacyAdvice(
         state: TamagotchiState,
         telemetry: SyntheticTelemetrySnapshot?,
         currentTime: String
@@ -743,7 +746,7 @@ class MuseService(
             reasoningSteps = reasoningSteps,
             actionableNudge = nudge,
             llamaGuardStatus = "PASSED (Safe for Well-being & Guidance)",
-            modelUsed = "On-Device Llama 3 (Zero-Cloud Privacy)"
+            modelUsed = "Offline Rules Engine (Zero-Cloud)"
         )
     }
 
