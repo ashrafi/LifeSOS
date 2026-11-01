@@ -21,3 +21,6 @@ catalyst in both directions.
 
 *Status: proposal spec. All figures are engineering targets ("shall") or explicit
 stretch goals ("should") — nothing here claims to describe shipped Meta hardware.*
+
+> Schematics: [`hardware/diagrams.md`](hardware/diagrams.md) (system block diagram,
+> sEMG signal chain, power tree — hand-authored SVG).

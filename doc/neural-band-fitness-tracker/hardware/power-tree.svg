@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="500" viewBox="0 0 740 500" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="740" height="500" fill="#FFFFFF"/>
+  <text x="20" y="36" font-size="22" font-weight="bold" fill="#0F172A">Power Tree (~190 mWh/day → 7 days)</text>
+
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="270" y="60" width="200" height="64" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="284" y="86">Cell 1.4 Wh</text>
+    <text x="284" y="106" font-size="11" font-weight="normal" fill="#64748B">Li-Po · 800 cycles</text>
+    <rect x="270" y="150" width="200" height="64" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="284" y="176">PMIC</text>
+    <text x="284" y="196" font-size="11" font-weight="normal" fill="#64748B">gating + fuel gauge</text>
+  </g>
+
+  <g font-size="12" font-weight="bold" fill="#0F172A">
+    <rect x="20" y="250" width="160" height="72" rx="10" fill="#E7FCE8" stroke="#15803D" stroke-width="2"/>
+    <text x="32" y="274">Always-On</text>
+    <text x="32" y="294" font-size="10" font-weight="normal" fill="#64748B">hub · RTC</text>
+    <text x="32" y="310" font-size="10" font-weight="normal" fill="#64748B">~28 mWh/d</text>
+    <rect x="200" y="250" width="160" height="72" rx="10" fill="#FFF7ED" stroke="#C2410C" stroke-width="2"/>
+    <text x="212" y="274">Sense</text>
+    <text x="212" y="294" font-size="10" font-weight="normal" fill="#64748B">AFE·PPG·IMU</text>
+    <text x="212" y="310" font-size="10" font-weight="normal" fill="#64748B">~134 mWh/d</text>
+    <rect x="380" y="250" width="160" height="72" rx="10" fill="#E7F0FF" stroke="#0866FF" stroke-width="2"/>
+    <text x="392" y="274">Performance</text>
+    <text x="392" y="294" font-size="10" font-weight="normal" fill="#64748B">SoC·NPU·mem</text>
+    <text x="392" y="310" font-size="10" font-weight="normal" fill="#64748B">~12 mWh/d</text>
+    <rect x="560" y="250" width="160" height="72" rx="10" fill="#F5F3FF" stroke="#7B61FF" stroke-width="2"/>
+    <text x="572" y="274">Radio+Haptic</text>
+    <text x="572" y="294" font-size="10" font-weight="normal" fill="#64748B">BLE·LRA</text>
+    <text x="572" y="310" font-size="10" font-weight="normal" fill="#64748B">~16 mWh/d</text>
+  </g>
+
+  <g font-size="12" fill="#0F172A">
+    <rect x="20" y="360" width="160" height="64" rx="10" fill="#FFFFFF" stroke="#15803D" stroke-width="1.5"/>
+    <text x="32" y="386">Hub MCU</text>
+    <text x="32" y="406" font-size="10" fill="#64748B">sleeps 22+ h/day</text>
+    <rect x="200" y="360" width="160" height="64" rx="10" fill="#FFFFFF" stroke="#C2410C" stroke-width="1.5"/>
+    <text x="212" y="386">AFE + PPG</text>
+    <text x="212" y="406" font-size="10" fill="#64748B">duty-cycled</text>
+    <rect x="380" y="360" width="160" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="1.5"/>
+    <text x="392" y="386">SoC + NPU</text>
+    <text x="392" y="406" font-size="10" fill="#64748B">&lt;5% duty</text>
+    <rect x="560" y="360" width="160" height="64" rx="10" fill="#FFFFFF" stroke="#7B61FF" stroke-width="1.5"/>
+    <text x="572" y="386">BLE + LRA</text>
+    <text x="572" y="406" font-size="10" fill="#64748B">4× bulk/d</text>
+  </g>
+
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="370" y1="124" x2="370" y2="148" marker-end="url(#ah)"/>
+    <line x1="370" y1="214" x2="370" y2="232"/>
+    <line x1="100" y1="232" x2="640" y2="232"/>
+    <line x1="100" y1="232" x2="100" y2="248" marker-end="url(#ah)"/>
+    <line x1="280" y1="232" x2="280" y2="248" marker-end="url(#ah)"/>
+    <line x1="460" y1="232" x2="460" y2="248" marker-end="url(#ah)"/>
+    <line x1="640" y1="232" x2="640" y2="248" marker-end="url(#ah)"/>
+    <line x1="100" y1="322" x2="100" y2="358" marker-end="url(#ah)"/>
+    <line x1="280" y1="322" x2="280" y2="358" marker-end="url(#ah)"/>
+    <line x1="460" y1="322" x2="460" y2="358" marker-end="url(#ah)"/>
+    <line x1="640" y1="322" x2="640" y2="358" marker-end="url(#ah)"/>
+  </g>
+
+  <text x="20" y="470" font-size="11" fill="#64748B">Gated rails sleep 22+ h/day · 28+134+12+16 ≈ 190 mWh/day → 7 days on 1.4 Wh</text>
+</svg>

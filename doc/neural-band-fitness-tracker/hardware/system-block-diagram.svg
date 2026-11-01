@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="810" height="630" viewBox="0 0 810 630" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="810" height="630" fill="#FFFFFF"/>
+  <text x="20" y="36" font-size="22" font-weight="bold" fill="#0F172A">Halo-Band System Block Diagram</text>
+
+  <!-- Left: sensors -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="20" y="70" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="96">sEMG Array</text>
+    <text x="34" y="116" font-size="11" font-weight="normal" fill="#64748B">8–16 ch · dry Au pads</text>
+    <rect x="20" y="150" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="176">PPG Module</text>
+    <text x="34" y="196" font-size="11" font-weight="normal" fill="#64748B">G/R/IR + PDs</text>
+    <rect x="20" y="230" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="256">IMU 6-Axis</text>
+    <text x="34" y="276" font-size="11" font-weight="normal" fill="#64748B">accel + gyro</text>
+    <rect x="20" y="310" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="336">Barometer</text>
+    <text x="34" y="356" font-size="11" font-weight="normal" fill="#64748B">stairs · ±0.5 m</text>
+    <rect x="20" y="390" width="200" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="34" y="416">Temp Sensor</text>
+    <text x="34" y="436" font-size="11" font-weight="normal" fill="#64748B">skin ±0.1 °C</text>
+  </g>
+
+  <!-- Middle: compute -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="250" y="70" width="270" height="100" rx="10" fill="#F3F6FA" stroke="#0866FF" stroke-width="2"/>
+    <text x="264" y="98">AFE + DSP</text>
+    <text x="264" y="118" font-size="11" font-weight="normal" fill="#64748B">PGA · BPF 5–250 Hz · ADC 2 kHz</text>
+    <rect x="250" y="184" width="270" height="90" rx="10" fill="#F3F6FA" stroke="#0866FF" stroke-width="2"/>
+    <text x="264" y="212">Sensor Hub MCU</text>
+    <text x="264" y="232" font-size="11" font-weight="normal" fill="#64748B">always-on · &lt;100 µW</text>
+    <rect x="250" y="288" width="270" height="104" rx="10" fill="#E7F0FF" stroke="#7B61FF" stroke-width="2.5"/>
+    <text x="264" y="316">Main SoC + NPU</text>
+    <text x="264" y="336" font-size="11" font-weight="normal" fill="#64748B">apps core · ≥1 TOPS INT8</text>
+    <rect x="250" y="406" width="150" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="264" y="432">Memory</text>
+    <text x="264" y="452" font-size="11" font-weight="normal" fill="#64748B">7-day buffer</text>
+    <rect x="410" y="406" width="110" height="64" rx="10" fill="#FFFFFF" stroke="#0866FF" stroke-width="2"/>
+    <text x="424" y="432">Secure</text>
+    <text x="424" y="452" font-size="11" font-weight="normal" fill="#64748B">Element</text>
+  </g>
+
+  <!-- Right: I/O -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="550" y="70" width="240" height="80" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="564" y="98">BLE 5.4</text>
+    <text x="564" y="118" font-size="11" font-weight="normal" fill="#64748B">glasses + phone link</text>
+    <rect x="550" y="164" width="240" height="80" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="564" y="192">UWB + NFC</text>
+    <text x="564" y="212" font-size="11" font-weight="normal" fill="#64748B">find-my · identity</text>
+    <rect x="550" y="258" width="240" height="80" rx="10" fill="#FFFFFF" stroke="#00B2FF" stroke-width="2"/>
+    <text x="564" y="286">Haptics LRA</text>
+    <text x="564" y="306" font-size="11" font-weight="normal" fill="#64748B">Lumi textures</text>
+    <rect x="550" y="352" width="240" height="64" rx="10" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="564" y="378">Factory Test</text>
+    <text x="564" y="398" font-size="11" font-weight="normal" fill="#64748B">pogo · cal rig</text>
+  </g>
+
+  <!-- Bottom: power -->
+  <g font-size="14" font-weight="bold" fill="#0F172A">
+    <rect x="20" y="490" width="250" height="100" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="34" y="518">PMIC</text>
+    <text x="34" y="538" font-size="11" font-weight="normal" fill="#64748B">4 rails · gating</text>
+    <rect x="290" y="490" width="230" height="100" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="304" y="518">Cell 1.4 Wh</text>
+    <text x="304" y="538" font-size="11" font-weight="normal" fill="#64748B">7-day · 800 cycles</text>
+    <rect x="540" y="490" width="250" height="100" rx="10" fill="#F3F6FA" stroke="#334155" stroke-width="2"/>
+    <text x="554" y="518">Charger</text>
+    <text x="554" y="538" font-size="11" font-weight="normal" fill="#64748B">magnetic · 0–80% &lt;30 min</text>
+  </g>
+
+  <!-- Signal arrows -->
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="220" y1="102" x2="248" y2="102" marker-end="url(#ah)"/>
+    <line x1="220" y1="182" x2="248" y2="212" marker-end="url(#ah)"/>
+    <line x1="220" y1="262" x2="248" y2="230" marker-end="url(#ah)"/>
+    <line x1="220" y1="342" x2="248" y2="250" marker-end="url(#ah)"/>
+    <line x1="220" y1="422" x2="248" y2="262" marker-end="url(#ah)"/>
+    <line x1="385" y1="170" x2="385" y2="182" marker-end="url(#ah)"/>
+    <line x1="385" y1="274" x2="385" y2="286" marker-end="url(#ah)"/>
+    <line x1="300" y1="392" x2="300" y2="404" marker-end="url(#ah)"/>
+    <line x1="465" y1="392" x2="465" y2="404" marker-end="url(#ah)"/>
+    <line x1="520" y1="340" x2="535" y2="340"/>
+    <line x1="535" y1="110" x2="535" y2="340"/>
+    <line x1="535" y1="110" x2="548" y2="110" marker-end="url(#ah)"/>
+    <line x1="535" y1="204" x2="548" y2="204" marker-end="url(#ah)"/>
+    <line x1="535" y1="298" x2="548" y2="298" marker-end="url(#ah)"/>
+  </g>
+  <text x="390" y="180" font-size="9" fill="#64748B">env</text>
+  <text x="390" y="284" font-size="9" fill="#64748B">tokens</text>
+
+  <text x="20" y="618" font-size="10" fill="#64748B">Signal flow only (power: power-tree.svg) · sEMG link 1–2 kHz/ch · Right: BLE sync, UWB/NFC proximity, haptics</text>
+</svg>
