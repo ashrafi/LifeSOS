@@ -203,6 +203,7 @@ class BankFinanceConnector(
             var deliveryCount = 0
             var deliverySpend = 0.0
             val recentTxLogs = mutableListOf<String>()
+            var transactionsOk = false
 
             httpClient.newCall(
                 Request.Builder()
@@ -215,6 +216,7 @@ class BankFinanceConnector(
                     val obj = JSONObject(raw)
                     val txs = obj.optJSONArray("transactions")
                     if (txs != null) {
+                        transactionsOk = true
                         for (i in 0 until txs.length()) {
                             val tx = txs.getJSONObject(i)
                             // In Plaid, positive amount = money leaving account; negative = deposit/inflow
@@ -242,6 +244,7 @@ class BankFinanceConnector(
 
             buildSuccessResult(
                 sourceName = "Plaid (${environment.replaceFirstChar { it.uppercase() }})",
+                transactionsOk = transactionsOk,
                 totalBalance = totalBalance,
                 totalSpend = totalSpend,
                 totalInflow = totalInflow,
@@ -495,7 +498,7 @@ class BankFinanceConnector(
         }
     }
 
-    private fun buildSuccessResult(
+    internal fun buildSuccessResult(
         sourceName: String,
         totalBalance: Double?,
         totalSpend: Double,
@@ -504,7 +507,8 @@ class BankFinanceConnector(
         deliverySpend: Double,
         logEntries: List<String>,
         exchangedPlaidToken: String? = null,
-        claimedSimpleFinUrl: String? = null
+        claimedSimpleFinUrl: String? = null,
+        transactionsOk: Boolean = true
     ): RealFinanceSyncResult {
         val deliveryLeakAlert = deliveryCount >= 5 || deliverySpend >= 150.0
         val netFlow = totalInflow - totalSpend
@@ -516,11 +520,15 @@ class BankFinanceConnector(
 
         val balFormatted = totalBalance?.let { "$${String.format(Locale.US, "%,.2f", it)}" } ?: "Synced"
         val spendFormatted = "$${String.format(Locale.US, "%,.0f", totalSpend)}"
+        // A failed transaction fetch must read as unknown, never as $0 spend.
+        val spendDisplay = if (transactionsOk) spendFormatted else "unknown"
         val statusLine = buildString {
             append("LIVE ($sourceName): ")
             if (totalBalance != null) append("Balance $balFormatted • ")
-            append("30d Spend $spendFormatted")
-            if (deliveryCount > 0) {
+            append("30d Spend $spendDisplay")
+            if (!transactionsOk) {
+                append(" • Txns unavailable")
+            } else if (deliveryCount > 0) {
                 append(" • $deliveryCount delivery orders ($${String.format(Locale.US, "%.0f", deliverySpend)})")
             }
         }
@@ -536,18 +544,24 @@ class BankFinanceConnector(
             totalInflow30dUsd = totalInflow,
             deliveryOrderCount = deliveryCount,
             deliverySpendUsd = deliverySpend,
-            errorMessage = null,
+            errorMessage = if (transactionsOk) null else "Balances synced; transaction fetch failed — spending shown as unknown, not zero.",
             report = ChannelTelemetryReport(
                 channelName = "Finance ($sourceName)",
-                headlineStatus = if (totalBalance != null) {
+                headlineStatus = if (!transactionsOk && totalBalance != null) {
+                    "$balFormatted Balance • Spend unknown"
+                } else if (totalBalance != null) {
                     "$balFormatted Balance • $spendFormatted Spend"
+                } else if (!transactionsOk) {
+                    "30d Spend unknown"
                 } else {
                     "$spendFormatted 30d Spend"
                 },
                 summary = if (deliveryLeakAlert) {
                     "Live finance alert: Detected $deliveryCount food-delivery orders totaling $${String.format(Locale.US, "%.2f", deliverySpend)}."
-                } else {
+                } else if (transactionsOk) {
                     "Live financial telemetry synced via $sourceName."
+                } else {
+                    "Balances synced via $sourceName; transactions unavailable."
                 },
                 scorePercent = score,
                 isAlert = deliveryLeakAlert,
@@ -560,18 +574,18 @@ class BankFinanceConnector(
                     ),
                     ChannelMetricItem(
                         label = "30d Outflow",
-                        value = spendFormatted,
+                        value = spendDisplay,
                         trend = if (totalInflow > 0) "+$${String.format(Locale.US, "%,.0f", totalInflow)} in" else "30d window",
                         isWarning = false
                     ),
                     ChannelMetricItem(
                         label = "Delivery Orders",
-                        value = "$deliveryCount ($${String.format(Locale.US, "%.0f", deliverySpend)})",
-                        trend = if (deliveryLeakAlert) "Money leak!" else "Controlled",
+                        value = if (transactionsOk) "$deliveryCount ($${String.format(Locale.US, "%.0f", deliverySpend)})" else "unknown",
+                        trend = if (!transactionsOk) "Unknown" else if (deliveryLeakAlert) "Money leak!" else "Controlled",
                         isWarning = deliveryLeakAlert
                     )
                 ),
-                historyLog = if (logEntries.isNotEmpty()) logEntries else listOf("Connected to $sourceName — 0 recent transactions.")
+                historyLog = if (logEntries.isNotEmpty()) logEntries else if (transactionsOk) listOf("Connected to $sourceName — 0 recent transactions.") else listOf("Connected to $sourceName — balances only, transactions unavailable.")
             )
         )
     }

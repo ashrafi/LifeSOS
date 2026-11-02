@@ -2,12 +2,12 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 43/43 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 45/45 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **43/43 green**,
-  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 16,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **45/45 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
@@ -238,6 +238,23 @@ Gemini capability emptied, screenshot count unified at 7 everywhere. One
 Robolectric provenance test added (blank-token consult asserts offline + unconnected).
 Suite at **43/43 green** — see Current Verification Record.
 
+An eighth review verified all actionable items: the retired-model Llama cloud option
+was removed end-to-end (enum entry, selector card, `selectModelEngine` branch,
+compact-card mapping, `fromModelName` default now Spark-first; stored
+`llama_3_1_70b` prefs fall back to Spark safely), the chat prompt was branched on
+the selected engine so non-Spark custom endpoints no longer misidentify as Muse
+Spark, Plaid partial syncs now report "spend unknown" with a warning instead of
+`$0` (`transactionsOk` plumbing across status line, headline, metrics, log, and
+error message; 2 new Robolectric tests), the compact-card button reflects the real
+execution path ("Run Offline Rules" without a key) with a provenance-gated status
+line, and both screen-time correlation sentences were replaced. README: all 8
+wording corrections applied (root-cause, causal, delivery-detection, heart-rate,
+JSON-schema, zero-knowledge ×2, offline scope, credential transmission) plus the
+Llama-alternative sweep (diagram, table, FAQ, intro). Screenshot counts unified at
+7 in all four docs. SimpleFIN left as-is (single-payload response — nothing is
+known-missing, unlike Plaid's separate failed request). Suite at **45/45 green**
+— see Current Verification Record.
+
 ---
 
 ## Pre-submission checklist
@@ -248,7 +265,7 @@ Suite at **43/43 green** — see Current Verification Record.
 - [x] README accuracy bugs fixed — 5 states, dead screens deleted, Guard reworded, SeaWeed removed (P0-4)
 - [x] Meta Horizon is the first-run theme — repo, prefs, and ThemeState defaults flipped + 2 new tests (P1-5). Verified green (see Current Verification Record)
 - [x] Single product name — launcher, chat tag, project, metadata now MetaMuse (P1-6). Kept deliberately: `applicationId`, code identifiers, "Luminous Serenity" theme name, AI-Studio `majorCapabilities`
-- [x] Demo script written — [demo-script.md](demo-script.md) + `screenshots/` shot list (P1-7). Still needed: capture 6 shots + record/link video, link from README
+- [x] Demo script written — [demo-script.md](demo-script.md) + `screenshots/` shot list (P1-7). Still needed: capture 7 shots + record/link video, link from README
 - [x] No-key path statically verified — blank token → offline synthesis → full card render, no blank states (P1-8). Still needed: airplane-mode pass on all 5 states on-device
 - [x] `.idea` untracked, MIT LICENSE added (P1-9). Still needed: push repo public, confirm credits
 - [ ] Fresh-APK install proof re-run (P1-10)

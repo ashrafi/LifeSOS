@@ -261,13 +261,6 @@ enum class MetaModelEngine(
         description = "Meta Model API flagship intelligence. Empathetic cross-stream life reasoning & proactive coaching.",
         isPrimaryStar = true
     ),
-    LLAMA_3_1_70B(
-        id = "llama_3_1_70b",
-        displayName = "☁️ Meta Llama 3.1 70B",
-        defaultModelName = "llama-3.1-70b-versatile",
-        defaultEndpoint = "https://api.groq.com/openai/v1/chat/completions",
-        description = "Meta open-weights cloud inference for general deep reasoning."
-    ),
     ON_DEVICE_LLAMA(
         id = "on_device_llama",
         displayName = "🔒 Offline Engine",
@@ -285,7 +278,7 @@ enum class MetaModelEngine(
             return when {
                 modelName?.contains("spark", ignoreCase = true) == true -> MUSE_SPARK_1_3
                 modelName?.contains("1b", ignoreCase = true) == true || modelName?.contains("local", ignoreCase = true) == true || modelName?.contains("offline", ignoreCase = true) == true -> ON_DEVICE_LLAMA
-                else -> LLAMA_3_1_70B
+                else -> MUSE_SPARK_1_3 // Spark-first default (retired Llama cloud option removed)
             }
         }
     }

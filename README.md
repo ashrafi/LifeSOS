@@ -41,9 +41,9 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
 
 **MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
 
-Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** as the open-weight alternative and prompt-level safety guidance (no separate classifier call)) to detect hidden life trade-offs *before* they turn into exhaustion. 
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with the deterministic offline engine as the zero-cloud alternative and prompt-level safety guidance (no separate classifier call)) to detect hidden life trade-offs *before* they turn into exhaustion. 
 
-When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Muse Spark 1.3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
+When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, interprets cross-channel patterns with Muse Spark 1.3 and suggests possible next steps, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
 
 ---
 
@@ -55,17 +55,17 @@ MetaMuse is architected specifically around the **Meta AI Tooling** stack recomm
 
 | Component | Technology / Meta Tooling | Hackathon Role |
 | :--- | :--- | :--- |
-| **Main Intelligence** | **Meta Muse Spark 1.3** (Meta Model API) | **Flagship Star**: Multi-stream cross-channel life synthesis and causal reasoning |
+| **Main Intelligence** | **Meta Muse Spark 1.3** (Meta Model API) | **Flagship Star**: Multi-stream cross-channel life synthesis and pattern interpretation |
 | **AI Conversation** | **Meta Muse Spark 1.3** | Empathetic proactive dialogue and emotional reflection |
 | **Proactive Coaching** | **Meta Muse Spark 1.3** | Contextual intervention design, calendar buffers, and rest scheduling |
 | **Life-State Detection** | **Kotlin LifeRuleEngine** | Named cross-channel rules (Success Trap, Money Leak, Connection Debt) evaluated on live telemetry |
 | **Mobile Architecture** | **Kotlin + Jetpack Compose** | Reactive Android application with dynamic brand theming |
-| **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, resting heart rate, and hydration |
-| **Financial Balance** | **Plaid / SimpleFIN / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
+| **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, 7-day heart-rate aggregate, and hydration |
+| **Financial Balance** | **Plaid / SimpleFIN / CSV** | Bank account telemetry, 30-day spending, and delivery spending identified by merchant matching |
 | **Social Connection** | **Facebook Graph API v21.0 / Contacts** | Social interaction cadence, starred circle contacts, and birthdays |
 | **Safety & Moderation** | **Prompt-level safety guidance** | Supportive, non-clinical prompt constraints; the model is never asked to grade its own safety (no separate classifier call) |
 | **Voice Output** | **Android TextToSpeech** | Auditory companion readouts with tuned cadence |
-| **Open-Weight Alternative** | **Meta Llama 3.1 70B** | Secondary cloud inference option for deep open-weight reasoning |
+| **Offline Alternative** | **Deterministic Rules Engine** | Zero-cloud fallback: rule-based synthesis when no key is set or the cloud is unreachable |
 | **Future Privacy Mode** | **ExecuTorch Local Llama 3.2** | 100% zero-cloud on-device privacy mode |
 
 #### The Core Feedback Loop
@@ -102,7 +102,7 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
 8. **Direct BYOK Cryptographic Architecture**:
    All API keys are entered directly by the user. Zero keys exist in the APK or repository, and the Meta API token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (hardware backing where the device provides it); other connector tokens live in private app storage excluded from backups.
-9. **Zero-Knowledge Privacy-First Architecture**:
+9. **Offline Privacy-First Rules Engine**:
    Includes an offline rule-based privacy engine where sensitive health and financial numbers never leave the device, establishing a clean path to **ExecuTorch on-device Llama 3.2**.
 
 ---
@@ -127,7 +127,6 @@ flowchart TD
     subgraph MetaIntelligence["3. Meta Muse Spark 1.3 & Meta Tooling"]
         PROMPT["Structured Telemetry Payload<br/>(Companion state + 4 channels + Core Values)"]
         SPARK["Meta Muse Spark 1.3 ⭐<br/>(Flagship Meta Model API Inference)"]
-        LLAMA["Meta Llama 3.1 70B<br/>(Open-Weight Cloud Alternative)"]
         SAFETY["Prompt-Level Safety<br/>Guidance (No Classifier)"]
         LOCAL["Zero-Cloud Privacy Engine<br/>(Deterministic Offline Fallback)"]
     end
@@ -156,8 +155,6 @@ flowchart TD
     PROMPT --> SPARK
     SPARK --> SAFETY
     SAFETY --> REPO
-    PROMPT -. Alternative .-> LLAMA
-    LLAMA -. Alternative .-> SAFETY
     RULES -. Fallback .-> LOCAL
     LOCAL -. Offline .-> REPO
 
@@ -215,7 +212,7 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
 * **Metrics Read**:
   * Real-time daily steps (`StepsRecord`)
   * 7-day sleep sessions and duration (`SleepSessionRecord`)
-  * Resting and active heart rate (`HeartRateRecord`)
+  * 7-day heart-rate aggregate, preferring minimum (`HeartRateRecord` BPM_MIN/BPM_AVG)
   * Hydration intake in liters (`HydrationRecord`)
 * **Permission Model**: Android 14+ system Health Connect permission dialogue with fallback for Android 13 APK.
 * **Background Sync**: `LumiBackgroundSyncWorker` (WorkManager, 6-hourly) re-runs the full live evaluation while the app is closed, persisting Lumi's vitals/mood/speech for next launch. Uses `READ_HEALTH_DATA_HISTORY` + `READ_HEALTH_DATA_IN_BACKGROUND` (background access is enabled by the user in Health Connect system settings; without it the worker safely no-ops).
@@ -281,9 +278,9 @@ When multi-channel telemetry suggests an emerging conflict, MetaMuse packages th
 }
 ```
 
-### Structured JSON Output Schema
+### Expected Structured JSON Response
 
-Muse Spark returns a deterministic JSON schema containing a brief reasoning trace, pillar scores, a companion message, and an actionable nudge:
+Muse Spark returns an expected structured JSON response (via `response_format: json_object`, not JSON Schema mode) containing a brief reasoning trace, pillar scores, a companion message, and an actionable nudge:
 
 ```json
 {
@@ -458,7 +455,7 @@ The Meta token and Plaid client secret are encrypted at rest with Android Keysto
 🔒 Security below) and can be wiped anytime via **"Remove Key"**.
 
 *(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device
-Engine**, ensuring full offline functionality. The `.env.example` file documents variable names
+Engine**, ensuring the AI fallback and every demo beat work fully offline (cloud connectors need connectivity to refresh live data). The `.env.example` file documents variable names
 for local tooling reference only — the app does not read `BuildConfig` secrets at runtime.)*
 
 ### 3. Build the Debug APK
@@ -502,7 +499,7 @@ For users who configure their own Meta Model API / Muse Spark 1.3 or provider ke
 * **Security Threat Model Disclosure**:
   While Keystore-protected encryption shields stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, MetaMuse offers its **100% On-Device Privacy Mode**.
 
-### 2. Zero-Knowledge On-Device Privacy Engine
+### 2. Offline On-Device Privacy Engine
 Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
 
 **What leaves the device — stated precisely.** In zero-cloud/offline mode: nothing.
@@ -510,7 +507,9 @@ In cloud mode (Meta Muse Spark via your BYOK key), each consult transmits a *der
 telemetry payload only: companion scores/mood, the active scenario + triggered rule
 explanation, per-channel score/status/summary lines, your pinned core-value titles and
 contents, and connector status lines. Raw Health Connect records, full calendar bodies,
-complete transaction histories, and all credentials/API secrets are never transmitted.
+complete transaction histories are never included; credentials/API secrets never appear in
+telemetry/chat payloads (the Meta token and Plaid credentials travel only as authentication
+to their own API endpoints).
 Derived summaries can still be sensitive — treat the cloud path as "de-identified
 telemetry + your own pinned values," and stay offline whenever that bar isn't met.
 The separate chat path additionally transmits your current message plus up to four
@@ -563,7 +562,7 @@ timeline
 ## ⚖️ Hackathon Evaluation FAQ
 
 **Q: Why is Meta Muse Spark 1.3 the flagship instead of open-weights Llama?**  
-**A:** Muse Spark's frontier reasoning and structured outputs via the Meta Model API make it the best cross-stream life analyst available. Open-weights Llama stays in the architecture two ways: as the alternative cloud engine (Llama 3.1 70B) and as the future of zero-cloud privacy via ExecuTorch on-device weights. **Prompt-level safety guidance** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
+**A:** Muse Spark's frontier reasoning and structured outputs via the Meta Model API make it the best cross-stream life analyst available. The alternative is the deterministic offline rules engine — a zero-cloud fallback, not a second cloud model — while open-weights Llama remains the future of on-device privacy via ExecuTorch weights. **Prompt-level safety guidance** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
 
 **Q: How does the companion avoid becoming annoying or guilt-inducing?**  
 **A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
@@ -692,7 +691,7 @@ and committed by the human author. Listed in the order it happened.*
   known issue for post-submit.
 
 ### Verification ledger
-- Suite grown 15 → **43/43 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 16,
+- Suite grown 15 → **45/45 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).

@@ -1,6 +1,6 @@
 # MetaMuse — Final Pre-Submission Runbook ✅
 
-Everything Muse Code could do from here is done (code, tests 43/43 green, docs,
+Everything Muse Code could do from here is done (code, tests 45/45 green, docs,
 icon, live rule engine). This runbook is the **human-only remainder**: device work,
 proof capture, and submission. Do the steps in order; each ends with an expected result.
 Check the box only when you see it.
@@ -35,8 +35,8 @@ committed `debug.keystore` signs correctly on a machine that never saw this repo
 ./gradlew testDebugUnitTest
 grep -h "<testsuite " app/build/test-results/testDebugUnitTest/*.xml
 ```
-Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 16/16`, `LifeRuleEngineTest 9/9`,
-`LifeMemoryMomentsTest 5/5`, `SyncFallbackMathTest 5/5`, zero failures/errors — **43/43 green**, matching the last verified run.
+Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 18/18`, `LifeRuleEngineTest 9/9`,
+`LifeMemoryMomentsTest 5/5`, `SyncFallbackMathTest 5/5`, zero failures/errors — **45/45 green**, matching the last verified run.
 
 ---
 
@@ -96,8 +96,9 @@ falls back to offline cleanly.
 
 **4.1 Screenshots** (physical device, light mode, Meta Horizon theme) into
 `doc/screenshots/` per the shot list: home-radiant, success-trap-sick,
-whatsapp-nudge (crop personal chats), follow-through-radiant, bio-radar, connections.
-Expected: 6 PNGs at device resolution, status-bar clutter cropped.
+whatsapp-nudge (crop personal chats), follow-through-radiant, bio-radar, connections,
+spark-proof.
+Expected: 7 PNGs at device resolution, status-bar clutter cropped.
 
 **4.2 Demo video (60–90 s).** Record the [demo-script.md](demo-script.md) flow with
 voiceover, upload unlisted to YouTube/Loom.

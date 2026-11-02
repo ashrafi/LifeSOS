@@ -337,4 +337,41 @@ class ExampleRobolectricTest {
         assertFalse(repo.metaAiConfig.value.isConnected)
         assertNotNull(repo.latestMuseAdvice.value)
     }
+
+    @Test
+    fun `plaid partial sync never presents missing transactions as zero spend`() {
+        val connector = BankFinanceConnector()
+        val result = connector.buildSuccessResult(
+            sourceName = "Plaid (Sandbox)",
+            totalBalance = 5410.50,
+            totalSpend = 0.0,
+            totalInflow = 0.0,
+            deliveryCount = 0,
+            deliverySpend = 0.0,
+            logEntries = listOf("Acme Checking: $5,410.50"),
+            transactionsOk = false
+        )
+        assertTrue(result.isConnected)
+        assertTrue(result.statusLine.contains("unknown"))
+        assertFalse(result.statusLine.contains("30d Spend \$0"))
+        assertNotNull(result.errorMessage)
+        assertTrue(result.report.headlineStatus.contains("unknown"))
+    }
+
+    @Test
+    fun `full finance sync keeps zero spend display when transactions genuinely empty`() {
+        val connector = BankFinanceConnector()
+        val result = connector.buildSuccessResult(
+            sourceName = "Plaid (Sandbox)",
+            totalBalance = 5410.50,
+            totalSpend = 0.0,
+            totalInflow = 0.0,
+            deliveryCount = 0,
+            deliverySpend = 0.0,
+            logEntries = listOf("Acme Checking: $5,410.50")
+        )
+        assertTrue(result.isConnected)
+        assertTrue(result.statusLine.contains("30d Spend \$0"))
+        assertEquals(null, result.errorMessage)
+    }
 }

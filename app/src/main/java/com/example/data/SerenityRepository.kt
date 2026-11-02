@@ -1099,14 +1099,6 @@ class SerenityRepository(
                     isLocalPrivacyMode = false
                 )
             }
-            com.example.model.MetaModelEngine.LLAMA_3_1_70B -> {
-                updateMetaAiConfig(
-                    newToken = _metaAiConfig.value.token,
-                    endpointUrl = engine.defaultEndpoint,
-                    modelName = engine.defaultModelName,
-                    isLocalPrivacyMode = false
-                )
-            }
             com.example.model.MetaModelEngine.ON_DEVICE_LLAMA -> {
                 updateMetaAiConfig(
                     newToken = _metaAiConfig.value.token,

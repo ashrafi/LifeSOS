@@ -47,12 +47,6 @@ class ExampleUnitTest {
     assertEquals(false, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
     assertEquals(true, repo.metaAiConfig.value.isKeyEncryptedInKeystore)
 
-    // Switch to Llama 3.1 70B
-    repo.selectModelEngine(com.example.model.MetaModelEngine.LLAMA_3_1_70B)
-    assertEquals(com.example.model.MetaModelEngine.LLAMA_3_1_70B, repo.metaAiConfig.value.selectedEngine)
-    assertEquals("llama-3.1-70b-versatile", repo.metaAiConfig.value.modelName)
-    assertEquals(false, repo.metaAiConfig.value.isLocalLlamaPrivacyMode)
-
     // Switch to On-Device Privacy Mode
     repo.selectModelEngine(com.example.model.MetaModelEngine.ON_DEVICE_LLAMA)
     assertEquals(com.example.model.MetaModelEngine.ON_DEVICE_LLAMA, repo.metaAiConfig.value.selectedEngine)

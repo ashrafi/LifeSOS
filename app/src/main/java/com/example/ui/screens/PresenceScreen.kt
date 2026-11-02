@@ -280,6 +280,7 @@ fun PresenceScreen(
                 integrations = integrations,
                 isMetaKeyConnected = metaAiConfig.token.isNotBlank(),
                 selectedEngine = selectedEngine,
+                cloudReachable = metaAiConfig.isConnected,
                 isSyncingWithMuse = isSyncingWithMuse || realState.isSyncing,
                 currentTheme = currentTheme,
                 onSelectTheme = { viewModel.setAppThemeMode(it) },
@@ -764,45 +765,6 @@ fun PresenceScreen(
                                             text = "Meta Model API",
                                             style = MaterialTheme.typography.labelSmall.copy(
                                                 color = if (isSparkSelected) Color.White.copy(alpha = 0.85f) else WarmSlateCharcoal,
-                                                fontSize = 9.sp
-                                            ),
-                                            textAlign = TextAlign.Center
-                                        )
-                                    }
-                                }
-
-                                val isLlamaSelected = selectedEngine == MetaModelEngine.LLAMA_3_1_70B && !isLocalPrivacyMode
-                                Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = if (isLlamaSelected) CoralPrimary else SubtleContainer,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .border(1.dp, if (isLlamaSelected) CoralPrimary else WarmBorder, RoundedCornerShape(12.dp))
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .clickable {
-                                            selectedEngine = MetaModelEngine.LLAMA_3_1_70B
-                                            isLocalPrivacyMode = false
-                                            endpointInput = MetaModelEngine.LLAMA_3_1_70B.defaultEndpoint
-                                            modelInput = MetaModelEngine.LLAMA_3_1_70B.defaultModelName
-                                            viewModel.selectModelEngine(MetaModelEngine.LLAMA_3_1_70B)
-                                        }
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = "☁️ Llama 3.1",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                color = if (isLlamaSelected) Color.White else DeepEspresso,
-                                                fontWeight = FontWeight.Bold
-                                            ),
-                                            textAlign = TextAlign.Center
-                                        )
-                                        Text(
-                                            text = "70B Cloud API",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                color = if (isLlamaSelected) Color.White.copy(alpha = 0.85f) else WarmSlateCharcoal,
                                                 fontSize = 9.sp
                                             ),
                                             textAlign = TextAlign.Center
@@ -1662,6 +1624,7 @@ private fun SimpleConnectionsGraphicView(
     isMetaKeyConnected: Boolean,
     isSyncingWithMuse: Boolean,
     selectedEngine: MetaModelEngine,
+    cloudReachable: Boolean,
     currentTheme: AppThemeMode,
     onSelectTheme: (AppThemeMode) -> Unit,
     contentPadding: PaddingValues,
@@ -1682,10 +1645,23 @@ private fun SimpleConnectionsGraphicView(
     ).count { it }
     val engineLabel = when (selectedEngine) {
         MetaModelEngine.MUSE_SPARK_1_3 -> "Muse Spark"
-        MetaModelEngine.LLAMA_3_1_70B -> "Llama 3.1"
         MetaModelEngine.ON_DEVICE_LLAMA -> "On-Device"
     }
     val useCloudEngine = isMetaKeyConnected && selectedEngine != MetaModelEngine.ON_DEVICE_LLAMA
+    // "Inference Active" requires a proven cloud consult (provenance-tracked
+    // isConnected); a configured-but-untried key only earns "Key Configured".
+    val engineStatusLine = if (!useCloudEngine) {
+        "On-Device Zero-Cloud Privacy • Ready"
+    } else if (cloudReachable) {
+        "$engineLabel Inference Active • Ready"
+    } else {
+        "$engineLabel Key Configured • Ready"
+    }
+    val runLabel = when {
+        isSyncingWithMuse -> "Reasoning..."
+        useCloudEngine -> "Run $engineLabel"
+        else -> "Run Offline Rules"
+    }
 
     Column(
         modifier = modifier
@@ -1883,7 +1859,7 @@ private fun SimpleConnectionsGraphicView(
                                 )
                             )
                             Text(
-                                text = if (useCloudEngine) "$engineLabel Inference Active • Ready" else "On-Device Zero-Cloud Privacy • Ready",
+                                text = engineStatusLine,
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     color = DarkSageText,
                                     fontSize = 10.sp
@@ -1900,7 +1876,7 @@ private fun SimpleConnectionsGraphicView(
                             .clickable(onClick = onSyncToMuse)
                     ) {
                         Text(
-                            text = if (isSyncingWithMuse) "Reasoning..." else "Run $engineLabel",
+                            text = runLabel,
                             style = MaterialTheme.typography.labelSmall.copy(
                                 color = CoralPrimary,
                                 fontWeight = FontWeight.Bold,

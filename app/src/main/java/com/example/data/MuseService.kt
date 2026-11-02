@@ -242,8 +242,13 @@ class MuseService(
 
         if (!isLocalPrivacyMode && cleanToken.isNotBlank()) {
             try {
+                val assistantIdentity = if (isSpark) {
+                    "You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach companion named ${tamagotchiState.name}."
+                } else {
+                    "You are MetaMuse, an empathetic bio-responsive companion named ${tamagotchiState.name}."
+                }
                 val systemPrompt = """
-                    You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach companion named ${tamagotchiState.name}.
+                    $assistantIdentity
                     You are speaking directly with $userName.
                     Their current overall life score is ${tamagotchiState.overallLifeScore}%, mood is ${tamagotchiState.mood.title}, hydration ${(tamagotchiState.hydration * 100).toInt()}%, focus ${(tamagotchiState.focus * 100).toInt()}%.
                     ${telemetrySnapshot?.let { "Current real telemetry: Health score ${it.healthReport.scorePercent}%, Tasks ${it.tasksReport.scorePercent}%, Finance ${it.financeReport.scorePercent}%, Social ${it.socialReport.scorePercent}%." } ?: ""}
@@ -597,7 +602,7 @@ class MuseService(
             }
             telemetry?.financeReport?.headlineStatus?.contains("Leak", ignoreCase = true) == true -> {
                 headline = "Invisible Leak: Solitary Evening Delivery Pattern"
-                diagnosis = "Bank stream flagged 9 delivery charges totaling $318 over the last 14 days, correlating 1:1 with late-night screen time after 9:30 PM."
+                diagnosis = "Delivery spending is elevated alongside late work and reduced sleep. These signals show an association, not its cause."
                 prescription = "Late orders often coincide with short sleep and late work — the data doesn't say why. Let's make an easy 5-minute home dinner and disconnect early."
                 nudge = ActionableNudge(
                     type = "WATER",
@@ -719,7 +724,7 @@ class MuseService(
             }
             telemetry?.financeReport?.headlineStatus?.contains("Leak", ignoreCase = true) == true -> {
                 headline = "Invisible Leak: Solitary Evening Delivery Pattern"
-                diagnosis = "Bank stream flagged 9 delivery charges totaling $318 over the last 14 days, correlating 1:1 with late-night screen time after 9:30 PM."
+                diagnosis = "Delivery spending is elevated alongside late work and reduced sleep. These signals show an association, not its cause."
                 prescription = "Late orders often coincide with short sleep and late work — the data doesn't say why. Let's make an easy 5-minute home dinner and disconnect early."
                 nudge = ActionableNudge(
                     type = "WATER",
