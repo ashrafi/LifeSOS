@@ -1799,7 +1799,7 @@ class SerenityRepository(
                 ChatMessage(
                     id = id,
                     isFromUser = false,
-                    content = "Delicious! Thank you for hydrating us. Water clears brain fog and restores cellular fluidity. (+18% Hydration • +20 XP)",
+                    content = "Delicious! Thank you for hydrating us. Every glass keeps our vitality glowing. (+18% Hydration • +20 XP)",
                     timestamp = timeStr,
                     thoughtSteps = listOf(
                         ThoughtStep("Hydration Boost", "Updating life vital to ${(tamagotchi.hydration * 100).toInt()}%")

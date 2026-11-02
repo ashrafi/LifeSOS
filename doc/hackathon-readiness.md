@@ -2,12 +2,12 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 47/47 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 49/49 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **47/47 green**,
-  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **49/49 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 20,
   `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
@@ -270,6 +270,21 @@ review sub-items needed no change: zero-cloud scoping was already precise (§2
 states both modes), and no delivery-memory example exists in the README.
 SuccessTrap/MoneyLeak needed no new gates (existing `inflow > 0` / `count < 3`
 guards already prevent unknown-as-zero claims). Suite at **47/47 green**
+— see Current Verification Record.
+
+A tenth review verified all actionable items: its Code 1 (Debt budget gate) was
+already fixed in the unpushed ninth batch (confirmed at `LifeRuleEngine` line
+174 — stale-snapshot finding, no work needed); the detailed engine screen's
+stale `Run Llama Brain` fallback now reads `Run Offline Rules`; the chat
+double-send was fixed service-side (history is the single source of truth, with
+a separately-appended fallback only when history lacks the current message —
+no positional `dropLast` invariant for callers to break), locked by 2
+request-capture Robolectric tests; and 4 hydration overstatements were reworded
+to tracker-value language. README: palette aura, all 3 "Official Meta Horizon"
+spots, and the reasoning-trace line corrected. Two holds: the opening-example
+delivery language was already fixed in earlier batches, and the
+"superintelligence" thesis framing stays (explicit vision language matching the
+project brief; implementation sections say "companion"). Suite at **49/49 green**
 — see Current Verification Record.
 
 ---

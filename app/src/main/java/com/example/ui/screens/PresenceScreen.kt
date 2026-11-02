@@ -935,7 +935,7 @@ fun PresenceScreen(
                                 }
 
                                 SerenityPrimaryButton(
-                                    text = if (isSyncingWithMuse) "Reasoning..." else if (selectedEngine == MetaModelEngine.MUSE_SPARK_1_3) "Run Muse Spark Brain" else "Run Llama Brain",
+                                    text = if (isSyncingWithMuse) "Reasoning..." else if (selectedEngine == MetaModelEngine.MUSE_SPARK_1_3) "Run Muse Spark Brain" else "Run Offline Rules",
                                     icon = Icons.Default.AutoAwesome,
                                     onClick = { viewModel.sendAllInfoToMuse() },
                                     modifier = Modifier.weight(1.3f),

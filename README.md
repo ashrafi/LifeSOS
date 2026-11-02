@@ -98,7 +98,7 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    three-rung ladder: **Suggested** (Lumi recommends) → **Logged / Self-reported** (user
    confirms — today's demo behavior) → **Sensor-verified** (a later re-sync shows the
    telemetry actually improved — the roadmap differentiator).
-7. **Official Meta Horizon Design System**:
+7. **Meta Horizon-Inspired Design System**:
    Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
 8. **Direct BYOK Cryptographic Architecture**:
    All API keys are entered directly by the user. Zero keys exist in the APK or repository, and the Meta API token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (hardware backing where the device provides it); other connector tokens live in private app storage excluded from backups.
@@ -280,7 +280,7 @@ When multi-channel telemetry suggests an emerging conflict, MetaMuse packages th
 
 ### Expected Structured JSON Response
 
-Muse Spark returns an expected structured JSON response (via `response_format: json_object`, not JSON Schema mode) containing a brief reasoning trace, pillar scores, a companion message, and an actionable nudge:
+Muse Spark returns an expected structured JSON response (via `response_format: json_object`, not JSON Schema mode) containing an evidence and decision summary, pillar scores, a companion message, and an actionable nudge:
 
 ```json
 {
@@ -314,15 +314,15 @@ Muse Spark returns an expected structured JSON response (via `response_format: j
 
 ---
 
-## 🎨 Meta Horizon Brand Design System
+## 🎨 Meta Horizon-Inspired Visual Language
 
-MetaMuse incorporates an official **Meta Horizon Brand Design System** configured alongside the original Luminous Serenity palette:
+MetaMuse incorporates a **Meta Horizon-inspired visual language** configured alongside the original Luminous Serenity palette:
 
 | Token Name | Hex Code | Visual Swatch | Semantic Purpose |
 |:---|:---|:---:|:---|
 | **`MetaPrimaryBlue`** | `#0866FF` | 🟦 | Primary brand CTA, active navigation pill, Lumi core crystal heart |
 | **`MetaCyanSecondary`** | `#00B2FF` | 🔷 | Secondary energy motes, companion celestial halo, telemetry arcs |
-| **`MetaHorizonViolet`** | `#7B61FF` | 🟪 | Llama AI intelligence aura, focus chips, elevated accents |
+| **`MetaHorizonViolet`** | `#7B61FF` | 🟪 | AI intelligence aura, focus chips, elevated accents |
 | **`MetaBaseCanvas`** | `#F3F6FA` | ⬜ | Crisp ergonomic application canvas |
 | **`MetaDeepNavy`** | `#0C1A30` | ⬛ | High-contrast readable typography and icon outlines |
 | **`MetaSubtleBlue`** | `#E7F0FF` | ▫️ | Card background surfaces, badge fills, subtle dividers |
@@ -691,7 +691,7 @@ and committed by the human author. Listed in the order it happened.*
   known issue for post-submit.
 
 ### Verification ledger
-- Suite grown 15 → **47/47 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
+- Suite grown 15 → **49/49 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 20,
   `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).

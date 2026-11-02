@@ -8,6 +8,7 @@ import com.example.data.SerenityRepository
 import com.example.data.connectors.BankFinanceConnector
 import com.example.data.connectors.ConnectorPreferencesStore
 import com.example.data.connectors.FacebookSocialConnector
+import com.example.model.ChatMessage
 import com.example.model.DemoRecoveryStage
 import com.example.model.MuseDemoScenario
 import com.example.model.PresenceMode
@@ -21,6 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
@@ -403,5 +405,66 @@ class ExampleRobolectricTest {
         assertTrue(result.isConnected)
         assertTrue(result.statusLine.contains("30d Spend \$0"))
         assertEquals(null, result.errorMessage)
+    }
+
+    private fun capturingClient(recorded: MutableList<String>): OkHttpClient {
+        val cannedBody = JSONObject()
+            .put("choices", JSONArray().put(JSONObject().put("message", JSONObject().put("content", "{}"))))
+            .toString()
+        return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                chain.request().body?.let { body ->
+                    val buffer = Buffer()
+                    body.writeTo(buffer)
+                    recorded.add(buffer.readUtf8())
+                }
+                Response.Builder()
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(200)
+                    .message("OK")
+                    .body(cannedBody.toResponseBody("application/json".toMediaType()))
+                    .build()
+            }
+            .build()
+    }
+
+    @Test
+    fun `chat request never duplicates the current user message`() = runTest {
+        // Repository appends the message to history before calling: it must reach
+        // the API exactly once even though userMessage is passed separately.
+        val bodies = mutableListOf<String>()
+        val service = MuseService(capturingClient(bodies))
+        val history = listOf(
+            ChatMessage(id = "a1", isFromUser = false, content = "Earlier companion reply", timestamp = "t"),
+            ChatMessage(id = "u1", isFromUser = true, content = "How am I doing?", timestamp = "t")
+        )
+        service.chatWithMuseSpark(
+            metaAiToken = "test_token",
+            userMessage = "How am I doing?",
+            history = history,
+            tamagotchiState = TamagotchiState(),
+            telemetrySnapshot = null
+        )
+        assertEquals(1, bodies.size)
+        assertEquals(1, bodies[0].split("How am I doing?").size - 1)
+    }
+
+    @Test
+    fun `chat request appends current message when history lacks it`() = runTest {
+        val bodies = mutableListOf<String>()
+        val service = MuseService(capturingClient(bodies))
+        val history = listOf(
+            ChatMessage(id = "a1", isFromUser = false, content = "Earlier companion reply", timestamp = "t")
+        )
+        service.chatWithMuseSpark(
+            metaAiToken = "test_token",
+            userMessage = "Fresh question here?",
+            history = history,
+            tamagotchiState = TamagotchiState(),
+            telemetrySnapshot = null
+        )
+        assertEquals(1, bodies.size)
+        assertEquals(1, bodies[0].split("Fresh question here?").size - 1)
     }
 }

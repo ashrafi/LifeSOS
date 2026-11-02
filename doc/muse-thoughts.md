@@ -64,7 +64,7 @@ dead screens, unified branding to MetaMuse, defaulted the Meta Horizon theme, bu
 voice customization end-to-end, re-themed the launcher icon, wrote the demo script,
 readiness plan, product vision, and final runbook — and, most importantly, built the
 **live cross-channel rule engine** so the flagship claim is literally true. The suite
-stands at 47/47 green with the engine, memory moments, provenance, labels, sensor-fallback math, the safety disclosure, cloud-connection honesty, partial-sync honesty, and unknown-data propagation covered by dedicated tests.
+stands at 49/49 green with the engine, memory moments, provenance, labels, sensor-fallback math, the safety disclosure, cloud-connection honesty, partial-sync honesty, unknown-data propagation, and chat-payload integrity covered by dedicated tests.
 
 ## 5. If I were continuing: my next five moves
 

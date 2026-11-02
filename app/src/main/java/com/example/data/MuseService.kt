@@ -270,6 +270,12 @@ class MuseService(
                         put("role", "system")
                         put("content", systemPrompt)
                     })
+                    // The repository appends the current message to history before calling,
+                    // so history already ends with it: never serialize it twice. Only append
+                    // separately when a caller passes history without the current message.
+                    val historyEndsWithCurrent = history.lastOrNull()?.let {
+                        it.isFromUser && it.content == userMessage
+                    } == true
                     // Add recent chat context (up to 4 recent messages)
                     history.takeLast(4).forEach { msg ->
                         put(JSONObject().apply {
@@ -277,10 +283,12 @@ class MuseService(
                             put("content", msg.content)
                         })
                     }
-                    put(JSONObject().apply {
-                        put("role", "user")
-                        put("content", userMessage)
-                    })
+                    if (!historyEndsWithCurrent) {
+                        put(JSONObject().apply {
+                            put("role", "user")
+                            put("content", userMessage)
+                        })
+                    }
                 }
 
                 val requestPayload = JSONObject().apply {
@@ -367,10 +375,10 @@ class MuseService(
                 ChatMessage(
                     id = id,
                     isFromUser = false,
-                    content = "Hydrating clears brain fog and restores cellular fluidity, $userName! Every glass of water elevates our vitality.",
+                    content = "Time for water, $userName! Your hydration tracker is at ${(tamagotchiState.hydration * 100).toInt()}% — every glass helps you feel your best.",
                     timestamp = currentTime,
                     thoughtSteps = listOf(
-                        ThoughtStep("Hydration Telemetry", "Checking cellular fluid state: ${(tamagotchiState.hydration * 100).toInt()}%"),
+                        ThoughtStep("Hydration Telemetry", "Checking hydration tracker value: ${(tamagotchiState.hydration * 100).toInt()}%"),
                         ThoughtStep("Restorative Prompting", "Encouraging +1 glass of water")
                     ),
                     suggestedPrompts = listOf("Log water break", "Check my life score", "What's my next quest?"),
@@ -767,7 +775,7 @@ class MuseService(
             MusePillarAdvice(
                 pillar = "Health & Vitality",
                 score = (state.hydration * 100).toInt(),
-                recommendation = if (state.hydration < 0.75f) "Sub-optimal cellular hydration. Drink 300ml water." else "Optimal cellular fluid state.",
+                recommendation = if (state.hydration < 0.75f) "Below hydration target. Drink 300ml water." else "Hydration target met.",
                 suggestedAction = "+1 Glass of Water"
             ),
             MusePillarAdvice(
