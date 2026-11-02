@@ -199,7 +199,7 @@ MetaMuse features an uncluttered 3-tab navigation hierarchy with full dynamic su
 │                              │ Calendar & Tasks Permissions │
 │                              │ Facebook Graph & Contacts    │
 │                              │ Plaid Bank Link / CSV Upload │
-│                              │ Meta Llama Brain API Config  │
+│                              │ Meta Muse Spark API Config   │
 └──────────────────────────────┴──────────────────────────────┘
 ```
 

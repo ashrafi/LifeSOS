@@ -470,7 +470,7 @@ class MuseService(
                 )
             }
 
-            val guardStatus = json.optString("llamaGuardStatus", "PASSED (Safe for Well-being & Guidance)")
+            val guardStatus = json.optString("llamaGuardStatus", "Prompt-Level Safety Guidance (No Separate Classifier Call)")
 
             val resolvedModel = when {
                 modelName.contains("spark", ignoreCase = true) -> "Meta Muse Spark 1.3 (Meta Model API)"
@@ -783,7 +783,7 @@ class MuseService(
         return listOf(
             ThoughtStep("Channel Telemetry Ingestion", "Collected multi-stream biometric and behavioral data."),
             ThoughtStep("Cross-Channel Correlation", "Analyzed balance between work productivity and restorative habits."),
-            ThoughtStep("Llama Guard Verification", "Screened advice with Llama Guard 3. PASSED.")
+            ThoughtStep("Safety Note", "Generated under prompt-level safety guidance; no separate classifier call.")
         )
     }
 }

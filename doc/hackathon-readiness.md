@@ -182,11 +182,21 @@ status form so cold readers can't mistake the audit record for outstanding work.
 Stale-branch items in that review (README identity, demo split, counts) resolve on
 push.
 
+## Fourth Review Response — Final Consistency Sweep (done Nov 1)
+
+A corrected re-review (9 prior fixes confirmed on `main`) left 4 small items, all
+shipped: cloud Guard default + `defaultThoughtSteps` reworded to prompt-level honesty,
+"Telemetry Verification" step renamed to Self-Reported Action Recorded, the last
+"Meta Llama Brain" table label and two checklist "verify" wordings fixed, and the
+keystore checklist line corrected (committed long ago; only the clean-clone proof
+remains). Suite steady at **36/36 green**. Nothing architectural left — the freeze
+holds; only device proof and presentation assets remain.
+
 ---
 
 ## Pre-submission checklist
 
-- [x] Fresh-clone signing fixed — `debug.keystore` un-ignored for commit (P0-1). Still needed: commit it + clean-clone `./gradlew assembleDebug` on a JDK machine
+- [x] Fresh-clone signing fixed — `debug.keystore` committed and tracked (P0-1). Still needed: clean-clone `./gradlew assembleDebug` on a JDK machine
 - [x] README setup rewritten to in-app BYOK; `.env.example` corrected (P0-2). Still needed: verbatim run-through on a fresh machine
 - [x] Muse Spark endpoint externally verified — Meta Model API at `api.meta.ai/v1` serving `muse-spark-1.3` confirmed via public docs (P0-3). Still needed: one real on-device cloud call + screenshot
 - [x] README accuracy bugs fixed — 5 states, dead screens deleted, Guard reworded, SeaWeed removed (P0-4)

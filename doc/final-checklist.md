@@ -70,7 +70,7 @@ Connection Debt):
       (or the system share sheet on devices without WhatsApp).
 - [ ] 🔊 voice readout speaks; change pitch/tempo in Connections → Voice Output and
       confirm the voice audibly changes + persists after relaunch.
-- [ ] **Verify Follow-Through** returns Lumi to Radiant ✨.
+- [ ] **Log Follow-Through** returns Lumi to Radiant ✨ (self-reported; sensor-verified recovery is roadmap).
 
 **3.1 Zero-key airplane pass (the most important 10 minutes).**
 Enable airplane mode, revoke/clear any entered keys, and repeat the 5 states.
@@ -130,7 +130,7 @@ Expected: README renders fully offline in GitHub preview — no broken image lin
       rehearsed, charger, hotspot-independent (demo must survive dead venue Wi-Fi —
       that is what Phase 3.1 proved).
 - [ ] One-page talk track ready: problem (metric silos → invisible burnout) → Lumi mirror
-      → Success Trap live → WhatsApp tap → verified recovery → "only Meta sees
+      → Success Trap live → WhatsApp tap → logged recovery → "only Meta sees
       connection debt" closer (see [meta-product-vision.md](meta-product-vision.md)).
 
 ---

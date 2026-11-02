@@ -1019,7 +1019,7 @@ class SerenityRepository(
             content = "🌟 **Follow-Through Logged:** $actionDetail\n\n$speechText",
             timestamp = timeStr,
             thoughtSteps = listOf(
-                ThoughtStep("Telemetry Verification", actionDetail),
+                ThoughtStep("Self-Reported Action Recorded", actionDetail),
                 ThoughtStep("Companion State Transition", "Transitioned from Hopeful → Healthy & Happy (Radiant)")
             ),
             suggestedPrompts = listOf(
