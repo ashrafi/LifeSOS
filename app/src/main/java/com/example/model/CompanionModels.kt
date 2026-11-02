@@ -312,7 +312,7 @@ data class MuseLifeAdvice(
     val tamagotchiPrescription: String,
     val reasoningSteps: List<ThoughtStep> = emptyList(),
     val actionableNudge: ActionableNudge? = null,
-    val llamaGuardStatus: String = "PASSED (Safe for Well-being & Guidance)",
+    val llamaGuardStatus: String = "Prompt-Level Safety Guidance (No Separate Classifier Call)",
     val modelUsed: String = "Meta Muse Spark 1.3 (Meta Model API)"
 )
 

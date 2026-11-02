@@ -124,4 +124,16 @@ class ExampleUnitTest {
     assertTrue(committed.label.contains("Logged"))
     assertFalse(committed.label.contains("Verified"))
   }
+
+  @Test
+  fun testDefaultSafetyStatusNeverClaimsClassifierPass() {
+    // No separate classifier runs anywhere, so the default must disclose that —
+    // never a model-gradeable PASSED verdict.
+    val advice = com.example.model.MuseLifeAdvice(
+      id = "t", timestamp = "t", headline = "h",
+      overallDiagnosis = "d", pillars = emptyList(), tamagotchiPrescription = "p"
+    )
+    assertTrue(advice.llamaGuardStatus.contains("No Separate Classifier"))
+    assertFalse(advice.llamaGuardStatus.contains("PASSED"))
+  }
 }

@@ -855,7 +855,7 @@ class SerenityRepository(
                     physicalEnergy = 0.38f, // Poor sleep consecutive nights
                     connection = 0.40f, // Most evenings spent alone at home
                     mood = TamagotchiMood.SICK,
-                    speech = "Can we talk about your evenings? I've noticed that when you're exhausted and spending more time alone, you tend to order food and spend more money. I'm worried you're stuck in a cycle that's making things harder.",
+                    speech = "Can we talk about your evenings? Your delivery orders tend to cluster on evenings when sleep has been short and work ran late. The data shows the pattern, not the reason — but I'm worried about the cycle.",
                     isSleeping = false,
                     activeScenario = MuseDemoScenario.INVISIBLE_MONEY_LEAK,
                     recoveryStage = DemoRecoveryStage.PROACTIVE_CONCERN
@@ -879,7 +879,7 @@ class SerenityRepository(
                 val proactiveMsg = ChatMessage(
                     id = UUID.randomUUID().toString(),
                     isFromUser = false,
-                    content = "Can we talk about your evenings? I've noticed that when you're exhausted and spending more time alone, you tend to order food and spend more money. I'm worried you're stuck in a cycle that's making things harder.",
+                    content = "Can we talk about your evenings? Your delivery orders tend to cluster on evenings when sleep has been short and work ran late. The data shows the pattern, not the reason — but I'm worried about the cycle.",
                     timestamp = timeStr,
                     thoughtSteps = listOf(
                         ThoughtStep("Deterministic Rule Triggered", "The Invisible Money Leak: Cross-channel evening exhaustion → convenience spend loop"),
@@ -1191,7 +1191,7 @@ class SerenityRepository(
         val museMessage = ChatMessage(
             id = UUID.randomUUID().toString(),
             isFromUser = false,
-            content = "✨ **${advice.modelUsed} Prescription:**\n\n${advice.headline}\n\n${advice.overallDiagnosis}\n\n💡 **Prescription for ${_tamagotchiState.value.name}:** ${advice.tamagotchiPrescription}\n\n🛡️ **Llama Guard Safety:** ${advice.llamaGuardStatus}",
+            content = "✨ **${advice.modelUsed} Prescription:**\n\n${advice.headline}\n\n${advice.overallDiagnosis}\n\n💡 **Prescription for ${_tamagotchiState.value.name}:** ${advice.tamagotchiPrescription}\n\n🛡️ **Safety:** ${advice.llamaGuardStatus}",
             timestamp = advice.timestamp,
             thoughtSteps = if (advice.reasoningSteps.isNotEmpty()) advice.reasoningSteps else advice.pillars.map {
                 ThoughtStep("${it.pillar} (${it.score}%)", it.recommendation)
@@ -1982,7 +1982,7 @@ class SerenityRepository(
                     summary = if (isRecovered) {
                         "Important tasks completed with a 5-minute dinner prep ritual queued for 6:30 PM."
                     } else {
-                        "All important daytime tasks completed (92%), but cognitive exhaustion peaks at 6:00 PM."
+                        "All important daytime tasks completed (92%), though work ran late into the evening."
                     },
                     scorePercent = 88,
                     isAlert = !isRecovered,

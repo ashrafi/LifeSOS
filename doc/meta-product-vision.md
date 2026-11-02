@@ -44,8 +44,8 @@ design:
 | **Life Engine** — deterministic FSM | Multi-dimensional state vector + decay/growth rules; evolves over months, never resets daily | `LifeRuleEngine` (Success Trap / Money Leak / Connection Debt on live telemetry) + `SerenityRepository` vitals (hydration, focus, peace, energy, connection) |
 | **Creature** — generative manifestation | LLM as "game master": FSM state → prompt → empathetic expression + animation directive | `MuseService` (Muse Spark 1.3 telemetry prompts) + Lumi avatar + voice readout |
 
-**Roadmap gaps to full fidelity** (honest list): background Health Connect sync via
-`WorkManager` + change tokens (`READ_HEALTH_DATA_IN_BACKGROUND`), an 8-dimension state
+**Roadmap gaps to full fidelity** (honest list): incremental Health Connect sync via
+change tokens (`READ_HEALTH_DATA_IN_BACKGROUND`) — the periodic 6-hour `WorkManager` refresh already exists —, an 8-dimension state
 vector matching the article (Happiness, Energy, Nourishment, Rest, Activity, Engagement,
 Growth, Relationship), and sEMG micro-state reactions once band APIs are available.
 

@@ -1064,7 +1064,7 @@ fun PresenceScreen(
                                     Spacer(modifier = Modifier.height(6.dp))
                                     Text(
                                         text = "• Direct BYOK Architecture: All API keys are entered directly by you. Absolutely ZERO keys, tokens, or credentials exist in the codebase, resources, properties, or APK.\n" +
-                                               "• Android Keystore AES-256-GCM: Keys encrypted at rest via hardware-backed TEE / StrongBox.\n" +
+                                               "• Android Keystore AES-256-GCM: The Meta API token and Plaid client secret are encrypted at rest via an Android Keystore-protected key (hardware backing where the device provides it; not verified at runtime). Other connector tokens live in private app storage, excluded from backups.\n" +
                                                "• Encrypted DataStore: Excluded from Google Drive backups and device-to-device transfers.\n" +
                                                "• Zero Exfiltration: Keys are never logged to Logcat, analytics, or crash reports.\n" +
                                                "• Instant Revocation: Remove the key anytime using the Remove Key button above to immediately clear memory and DataStore.\n" +

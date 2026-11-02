@@ -47,7 +47,7 @@ import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.Sync
-import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.ui.platform.LocalContext
@@ -165,7 +165,7 @@ fun AttuneScreen(
                 onPet = { viewModel.petTamagotchi() },
                 onSelectScenario = { viewModel.activateDemoScenario(it) },
                 onQuickReply = { viewModel.sendQuickPrompt(it) },
-                onVerifyFollowThrough = { viewModel.completeDemoFollowThrough() },
+                onLogFollowThrough = { viewModel.completeDemoFollowThrough() },
                 onOpenDataTab = { viewModel.navigateTo(ScreenNav.DATA) },
                 onOpenFullHome = { viewModel.setShowFullHome(true) },
                 onToggleSpeech = {
@@ -270,7 +270,7 @@ fun AttuneScreen(
                 activeScenario = activeScenario,
                 recoveryStage = recoveryStage,
                 onSelectScenario = { viewModel.activateDemoScenario(it) },
-                onVerifyFollowThrough = { viewModel.completeDemoFollowThrough() },
+                onLogFollowThrough = { viewModel.completeDemoFollowThrough() },
                 onOpenDataTab = {
                     viewModel.navigateTo(ScreenNav.DATA)
                     viewModel.setShowFullData(true)
@@ -305,7 +305,7 @@ fun AttuneScreen(
                 onInputChange = { viewModel.updateInputText(it) },
                 onSend = { viewModel.sendCurrentMessage() },
                 onPromptClick = { viewModel.sendQuickPrompt(it) },
-                onVerifyFollowThrough = { viewModel.completeDemoFollowThrough() }
+                onLogFollowThrough = { viewModel.completeDemoFollowThrough() }
             )
         }
 
@@ -688,7 +688,7 @@ private fun AvatarOnlyHomeView(
     onPet: () -> Unit,
     onSelectScenario: (MuseDemoScenario) -> Unit,
     onQuickReply: (String) -> Unit,
-    onVerifyFollowThrough: () -> Unit,
+    onLogFollowThrough: () -> Unit,
     onOpenDataTab: () -> Unit,
     onOpenFullHome: () -> Unit,
     onToggleSpeech: () -> Unit,
@@ -1000,7 +1000,7 @@ private fun AvatarOnlyHomeView(
                                 .fillMaxWidth()
                                 .border(1.dp, MintSecondary, CircleShape)
                                 .clip(CircleShape)
-                                .clickable(onClick = onVerifyFollowThrough)
+                                .clickable(onClick = onLogFollowThrough)
                         ) {
                             Text(
                                 text = "🌱 ${activeScenario.followThroughButtonLabel}",
@@ -1103,7 +1103,7 @@ private fun MuseDemoSelectorCard(
     activeScenario: MuseDemoScenario,
     recoveryStage: DemoRecoveryStage,
     onSelectScenario: (MuseDemoScenario) -> Unit,
-    onVerifyFollowThrough: () -> Unit,
+    onLogFollowThrough: () -> Unit,
     onOpenDataTab: () -> Unit
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -1248,7 +1248,7 @@ private fun MuseDemoSelectorCard(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         imageVector = if (recoveryStage == DemoRecoveryStage.RECOVERED_HAPPY) {
-                                            Icons.Default.Verified
+                                            Icons.Default.CheckCircle
                                         } else {
                                             Icons.Default.Warning
                                         },
@@ -1283,9 +1283,9 @@ private fun MuseDemoSelectorCard(
                                     if (recoveryStage == DemoRecoveryStage.HOPEFUL_COMMITTED) {
                                         SerenityPrimaryButton(
                                             text = activeScenario.followThroughButtonLabel,
-                                            onClick = onVerifyFollowThrough,
+                                            onClick = onLogFollowThrough,
                                             modifier = Modifier.weight(1f),
-                                            testTag = "verify_follow_through_button"
+                                            testTag = "log_follow_through_button"
                                         )
                                     } else {
                                         SerenitySecondaryButton(
@@ -1317,7 +1317,7 @@ private fun ProactiveCompanionDialogueCard(
     onInputChange: (String) -> Unit,
     onSend: () -> Unit,
     onPromptClick: (String) -> Unit,
-    onVerifyFollowThrough: () -> Unit
+    onLogFollowThrough: () -> Unit
 ) {
     SerenityCard(
         modifier = Modifier
@@ -1369,7 +1369,7 @@ private fun ProactiveCompanionDialogueCard(
                 )
             }
 
-            // When in HOPEFUL_COMMITTED stage, show prominent Follow-Through verification CTA
+            // When in HOPEFUL_COMMITTED stage, show prominent Follow-Through logging CTA
             if (activeScenario != MuseDemoScenario.NONE && recoveryStage == DemoRecoveryStage.HOPEFUL_COMMITTED) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Box(
@@ -1382,7 +1382,7 @@ private fun ProactiveCompanionDialogueCard(
                 ) {
                     Column {
                         Text(
-                            text = "🌱 $companionName is Hopeful! Ready to verify follow-through?",
+                            text = "🌱 $companionName is Hopeful! Ready to log follow-through?",
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = DarkSageText
@@ -1398,9 +1398,9 @@ private fun ProactiveCompanionDialogueCard(
                         Spacer(modifier = Modifier.height(10.dp))
                         SerenityPrimaryButton(
                             text = activeScenario.followThroughButtonLabel,
-                            onClick = onVerifyFollowThrough,
+                            onClick = onLogFollowThrough,
                             modifier = Modifier.fillMaxWidth(),
-                            testTag = "dialogue_verify_follow_through_button"
+                            testTag = "dialogue_log_follow_through_button"
                         )
                     }
                 }

@@ -116,8 +116,8 @@ class MuseService(
                     """
                         You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach integrated into MuseLife.
                         You analyze the user's multi-channel life telemetry across Health (Health Connect), Tasks (Calendar), Finance (Plaid / SimpleFIN), and Social (Facebook Graph).
-                        Your core purpose is to discover hidden cross-stream trade-offs (e.g. overwork suppressing sleep, solitary delivery spending reflecting emotional fatigue, or social debt eroding relationships).
-                        Synthesize proactive, compassionate coaching following Meta Llama Guard safety standards.
+                        Your core purpose is to discover hidden cross-stream trade-offs (e.g. overwork suppressing sleep, delivery spending occurring alongside reduced sleep and late-night work, or social debt eroding relationships).
+                        Synthesize proactive, compassionate coaching under supportive, non-clinical safety guidance (prompt-level only — no separate classifier call).
                         Return ONLY a valid JSON object matching this schema:
                         {
                           "headline": "Short punchy status headline (max 8 words)",
@@ -140,16 +140,15 @@ class MuseService(
                             "description": "Short explanation of why this action helps",
                             "actionButtonText": "Button label (e.g. 'Open WhatsApp & Reach Out')",
                             "targetPayload": "Pre-filled text for message or event title"
-                          },
-                          "llamaGuardStatus": "PASSED (Safe for Well-being & Guidance)"
+                          }
                         }
                     """.trimIndent()
                 } else {
                     """
                         You are MetaMuse, an empathetic bio-responsive companion powered by Meta Llama.
                         Analyze the user's multi-channel life telemetry across Health, Tasks, Finance, and Social.
-                        Look for hidden cross-stream trade-offs (e.g. high task productivity causing sleep loss or social drift).
-                        Screen advice with Llama Guard standards (supportive, compassionate, non-clinical).
+                        Look for hidden cross-stream trade-offs (e.g. high task productivity occurring alongside sleep loss or social drift).
+                        Keep advice supportive, compassionate, and non-clinical (prompt-level guidance only — no separate classifier call).
                         Return ONLY a valid JSON object matching this schema:
                         {
                           "headline": "Short punchy status headline (max 8 words)",
@@ -172,8 +171,7 @@ class MuseService(
                             "description": "Short explanation of why this action helps",
                             "actionButtonText": "Button label (e.g. 'Draft WhatsApp Text')",
                             "targetPayload": "Pre-filled text for message or event title"
-                          },
-                          "llamaGuardStatus": "PASSED (Safe for Well-being & Guidance)"
+                          }
                         }
                     """.trimIndent()
                 }
@@ -250,7 +248,7 @@ class MuseService(
                     Their current overall life score is ${tamagotchiState.overallLifeScore}%, mood is ${tamagotchiState.mood.title}, hydration ${(tamagotchiState.hydration * 100).toInt()}%, focus ${(tamagotchiState.focus * 100).toInt()}%.
                     ${telemetrySnapshot?.let { "Current real telemetry: Health score ${it.healthReport.scorePercent}%, Tasks ${it.tasksReport.scorePercent}%, Finance ${it.financeReport.scorePercent}%, Social ${it.socialReport.scorePercent}%." } ?: ""}
                     Respond warmly, empathetically, and conversationally in 2-4 sentences.
-                    Follow Meta Llama Guard safety standards.
+                    Follow supportive, non-clinical safety guidance (prompt-level only — no separate classifier call).
                     Return ONLY a JSON object:
                     {
                       "reply": "Warm companion response directly addressing $userName",
@@ -470,7 +468,9 @@ class MuseService(
                 )
             }
 
-            val guardStatus = json.optString("llamaGuardStatus", "Prompt-Level Safety Guidance (No Separate Classifier Call)")
+            // The schema never asks for a safety verdict, and a model grading its own output
+            // is not evidence of screening — so any model-provided value is ignored here.
+            val guardStatus = "Prompt-Level Safety Guidance (No Separate Classifier Call)"
 
             val resolvedModel = when {
                 modelName.contains("spark", ignoreCase = true) -> "Meta Muse Spark 1.3 (Meta Model API)"

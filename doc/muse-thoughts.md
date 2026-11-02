@@ -32,10 +32,10 @@ empathy as the interface — is the soul of the project. Protect it.
 - **Connection debt is Meta's exclusive moat.** Only Meta's social graph can see
   loneliness forming. Apple and Google can count steps forever and never touch this.
   Lead with it in every pitch.
-- **The privacy story is load-bearing, not decorative.** On-device inference plus
+- **The privacy story is load-bearing, not decorative.** On-device rule evaluation plus
   BYOK Keystore encryption is the *permission slip* for a coach that sees body, money,
   and relationships. No trust, no product.
-- **It compounds.** The Life Ledger concept — persistent memory of values and verified
+- **It compounds.** The Life Ledger concept — persistent memory of values and logged
   wins — creates emotional switching costs no feature checklist can replicate.
 
 ## 3. Honest concerns (read these twice)
@@ -64,7 +64,7 @@ dead screens, unified branding to MetaMuse, defaulted the Meta Horizon theme, bu
 voice customization end-to-end, re-themed the launcher icon, wrote the demo script,
 readiness plan, product vision, and final runbook — and, most importantly, built the
 **live cross-channel rule engine** so the flagship claim is literally true. The suite
-stands at 41/41 green with the engine, memory moments, provenance, labels, and sensor-fallback math covered by dedicated tests.
+stands at 42/42 green with the engine, memory moments, provenance, labels, sensor-fallback math, and the safety disclosure covered by dedicated tests.
 
 ## 5. If I were continuing: my next five moves
 

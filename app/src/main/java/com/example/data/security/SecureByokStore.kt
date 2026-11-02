@@ -35,7 +35,7 @@ private val Context.byokDataStore: DataStore<Preferences> by preferencesDataStor
  * Secure Bring-Your-Own-Key (BYOK) manager for MetaMuse.
  *
  * Safeguards implemented:
- * 1. Hardware Keystore Encryption: AES-256-GCM hardware-backed key stored in AndroidKeystore (TEE/StrongBox).
+ * 1. Keystore Encryption: AES-256-GCM key generated inside AndroidKeyStore (hardware backing where the device provides it; StrongBox/hardware level is neither requested nor verified at runtime).
  * 2. Encrypted DataStore: Ciphertext + IV persisted in private Preferences DataStore.
  * 3. Zero Cloud Backups: Explicitly excluded from Google Drive and device transfers in data_extraction_rules.xml.
  * 4. Zero Logging: Plaintext keys are never output to Logcat, crash logs, or analytics.

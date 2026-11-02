@@ -5,7 +5,7 @@
 
 [![Meta AI Hackathon](https://img.shields.io/badge/Meta_AI-Hackathon_2026-0866FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
 [![Muse Spark 1.3](https://img.shields.io/badge/Powered_by-Meta_Muse_Spark_1.3-7B61FF?style=for-the-badge&logo=meta&logoColor=white)](https://meta.ai)
-[![Llama Guard 3 Aligned](https://img.shields.io/badge/Safety-Llama_Guard_3_Aligned-00B2FF?style=for-the-badge)](https://llama.meta.com/)
+[![Prompt-Level Safety Guidance](https://img.shields.io/badge/Safety-Prompt_Level_Guidance-00B2FF?style=for-the-badge)](#security-privacy-responsible-ai--direct-byok-safeguards)
 [![Android Health Connect](https://img.shields.io/badge/Android-Health_Connect_SDK-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/health-and-fitness/guides/health-connect)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
@@ -41,7 +41,7 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
 
 **MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
 
-Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** as the open-weight alternative and Llama Guard 3–aligned safety prompting) to detect hidden life trade-offs *before* they turn into exhaustion. 
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with **Meta Llama 3.1** as the open-weight alternative and prompt-level safety guidance (no separate classifier call)) to detect hidden life trade-offs *before* they turn into exhaustion. 
 
 When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, reasons through the root cause with Muse Spark 1.3, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
 
@@ -63,7 +63,7 @@ MetaMuse is architected specifically around the **Meta AI Tooling** stack recomm
 | **Physical Biometrics** | **Android Health Connect** | Native steps, sleep sessions, resting heart rate, and hydration |
 | **Financial Balance** | **Plaid / SimpleFIN / CSV** | Bank account telemetry, 30-day spending, and evening delivery detection |
 | **Social Connection** | **Facebook Graph API v21.0 / Contacts** | Social interaction cadence, starred circle contacts, and birthdays |
-| **Safety & Moderation** | **Llama Guard 3–aligned prompting** | Prompt-level safety constraints ensuring supportive, non-clinical advice (no separate classifier call) |
+| **Safety & Moderation** | **Prompt-level safety guidance** | Supportive, non-clinical prompt constraints; the model is never asked to grade its own safety (no separate classifier call) |
 | **Voice Output** | **Android TextToSpeech** | Auditory companion readouts with tuned cadence |
 | **Open-Weight Alternative** | **Meta Llama 3.1 70B** | Secondary cloud inference option for deep open-weight reasoning |
 | **Future Privacy Mode** | **ExecuTorch Local Llama 3.2** | 100% zero-cloud on-device privacy mode |
@@ -82,10 +82,11 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    `LifeRuleEngine` evaluates the named trade-off rules against **live synced telemetry** (e.g. real
    sleep drop + late-night sessions + canceled plans → Success Trap), driving Lumi's mood and the
    Muse Spark prompt with genuine detections — not just scripted scenarios.
-3. **Llama Guard 3–Aligned Responsible AI Prompting**:
-   Every coaching suggestion and proactive companion dialogue is generated under Llama Guard 3–style
-   safety instructions (supportive, non-clinical, non-judgmental) embedded in the system prompt.
-   A dedicated Llama Guard classifier call is the planned next step on the roadmap.
+3. **Prompt-Level Responsible-AI Guidance**:
+   Every coaching suggestion and proactive companion dialogue is generated under supportive,
+   non-clinical, non-judgmental safety instructions embedded in the system prompt.
+   The schema never asks the model for a safety verdict (a model grading its own output is not
+   screening); a dedicated classifier call is the planned roadmap hardening step.
 4. **Frictionless Actionable Nudges via WhatsApp**:
    Instead of passive advice, MetaMuse generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
 5. **Auditory Warmth (Native Text-To-Speech)**:
@@ -100,7 +101,7 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
 7. **Official Meta Horizon Design System**:
    Full brand integration featuring **Meta Blue (`#0866FF`)**, **Meta Cyan (`#00B2FF`)**, and **Meta Horizon Violet (`#7B61FF`)**, switchable on the fly with reactive Compose tokens.
 8. **Direct BYOK Cryptographic Architecture**:
-   All API keys are entered directly by the user. Zero keys exist in the APK or repository, and credentials are encrypted at rest with hardware-backed Android Keystore AES-256-GCM.
+   All API keys are entered directly by the user. Zero keys exist in the APK or repository, and the Meta API token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (hardware backing where the device provides it); other connector tokens live in private app storage excluded from backups.
 9. **Zero-Knowledge Privacy-First Architecture**:
    Includes an offline rule-based privacy engine where sensitive health and financial numbers never leave the device, establishing a clean path to **ExecuTorch on-device Llama 3.2**.
 
@@ -127,8 +128,8 @@ flowchart TD
         PROMPT["Structured Telemetry Payload<br/>(Companion state + 4 channels + Core Values)"]
         SPARK["Meta Muse Spark 1.3 ⭐<br/>(Flagship Meta Model API Inference)"]
         LLAMA["Meta Llama 3.1 70B<br/>(Open-Weight Cloud Alternative)"]
-        GUARD["Llama Guard 3–Aligned<br/>(Prompt-Level Safety Screening)"]
-        LOCAL["Zero-Cloud Privacy Engine<br/>(ExecuTorch On-Device Fallback)"]
+        SAFETY["Prompt-Level Safety<br/>Guidance (No Classifier)"]
+        LOCAL["Zero-Cloud Privacy Engine<br/>(Deterministic Offline Fallback)"]
     end
 
     subgraph UIExperience["4. Reactive Jetpack Compose UI"]
@@ -153,10 +154,10 @@ flowchart TD
 
     RULES --> PROMPT
     PROMPT --> SPARK
-    SPARK --> GUARD
-    GUARD --> REPO
+    SPARK --> SAFETY
+    SAFETY --> REPO
     PROMPT -. Alternative .-> LLAMA
-    LLAMA -. Alternative .-> GUARD
+    LLAMA -. Alternative .-> SAFETY
     RULES -. Fallback .-> LOCAL
     LOCAL -. Offline .-> REPO
 
@@ -291,7 +292,7 @@ Muse Spark returns a deterministic JSON schema containing a brief reasoning trac
   "reasoningSteps": [
     { "title": "1. Multi-Stream Ingestion", "detail": "Observed high task completion coupled with critical sleep deficit." },
     { "title": "2. Hidden Trade-Off", "detail": "Financial and career metrics look thriving while social ties and restorative rest are silently decaying." },
-    { "title": "3. Llama Guard 3 Evaluation", "detail": "Screened proactive prompt for safety: validated compassionate, non-judgmental guidance. Status: PASSED." }
+    { "title": "3. Equilibrium Path", "detail": "Compassionate re-centering plan with one concrete action. Safety: prompt-level guidance, no separate classifier." }
   ],
   "pillars": [
     { "pillar": "Health & Vitality", "score": 40, "recommendation": "Protect 7.5h sleep window tonight.", "suggestedAction": "11 PM Screen Cutoff" },
@@ -307,13 +308,12 @@ Muse Spark returns a deterministic JSON schema containing a brief reasoning trac
     "actionButtonText": "📱 WhatsApp Sam & Priya",
     "targetPayload": "Hey! Missing catching up—are you free for Saturday brunch?"
   },
-  "llamaGuardStatus": "PASSED (Safe for Well-being & Guidance)",
   "modelUsed": "Meta Muse Spark 1.3 (Meta Model API)"
 }
 ```
 
-> Note: `llamaGuardStatus` is self-reported by the model under Llama Guard 3–style prompt
-> instructions — it is not a separate classifier call (see 🔒 Security §3).
+> Note: no safety-verdict field is requested — a model grading its own output would not
+> count as screening. Safety is prompt-level guidance only (see 🔒 Security §3).
 
 ---
 
@@ -356,7 +356,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 ### Scenario 2: The Invisible Money Leak
 * **The Conflict**: Consecutive late-night work sessions past 9:30 PM correlate 1:1 with 9 convenience delivery orders ($318/mo).
 * **Lumi's Reaction**: Lumi becomes **Tired & Drained (🥱)**.
-* **Llama's Diagnosis**: Identifies that delivery spending is not driven by hunger, but by evening cognitive exhaustion.
+* **Spark's Diagnosis**: Identifies delivery spending clustering alongside short sleep and late-night work (pattern observed; cause not established).
 * **Actionable Nudge**: Suggests a 5-minute easy home meal and an evening screen cutoff.
 
 ### Scenario 3: The Connection Debt
@@ -387,7 +387,7 @@ MetaMuse/
 │   │   │       │   ├── LifeRuleEngine.kt    # Pure-Kotlin cross-channel trade-off rules on live telemetry
 │   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
 │   │   │       │   ├── security/
-│   │   │       │   │   └── SecureByokStore.kt       # Hardware Keystore AES-256-GCM + DataStore BYOK
+│   │   │       │   │   └── SecureByokStore.kt       # Keystore AES-256-GCM + DataStore BYOK
 │   │   │       │   └── connectors/
 │   │   │       │       ├── HealthConnectManager.kt      # Android Health Connect SDK wrapper
 │   │   │       │       ├── CalendarTasksConnector.kt    # CalendarProvider + Google Tasks client
@@ -452,7 +452,7 @@ the app, and **zero keys exist in the repository or APK**. After installing:
 3. Optionally connect **Plaid** (Client ID + Secret), **SimpleFIN**, or a **Facebook token** in
    their respective connector cards — or import a bank **CSV** with no credentials at all.
 
-Keys are encrypted at rest with hardware-backed Android Keystore AES-256-GCM (see
+The Meta token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (see
 🔒 Security below) and can be wiped anytime via **"Remove Key"**.
 
 *(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device
@@ -486,11 +486,11 @@ adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 ### 1. Direct BYOK (Bring-Your-Own-Key) Cryptographic Architecture
 
 > [!IMPORTANT]
-> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Llama, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with hardware-backed encryption.
+> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Llama, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with Keystore-protected encryption.
 
 For users who configure their own Meta Model API / Muse Spark 1.3 or provider key, MetaMuse enforces strict defense-in-depth safeguards:
-* **Hardware-Backed Android Keystore Encryption**:
-  The BYOK API key is encrypted at rest using **AES-256-GCM** with a hardware-backed key generated inside the `AndroidKeyStore` (isolated in the device's Trusted Execution Environment [TEE] or StrongBox Keymaster).
+* **Android Keystore Encryption (Meta token + Plaid client secret)**:
+  Those two credentials are encrypted at rest using **AES-256-GCM** with a key generated inside the `AndroidKeyStore` (hardware backing where the device provides it; StrongBox/hardware level is neither requested nor verified at runtime). Facebook, Google Tasks, Plaid access, and SimpleFIN tokens live in private app storage and are excluded from backups.
 * **Encrypted Jetpack DataStore**:
   Ciphertext and 12-byte initialization vectors (IVs) are stored in an isolated Preferences DataStore (`metamuse_secure_byok`), eliminating insecure plaintext SharedPreferences.
 * **Zero Cloud Backups & Zero Exfiltration**:
@@ -498,7 +498,7 @@ For users who configure their own Meta Model API / Muse Spark 1.3 or provider ke
 * **Instant User Revocation**:
   Users can tap **"Remove Key"** at any time to instantly wipe and purge the encrypted payload from DataStore and flush active runtime memory.
 * **Security Threat Model Disclosure**:
-  While hardware-backed Keystore encryption protects stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, MetaMuse offers its **100% On-Device Privacy Mode**.
+  While Keystore-protected encryption shields stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, MetaMuse offers its **100% On-Device Privacy Mode**.
 
 ### 2. Zero-Knowledge On-Device Privacy Engine
 Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
@@ -511,13 +511,16 @@ contents, and connector status lines. Raw Health Connect records, full calendar 
 complete transaction histories, and all credentials/API secrets are never transmitted.
 Derived summaries can still be sensitive — treat the cloud path as "de-identified
 telemetry + your own pinned values," and stay offline whenever that bar isn't met.
+The separate chat path additionally transmits your current message plus up to four
+prior turns alongside companion context — never raw records or credentials.
 
-### 3. Responsible AI with Llama Guard 3–Aligned Prompting
-All proactive conversational advice and Llama prescriptions are generated under Llama Guard 3–style
-safety instructions embedded in the system prompt (supportive, compassionate, non-clinical).
+### 3. Responsible AI with Prompt-Level Safety Guidance
+All proactive conversational advice and Lumi prescriptions are generated under safety instructions
+embedded in the system prompt (supportive, compassionate, non-clinical).
 MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness
-pressure. A dedicated Llama Guard classifier call in front of every response is the planned
-hardening step; today the `llamaGuardStatus` field is model self-report, not a separate gate.
+pressure. The response schema requests no safety verdict — a model grading its own output is not
+screening — and a dedicated classifier call in front of every response is the planned
+roadmap hardening step.
 
 ### 4. Android Health Connect Compliance
 All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
@@ -558,7 +561,7 @@ timeline
 ## ⚖️ Hackathon Evaluation FAQ
 
 **Q: Why is Meta Muse Spark 1.3 the flagship instead of open-weights Llama?**  
-**A:** Muse Spark's frontier reasoning and structured outputs via the Meta Model API make it the best cross-stream life analyst available. Open-weights Llama stays in the architecture two ways: as the alternative cloud engine (Llama 3.1 70B) and as the future of zero-cloud privacy via ExecuTorch on-device weights. **Llama Guard 3–style safety prompting** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
+**A:** Muse Spark's frontier reasoning and structured outputs via the Meta Model API make it the best cross-stream life analyst available. Open-weights Llama stays in the architecture two ways: as the alternative cloud engine (Llama 3.1 70B) and as the future of zero-cloud privacy via ExecuTorch on-device weights. **Prompt-level safety guidance** keeps every coaching response supportive and non-clinical — vital for empathetic lifestyle coaching.
 
 **Q: How does the companion avoid becoming annoying or guilt-inducing?**  
 **A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
@@ -687,7 +690,7 @@ and committed by the human author. Listed in the order it happened.*
   known issue for post-submit.
 
 ### Verification ledger
-- Suite grown 15 → **41/41 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
+- Suite grown 15 → **42/42 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 15,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).

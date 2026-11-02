@@ -2,12 +2,12 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 41/41 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 42/42 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **41/41 green**,
-  zero failures/errors: `ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **42/42 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 15,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
@@ -20,6 +20,9 @@ perceived quality; P2 items are nice-to-have polish.
 
 ## P0 — Must fix before submission (demo/judging blockers)
 
+> Historical note: the P0/P1 sections below preserve the original audit's problem statements
+> verbatim as a record — every item is resolved (see the Current Verification Record above).
+>
 ### 1. [DONE] Fresh-clone signing was broken — keystore committed
 - `app/build.gradle.kts` assigns `signingConfig = debugConfig` with
   `storeFile = ${rootDir}/debug.keystore`, but `debug.keystore` is in `.gitignore` and untracked.
@@ -206,6 +209,19 @@ and the Ladybug-era IDE prerequisite corrected. `runBlocking` cold-start reads
 confirmed real but minor (documented, post-submit refactor). compileSdk kept at 37
 (AGP 9.1.1 mandates newest Studio regardless; downgrade adds risk for no gain).
 Suite at **41/41 green** — see Current Verification Record.
+
+A sixth, code-deep review verified all actionable items: credential-encryption claims
+narrowed to the two actually-encrypted secrets (Meta token + Plaid client secret;
+StrongBox/TEE wording retired everywhere), chat-history transmission path disclosed,
+model-graded `PASSED` safety verdict fully retired (schema no longer requests it,
+parser ignores it, default/UI/README show "Prompt-Level Safety Guidance — No
+Separate Classifier"), remaining Money Leak causal wordings fixed in prompt/scenario/
+dialogue/README, verify→log rename completed in `AttuneScreen` (callbacks, icon,
+test tags, user strings), diagram `GUARD` node renamed to `SAFETY`, vision
+WorkManager sentence corrected, and screenshot count unified at 7. The review's
+`isConnected`-after-fallback claim was refuted (it derives from key presence at
+config time, not from fallback responses). One disclosure unit test added.
+Suite at **42/42 green** — see Current Verification Record.
 
 ---
 
