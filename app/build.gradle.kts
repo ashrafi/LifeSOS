@@ -104,7 +104,10 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.navigation.compose)
+  // room is unused by app code but intentionally kept: removing it destabilizes the
+  // offline dependency graph (androidx.collection alignment). Revisit post-submit.
   implementation(libs.androidx.room.ktx)
+  implementation(libs.androidx.room.runtime)
   // lifecycle-service + lifecycle-livedata excluded: work-runtime only needs them for
   // expedited-foreground workers and LiveData observers, neither of which this app uses
   // (periodic CoroutineWorker + direct state reads). Both are also absent from
@@ -113,9 +116,9 @@ dependencies {
     exclude(group = "androidx.lifecycle", module = "lifecycle-service")
     exclude(group = "androidx.lifecycle", module = "lifecycle-livedata")
   }
-  implementation(libs.androidx.room.runtime)
   // implementation(libs.coil.compose)
-  implementation(libs.converter.moshi)
+  // firebase-ai + appcheck are intentionally kept: unused by app code today, but part
+  // of the AI Studio environment scaffolding (App Check debug token flow). Do not remove.
   implementation(libs.firebase.ai)
   // Uncomment to use Firestore:
   // implementation(libs.firebase.firestore)
@@ -131,10 +134,8 @@ dependencies {
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.logging.interceptor)
-  implementation(libs.moshi.kotlin)
   implementation(libs.okhttp)
   // implementation(libs.play.services.location)
-  implementation(libs.retrofit)
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
   testImplementation(libs.androidx.junit)
@@ -149,5 +150,4 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.test.manifest)
   debugImplementation(libs.androidx.compose.ui.tooling)
   "ksp"(libs.androidx.room.compiler)
-  "ksp"(libs.moshi.kotlin.codegen)
 }

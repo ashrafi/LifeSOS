@@ -1,6 +1,6 @@
 # MetaMuse — Final Pre-Submission Runbook ✅
 
-Everything Muse Code could do from here is done (code, tests 36/36 green, docs,
+Everything Muse Code could do from here is done (code, tests 41/41 green, docs,
 icon, live rule engine). This runbook is the **human-only remainder**: device work,
 proof capture, and submission. Do the steps in order; each ends with an expected result.
 Check the box only when you see it.
@@ -36,7 +36,7 @@ committed `debug.keystore` signs correctly on a machine that never saw this repo
 grep -h "<testsuite " app/build/test-results/testDebugUnitTest/*.xml
 ```
 Expected: `ExampleUnitTest 7/7`, `ExampleRobolectricTest 15/15`, `LifeRuleEngineTest 9/9`,
-`LifeMemoryMomentsTest 5/5`, zero failures/errors — **36/36 green**, matching the last verified run.
+`LifeMemoryMomentsTest 5/5`, `SyncFallbackMathTest 5/5`, zero failures/errors — **41/41 green**, matching the last verified run.
 
 ---
 

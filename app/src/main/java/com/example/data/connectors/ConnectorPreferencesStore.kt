@@ -153,6 +153,16 @@ class ConnectorPreferencesStore(context: Context) {
         get() = prefs.getLong("live_last_sync_epoch", 0L)
         set(value) = prefs.edit().putLong("live_last_sync_epoch", value).apply()
 
+    // TYPE_STEP_COUNTER baseline: the hardware sensor reports cumulative steps since
+    // reboot, so today's count is always (current - baseline). -1 means unset.
+    var stepCounterBaseline: Long
+        get() = prefs.getLong("step_counter_baseline", -1L)
+        set(value) = prefs.edit().putLong("step_counter_baseline", value).apply()
+
+    var stepCounterBaselineDay: String
+        get() = prefs.getString("step_counter_baseline_day", "") ?: ""
+        set(value) = prefs.edit().putString("step_counter_baseline_day", value).apply()
+
     var userName: String
         get() = prefs.getString("user_name", "") ?: ""
         set(value) = prefs.edit().putString("user_name", value.trim()).apply()

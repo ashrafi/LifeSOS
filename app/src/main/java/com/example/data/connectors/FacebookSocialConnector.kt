@@ -39,6 +39,15 @@ class FacebookSocialConnector(
         .build()
 ) {
 
+    companion object {
+        /**
+         * Counts starred contacts last reached before the neglect threshold.
+         * A timestamp of 0 (never contacted) counts as neglected.
+         */
+        fun countNeglectedStarred(lastContactTimes: List<Long>, fourteenDaysAgoMs: Long): Int =
+            lastContactTimes.count { it < fourteenDaysAgoMs }
+    }
+
     fun hasContactsPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
@@ -170,7 +179,8 @@ class FacebookSocialConnector(
                 val projection = arrayOf(
                     ContactsContract.Contacts._ID,
                     ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                    ContactsContract.Contacts.STARRED
+                    ContactsContract.Contacts.STARRED,
+                    ContactsContract.Contacts.LAST_TIME_CONTACTED
                 )
                 context.contentResolver.query(
                     ContactsContract.Contacts.CONTENT_URI,
@@ -180,13 +190,17 @@ class FacebookSocialConnector(
                     null
                 )?.use { cursor ->
                     val nameIdx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+                    val lastContactIdx = cursor.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED)
+                    val lastContactTimes = mutableListOf<Long>()
                     while (cursor.moveToNext()) {
                         starredCount += 1
                         val cName = (if (nameIdx >= 0) cursor.getString(nameIdx) else null) ?: "Favorite Contact"
+                        lastContactTimes.add(if (lastContactIdx >= 0) cursor.getLong(lastContactIdx) else 0L)
                         if (logLines.size < 5) {
                             logLines.add("Close Circle (Starred Contact): $cName")
                         }
                     }
+                    neglectedStarredCount = countNeglectedStarred(lastContactTimes, fourteenDaysAgoMs)
                 }
 
                 // Count real contact birthdays logged on device
@@ -223,9 +237,6 @@ class FacebookSocialConnector(
                 // Provider fallback
             }
         }
-
-        //Unused fourteenDaysAgoMs suppressed cleanly
-        if (fourteenDaysAgoMs < 0) neglectedStarredCount = 0
 
         val isAnyConnected = fbConnected || hasContactsPerm
         if (!isAnyConnected) {

@@ -2,13 +2,13 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 36/36 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 41/41 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **36/36 green**,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **41/41 green**,
   zero failures/errors: `ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
-  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5.
+  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
   earlier in the day, not conflicting claims — this section is the current truth.
@@ -148,9 +148,10 @@ then verify an overnight sync refreshes Lumi before the app opens.
 
 ## External Review Response (done Nov 1)
 
-An 8.5/10 external review was verified claim-by-claim against the code: 6 confirmed,
-1 refuted (neglected-contact count is computed, zero only when disconnected), 1
-severity-downgraded (Plaid backend is a production requirement, documented as
+An 8.5/10 external review was verified claim-by-claim against the code: 6 confirmed
+(plus 1 correction issued later — see Fifth Review entry: the neglected-contact
+"refutation" below was wrong; the count was indeed never incremented until fixed),
+1 severity-downgraded (Plaid backend is a production requirement, documented as
 sandbox-scoped for this backend-less PoC). Fixes shipped: fallback `modelUsed`
 provenance (never Spark branding), Offline Engine renaming (ExecuTorch = roadmap),
 recovery flow relabeled to the Suggested → Logged → Sensor-verified ladder, exact
@@ -191,6 +192,20 @@ shipped: cloud Guard default + `defaultThoughtSteps` reworded to prompt-level ho
 keystore checklist line corrected (committed long ago; only the clean-clone proof
 remains). Suite steady at **36/36 green**. Nothing architectural left — the freeze
 holds; only device proof and presentation assets remain.
+
+## Fifth Review Response — Technical Debt Batch (done Nov 1)
+
+A fifth, deeply technical review verified 6 of 7 actionable items: reboot-cumulative
+step-counter bug (fixed with a persisted midnight-baseline delta + 3 tests),
+neglected-contact count never incremented — **a genuine miss in the earlier "refuted"
+verdict, corrected here** (14-day `LAST_TIME_CONTACTED` query implemented + 2 tests),
+unused retrofit/moshi deps removed (room reverted: its removal destabilized offline
+graph resolution — documented in `app/build.gradle.kts`; firebase pair kept as AI
+Studio scaffolding), TTS `delay(7500)` replaced with `UtteranceProgressListener`,
+and the Ladybug-era IDE prerequisite corrected. `runBlocking` cold-start reads
+confirmed real but minor (documented, post-submit refactor). compileSdk kept at 37
+(AGP 9.1.1 mandates newest Studio regardless; downgrade adds risk for no gain).
+Suite at **41/41 green** — see Current Verification Record.
 
 ---
 

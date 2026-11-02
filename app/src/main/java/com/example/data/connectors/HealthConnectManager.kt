@@ -47,6 +47,26 @@ data class RealHealthSyncResult(
 
 class HealthConnectManager {
 
+    companion object {
+        /**
+         * Converts the reboot-cumulative TYPE_STEP_COUNTER reading into today's steps.
+         * Returns (stepsToday, newBaseline). Re-baselines (reporting 0) on first read,
+         * day rollover, or reboot (current < baseline) — the only honest choices when
+         * the pre-baseline history is unknowable.
+         */
+        fun resolveDailySteps(
+            currentTotal: Long,
+            baseline: Long,
+            baselineDay: String,
+            today: String
+        ): Pair<Long, Long> {
+            if (baseline < 0L || baselineDay != today || currentTotal < baseline) {
+                return 0L to currentTotal
+            }
+            return (currentTotal - baseline) to baseline
+        }
+    }
+
     val requiredPermissions: Set<String> = setOf(
         HealthPermission.getReadPermission(StepsRecord::class),
         HealthPermission.getReadPermission(SleepSessionRecord::class),
@@ -187,12 +207,23 @@ class HealthConnectManager {
             }
         }
 
-        // Supplement with real hardware step counter sensor if Health Connect steps today == 0 and sensor permission granted
+        // Supplement with real hardware step counter sensor if Health Connect steps today == 0 and sensor permission granted.
+        // The sensor is cumulative since reboot, so resolve against the persisted daily baseline.
         var usedHardwareSensor = false
         if (stepsToday == 0L && hasActivityRecognition) {
             val sensorSteps = readHardwareStepCounterOnce(context)
             if (sensorSteps != null && sensorSteps > 0L) {
-                stepsToday = sensorSteps
+                val prefs = ConnectorPreferencesStore(context)
+                val today = LocalDate.now(ZoneId.systemDefault()).toString()
+                val (dailySteps, newBaseline) = resolveDailySteps(
+                    currentTotal = sensorSteps,
+                    baseline = prefs.stepCounterBaseline,
+                    baselineDay = prefs.stepCounterBaselineDay,
+                    today = today
+                )
+                prefs.stepCounterBaseline = newBaseline
+                prefs.stepCounterBaselineDay = today
+                stepsToday = dailySteps
                 usedHardwareSensor = true
             }
         }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.CalendarContract
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -224,6 +225,16 @@ class SerenityViewModel(
                 if (status == TextToSpeech.SUCCESS) {
                     textToSpeech?.language = Locale.US
                     applyTtsVoiceSettings()
+                    // Callbacks arrive on a binder thread: hop to Main for state.
+                    textToSpeech?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onStart(utteranceId: String?) {}
+                        override fun onDone(utteranceId: String?) {
+                            viewModelScope.launch { _isSpeaking.value = false }
+                        }
+                        override fun onError(utteranceId: String?) {
+                            viewModelScope.launch { _isSpeaking.value = false }
+                        }
+                    })
                 }
             }
         }
@@ -246,10 +257,6 @@ class SerenityViewModel(
             _isSpeaking.value = true
             applyTtsVoiceSettings()
             textToSpeech?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "muse_speech_id")
-            viewModelScope.launch {
-                delay(7500)
-                _isSpeaking.value = false
-            }
         }
     }
 

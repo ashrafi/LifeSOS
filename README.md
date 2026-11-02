@@ -430,7 +430,7 @@ MetaMuse/
 ## 🚀 Setup & Build Instructions
 
 ### Prerequisites
-* **Android Studio**: Ladybug (2024.2.1) or newer
+* **Android Studio**: a current release with AGP 9.x support plus the API 37 SDK platform and JDK 17/21 (Ladybug-era Studios predate AGP 9.1.1 — if sync fails, update Studio first)
 * **Java Development Kit**: JDK 17 or JDK 21 (configured as `JAVA_HOME`)
 * **Android SDK**: `compileSdk 37`, `targetSdk 36`, `minSdk 26` — test on an Android 14 (API 34) or Android 15 (API 35/36) physical device (e.g., Google Pixel 8/9) or emulator with Google APIs
 * **Android Debug Bridge (ADB)**: Installed and added to system path
@@ -678,9 +678,17 @@ and committed by the human author. Listed in the order it happened.*
   Suggested→Logged→Sensor-verified ladder; added exact what-leaves-the-device disclosure,
   Plaid-backend production note, and PKCE correction.
 
+### 11. Technical-debt batch (fifth review)
+- Fixed the reboot-cumulative step-counter bug (persisted midnight baseline), implemented
+  the neglected-contacts 14-day query (correcting my own earlier wrong "refuted"),
+  removed unused retrofit/moshi (room kept deliberately: removal destabilized offline
+  resolution), replaced the TTS `delay(7500)` with `UtteranceProgressListener`, and
+  corrected the IDE prerequisite. `runBlocking` cold-start reads logged as a minor
+  known issue for post-submit.
+
 ### Verification ledger
-- Suite grown 15 → **36/36 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
-  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5), `assembleDebug` clean, APK
+- Suite grown 15 → **41/41 green** (`ExampleUnitTest` 7, `ExampleRobolectricTest` 15,
+  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).
 
