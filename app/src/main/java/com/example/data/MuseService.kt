@@ -422,8 +422,15 @@ class MuseService(
             }
 
             val json = JSONObject(content)
-            val headline = json.optString("headline", "Equilibrium Guidance from Meta Llama")
-            val diagnosis = json.optString("overallDiagnosis", "Llama cross-analyzed your multi-channel life telemetry.")
+            // Parser fallback labels follow the selected cloud model, so a Spark
+            // response with missing optional fields is never attributed to Llama.
+            val providerLabel = when {
+                modelName.contains("spark", ignoreCase = true) -> "Muse Spark"
+                modelName.contains("70b", ignoreCase = true) -> "Meta Llama"
+                else -> "Meta Model API"
+            }
+            val headline = json.optString("headline", "Equilibrium Guidance from $providerLabel")
+            val diagnosis = json.optString("overallDiagnosis", "$providerLabel cross-analyzed your multi-channel life telemetry.")
             val prescription = json.optString("tamagotchiPrescription", "Let's nurture balance together.")
 
             val stepsList = mutableListOf<ThoughtStep>()
@@ -433,7 +440,7 @@ class MuseService(
                     val stepObj = stepsArray.getJSONObject(i)
                     stepsList.add(
                         ThoughtStep(
-                            title = stepObj.optString("title", "Llama Analysis"),
+                            title = stepObj.optString("title", "$providerLabel Analysis"),
                             detail = stepObj.optString("detail", "")
                         )
                     )

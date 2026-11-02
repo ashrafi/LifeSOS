@@ -2,7 +2,5 @@
   "name": "MetaMuse",
   "description": "MetaMuse: A bio-responsive personal superintelligence companion powered by Meta Muse Spark, embodying soft tactility, conversational calm, and intuitive clarity.",
   "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "majorCapabilities": []
 }

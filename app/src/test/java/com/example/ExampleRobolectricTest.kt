@@ -326,4 +326,15 @@ class ExampleRobolectricTest {
         assertNotNull(restored)
         assertEquals(5, restored?.deliveryOrderCount)
     }
+
+    @Test
+    fun `offline fallback never reports cloud connected`() = runTest {
+        // Blank key → deterministic offline fallback, no network attempt.
+        // isConnected must reflect cloud reachability, not mere invocation.
+        val repo = SerenityRepository()
+        val advice = repo.sendAllInfoToMuse()
+        assertTrue(advice.modelUsed.contains("Offline"))
+        assertFalse(repo.metaAiConfig.value.isConnected)
+        assertNotNull(repo.latestMuseAdvice.value)
+    }
 }

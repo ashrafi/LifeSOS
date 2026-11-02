@@ -1178,12 +1178,14 @@ class SerenityRepository(
             isLocalPrivacyMode = _metaAiConfig.value.isLocalLlamaPrivacyMode
         )
         _latestMuseAdvice.value = advice
+        // isConnected means the last consult actually reached the cloud: both offline
+        // fallbacks report modelUsed containing "Offline", no cloud response does.
         _metaAiConfig.value = _metaAiConfig.value.copy(
-            isConnected = true,
+            isConnected = !advice.modelUsed.contains("Offline"),
             lastSyncedAt = advice.timestamp
         )
 
-        // Update tamagotchi speech to Llama's live prescription
+        // Update tamagotchi speech to Muse's live prescription
         _tamagotchiState.value = _tamagotchiState.value.copy(
             speech = advice.tamagotchiPrescription
         )
@@ -1962,7 +1964,7 @@ class SerenityRepository(
                     summary = if (isRecovered) {
                         "Earlier meal and screen-free wind-down improved sleep quality to 7.3h."
                     } else {
-                        "Fragmented sleep (avg 5.4h) across 5 consecutive weeknights; high evening cortisol/stress."
+                        "Fragmented sleep (avg 5.4h) across 5 consecutive weeknights; high evening workload."
                     },
                     scorePercent = if (isRecovered) 86 else 45,
                     isAlert = !isRecovered,
@@ -1973,7 +1975,7 @@ class SerenityRepository(
                     ),
                     historyLog = listOf(
                         "Mon–Fri: Sleep efficiency dropped to 71% after 9:30 PM heavy takeout meals",
-                        if (isRecovered) "Tonight: 5-min home meal at 6:45 PM • Calm nervous system" else "Evening fatigue spike detected daily at 6:30 PM"
+                        if (isRecovered) "Tonight: 5-min home meal at 6:45 PM • Calm nervous system" else "Late-day congestion pattern daily around 6:30 PM"
                     )
                 ),
                 tasksReport = ChannelTelemetryReport(
@@ -1988,7 +1990,7 @@ class SerenityRepository(
                     isAlert = !isRecovered,
                     metrics = listOf(
                         ChannelMetricItem("Important Tasks", "100% Done", "Daytime goals met", isWarning = false),
-                        ChannelMetricItem("6 PM Decision Fatigue", if (isRecovered) "Low (Pre-planned)" else "High (91%)", if (isRecovered) "5-min meal ready" else "Zero willpower left", isWarning = !isRecovered),
+                        ChannelMetricItem("6 PM Schedule Density", if (isRecovered) "Low (Pre-planned)" else "High (91%)", if (isRecovered) "5-min meal ready" else "High late-day workload", isWarning = !isRecovered),
                         ChannelMetricItem("Evening Unwind Activity", if (isRecovered) "Fiction reading" else "None scheduled", if (isRecovered) "Enjoyed 30m" else "Doomscrolling", isWarning = !isRecovered)
                     ),
                     historyLog = listOf(

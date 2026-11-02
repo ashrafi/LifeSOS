@@ -37,7 +37,7 @@ diagnosis. **Path B (backup):** airplane mode, no keys → Offline Rules Engine 
 
 - Swipe to **Show Data**: 4-channel bio-radar (Health / Tasks / Finance / Social).
 - Swipe to **Connections**: Health Connect, Calendar, Facebook, Plaid/SimpleFIN/CSV cards +
-  BYOK Keystore status → "your keys never leave this phone."
+  BYOK Keystore status → "keys are entered on-device, never hardcoded, never in telemetry payloads."
 - Mention: "With a Meta Model API key it reasons in the cloud; without one, the
   on-device engine keeps every demo beat working offline."
 

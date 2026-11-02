@@ -1,6 +1,6 @@
 # Screenshots
 
-Capture the six shots listed in [../demo-script.md](../demo-script.md) on a physical
+Capture the seven shots listed in [../demo-script.md](../demo-script.md) on a physical
 device (Pixel 8/9, light mode, Meta Horizon theme) and place them here:
 
 - `01-home-radiant.png`

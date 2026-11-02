@@ -2,12 +2,12 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 42/42 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 43/43 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **42/42 green**,
-  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 15,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **43/43 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 16,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
@@ -222,6 +222,21 @@ WorkManager sentence corrected, and screenshot count unified at 7. The review's
 `isConnected`-after-fallback claim was refuted (it derives from key presence at
 config time, not from fallback responses). One disclosure unit test added.
 Suite at **42/42 green** — see Current Verification Record.
+
+A seventh review on the pushed 69-commit main verified all actionable items: compact
+Connections card converted to dynamic engine labels (`selectedEngine` threaded
+through, "AI Engine & Privacy" + per-engine Run/status lines), Money Leak scenario
+purged of unmeasured physiology (cortisol/fatigue-spike/decision-fatigue/willpower →
+workload/congestion/density wording), parser fallback labels derived from the
+selected cloud model, and `isConnected` fixed to reflect cloud reachability —
+**a genuine miss in the earlier "refuted" verdict, corrected here** (the refuting
+grep had been `head`-truncated; the unconditional `copy(isConnected = true)` sat
+in `sendAllInfoToMuse`). Docs: `.env.example` narrowed, diagram store label fixed,
+demo-script key line made precise, last README `Llama's Diagnosis`/FAQ/loop
+wordings corrected, tree completed, 3 absolute links relativized, `metadata.json`
+Gemini capability emptied, screenshot count unified at 7 everywhere. One
+Robolectric provenance test added (blank-token consult asserts offline + unconnected).
+Suite at **43/43 green** — see Current Verification Record.
 
 ---
 

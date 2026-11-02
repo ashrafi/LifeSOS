@@ -120,7 +120,7 @@ flowchart TD
 
     subgraph CoreEngine["2. Telemetry Correlation & State Engine"]
         REPO["SerenityRepository<br/>(Unified StateFlow)"]
-        STORE["ConnectorPreferencesStore<br/>(Encrypted SharedPreferences)"]
+        STORE["ConnectorPreferencesStore<br/>(Private Prefs + Keystore DataStore)"]
         RULES["Deterministic Trade-Off Rules<br/>(e.g., Success Trap, Money Leak)"]
     end
 
@@ -185,7 +185,7 @@ MetaMuse features an uncluttered 3-tab navigation hierarchy with full dynamic su
 │ Tab 1: Home (Habitat)        │ Living Lumi Companion        │
 │                              │ Reactive Emotional Moods     │
 │                              │ Orbital Energy Motes & Halo  │
-│                              │ Llama Proactive Advice Card  │
+│                              │ Spark Proactive Advice Card  │
 │                              │ 1-Tap WhatsApp Nudge Button  │
 │                              │ 🔊 Voice Audio Readout       │
 ├──────────────────────────────┼──────────────────────────────┤
@@ -330,8 +330,8 @@ MetaMuse incorporates an official **Meta Horizon Brand Design System** configure
 | **`MetaDeepNavy`** | `#0C1A30` | ⬛ | High-contrast readable typography and icon outlines |
 | **`MetaSubtleBlue`** | `#E7F0FF` | ▫️ | Card background surfaces, badge fills, subtle dividers |
 
-* **Dynamic Jetpack Compose Engine**: Changing the theme in Settings instantly recalculates all component tokens via [`ThemeState`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/java/com/example/ui/theme/Color.kt) without restarting the Activity.
-* **Persistent Settings**: Preserved across launches via [`ConnectorPreferencesStore`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/java/com/example/data/connectors/ConnectorPreferencesStore.kt).
+* **Dynamic Jetpack Compose Engine**: Changing the theme in Settings instantly recalculates all component tokens via [`ThemeState`](app/src/main/java/com/example/ui/theme/Color.kt) without restarting the Activity.
+* **Persistent Settings**: Preserved across launches via [`ConnectorPreferencesStore`](app/src/main/java/com/example/data/connectors/ConnectorPreferencesStore.kt).
 
 ---
 
@@ -349,7 +349,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 ### Scenario 1: The Success Trap
 * **The Conflict**: High productivity (98% tasks completed) and +20% monthly savings, but sleep drops from 7.5h to 5.0h with 3 canceled social plans.
 * **Lumi's Reaction**: Lumi contracts, turns **Sick & Weak (🤒)**, dimming her vibrant aura to a tired violet.
-* **Llama's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
+* **Spark's Diagnosis**: Flags that current output is being subsidized by borrowing from health and friendships.
 * **WhatsApp Nudge**: Pre-drafts a message to friends: *"Free for Saturday brunch? Missing catching up!"*
 * **Logged Follow-Through**: Logging 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
 
@@ -362,7 +362,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 ### Scenario 3: The Connection Debt
 * **The Conflict**: Healthy steps, balanced budget, and on-time task completion, but 14 days without contact with family members despite "Family First" being pinned in core values.
 * **Lumi's Reaction**: Lumi becomes **Sad & Drifting (🥺)**.
-* **Llama's Diagnosis**: Pinpoints the gap between stated values and actual communication cadence.
+* **Spark's Diagnosis**: Pinpoints the gap between stated values and actual communication cadence.
 * **WhatsApp Nudge**: 1-tap WhatsApp voice note or message to sibling.
 
 ### Scenario 4: Live Real Data Mode
@@ -415,7 +415,9 @@ MetaMuse/
 │   │       └── java/com/example/
 │   │           ├── ExampleUnitTest.kt       # Theme, model-engine, BYOK & TTS voice unit tests
 │   │           ├── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows & nav
-│   │           └── LifeRuleEngineTest.kt    # JVM tests for live cross-channel rule detection
+│   │           ├── LifeRuleEngineTest.kt    # JVM tests for live cross-channel rule detection
+│   │           ├── LifeMemoryMomentsTest.kt # JVM tests for trend-aware memory moments
+│   │           └── SyncFallbackMathTest.kt  # JVM tests for sensor-fallback math
 │   ├── build.gradle.kts                     # App dependencies & SDK configuration
 │   └── proguard-rules.pro
 ├── gradle/
@@ -523,7 +525,7 @@ screening — and a dedicated classifier call in front of every response is the 
 roadmap hardening step.
 
 ### 4. Android Health Connect Compliance
-All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](file:///Users/developer/.gemini/antigravity/scratch/MetaMuse/app/src/main/AndroidManifest.xml).
+All health data queries adhere to the Android Health Connect data minimization guidelines and declare required intent rationale dialogs in [`AndroidManifest.xml`](app/src/main/AndroidManifest.xml).
 
 ### 5. Resilient Offline CSV & Contacts
 No third-party bank credentials are required to evaluate spending; users can import bank statements directly as local CSV files.
@@ -567,7 +569,7 @@ timeline
 **A:** Unlike standard fitness trackers that send red badges and punitive alerts, Lumi practices **symbiotic empathy**. She reflects your tiredness rather than scolding you. When you are exhausted, her advice reduces friction (e.g. suggesting an easy 5-minute meal rather than a rigorous workout).
 
 **Q: How does the WhatsApp integration work?**  
-**A:** When Llama spots social isolation, it drafts an empathetic message and triggers an Android Intent to `https://api.whatsapp.com/send?text=...`. The user is taken directly into WhatsApp with the message pre-filled, reducing the cognitive friction of reconnecting to a single tap.
+**A:** When Muse Spark spots social isolation, it drafts an empathetic message and triggers an Android Intent to `https://api.whatsapp.com/send?text=...`. The user is taken directly into WhatsApp with the message pre-filled, reducing the cognitive friction of reconnecting to a single tap.
 
 ---
 
@@ -582,7 +584,7 @@ timeline
 night, one delivery order, one postponed call at a time. A companion that sees *all* life
 channels can spend tiny daily micro-optimizations to buy a global, long-term optimum:
 in 40 years, not overweight and not in debt. The Android app here proves the closed loop
-(sense → nudge → *verified* follow-through); Meta's own devices make it ambient.
+(sense → nudge → *logged* follow-through); Meta's own devices make it ambient.
 
 Grounded in the article's science and tripartite design (**Body → Life Engine → Creature**,
 deterministic state machine + generative expression — never raw telemetry into an LLM):
@@ -690,7 +692,7 @@ and committed by the human author. Listed in the order it happened.*
   known issue for post-submit.
 
 ### Verification ledger
-- Suite grown 15 → **42/42 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 15,
+- Suite grown 15 → **43/43 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 16,
   `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).

@@ -279,6 +279,7 @@ fun PresenceScreen(
             SimpleConnectionsGraphicView(
                 integrations = integrations,
                 isMetaKeyConnected = metaAiConfig.token.isNotBlank(),
+                selectedEngine = selectedEngine,
                 isSyncingWithMuse = isSyncingWithMuse || realState.isSyncing,
                 currentTheme = currentTheme,
                 onSelectTheme = { viewModel.setAppThemeMode(it) },
@@ -1660,6 +1661,7 @@ private fun SimpleConnectionsGraphicView(
     integrations: LifeSyncIntegrations,
     isMetaKeyConnected: Boolean,
     isSyncingWithMuse: Boolean,
+    selectedEngine: MetaModelEngine,
     currentTheme: AppThemeMode,
     onSelectTheme: (AppThemeMode) -> Unit,
     contentPadding: PaddingValues,
@@ -1678,6 +1680,12 @@ private fun SimpleConnectionsGraphicView(
         integrations.facebookConnected,
         isMetaKeyConnected
     ).count { it }
+    val engineLabel = when (selectedEngine) {
+        MetaModelEngine.MUSE_SPARK_1_3 -> "Muse Spark"
+        MetaModelEngine.LLAMA_3_1_70B -> "Llama 3.1"
+        MetaModelEngine.ON_DEVICE_LLAMA -> "On-Device"
+    }
+    val useCloudEngine = isMetaKeyConnected && selectedEngine != MetaModelEngine.ON_DEVICE_LLAMA
 
     Column(
         modifier = modifier
@@ -1868,14 +1876,14 @@ private fun SimpleConnectionsGraphicView(
                         Spacer(modifier = Modifier.width(8.dp))
                         Column {
                             Text(
-                                text = "Meta Llama Brain & Privacy",
+                                text = "AI Engine & Privacy",
                                 style = MaterialTheme.typography.labelMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     color = DeepEspresso
                                 )
                             )
                             Text(
-                                text = if (isMetaKeyConnected) "Llama Inference Active • Ready" else "On-Device Zero-Cloud Privacy • Ready",
+                                text = if (useCloudEngine) "$engineLabel Inference Active • Ready" else "On-Device Zero-Cloud Privacy • Ready",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     color = DarkSageText,
                                     fontSize = 10.sp
@@ -1892,7 +1900,7 @@ private fun SimpleConnectionsGraphicView(
                             .clickable(onClick = onSyncToMuse)
                     ) {
                         Text(
-                            text = if (isSyncingWithMuse) "Reasoning..." else "Run Llama",
+                            text = if (isSyncingWithMuse) "Reasoning..." else "Run $engineLabel",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 color = CoralPrimary,
                                 fontWeight = FontWeight.Bold,
