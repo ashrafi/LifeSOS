@@ -96,7 +96,7 @@ enum class MuseDemoScenario(
         title = "2. The Invisible Money Leak",
         subtitle = "Exhausted solitary evenings driving convenience delivery spend",
         intelligenceKind = "Cross-Channel Behavioral Pattern Intelligence",
-        detectedRuleSummary = "Rule Triggered: Consecutive poor sleep + high evening task stress + solo evenings correlating with 9 late-night delivery orders.",
+        detectedRuleSummary = "Rule Triggered: Consecutive poor sleep + high evening task stress + elevated delivery-merchant spending (association, not established cause).",
         followThroughButtonLabel = "Log Follow-Through: 5-Min Easy Dinner & Evening Unwind",
         followThroughEventDetail = "Logged: Prepared 5-minute home meal, skipped delivery order (+$34 saved), and enjoyed a relaxing evening read"
     ),

@@ -16,6 +16,13 @@ import com.example.model.TamagotchiMood
 import com.example.model.TamagotchiState
 import com.example.viewmodel.SerenityViewModel
 import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -248,19 +255,42 @@ class ExampleRobolectricTest {
 
     @Test
     fun `meta ai token update and muse telemetry transmission`() = runTest {
-        val repo = SerenityRepository()
+        // Deterministic canned cloud response: no real network in automated tests.
+        // (Live API smoke stays a human device-check, not a unit-test dependency.)
+        val cannedContent = JSONObject()
+            .put("headline", "Canned Spark Synthesis")
+            .put("overallDiagnosis", "Canned cross-channel diagnosis.")
+            .put("tamagotchiPrescription", "Canned warm prescription.")
+            .toString()
+        val cannedBody = JSONObject()
+            .put("choices", JSONArray().put(JSONObject().put("message", JSONObject().put("content", cannedContent))))
+            .toString()
+        val fakeClient = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                Response.Builder()
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(200)
+                    .message("OK")
+                    .body(cannedBody.toResponseBody("application/json".toMediaType()))
+                    .build()
+            }
+            .build()
+        val repo = SerenityRepository(museService = MuseService(fakeClient))
         assertEquals("", repo.metaAiConfig.value.token)
         assertEquals(false, repo.metaAiConfig.value.isConnected)
 
         repo.updateMetaAiToken("meta_test_token_12345")
         assertEquals("meta_test_token_12345", repo.metaAiConfig.value.token)
-        assertEquals(true, repo.metaAiConfig.value.isConnected)
+        // A saved key is configured but unproven: connected only after a cloud consult.
+        assertEquals(false, repo.metaAiConfig.value.isConnected)
 
         val advice = repo.sendAllInfoToMuse()
-        assertNotNull(advice)
-        assertNotNull(advice.headline)
+        assertEquals("Canned Spark Synthesis", advice.headline)
+        assertEquals("Canned cross-channel diagnosis.", advice.overallDiagnosis)
         assertTrue(advice.pillars.isNotEmpty())
         assertNotNull(repo.latestMuseAdvice.value)
+        assertEquals(true, repo.metaAiConfig.value.isConnected)
     }
 
     @Test

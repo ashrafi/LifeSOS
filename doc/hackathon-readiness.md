@@ -2,13 +2,13 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 45/45 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 47/47 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **45/45 green**,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **47/47 green**,
   zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
-  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5.
+  `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
   earlier in the day, not conflicting claims — this section is the current truth.
@@ -253,6 +253,23 @@ JSON-schema, zero-knowledge ×2, offline scope, credential transmission) plus th
 Llama-alternative sweep (diagram, table, FAQ, intro). Screenshot counts unified at
 7 in all four docs. SimpleFIN left as-is (single-payload response — nothing is
 known-missing, unlike Plaid's separate failed request). Suite at **45/45 green**
+— see Current Verification Record.
+
+A ninth review verified all actionable items: `isConnected` is now proven-only
+(init `false`, token/endpoint updates reset to `false`, set `true` solely by a
+successful cloud consult; the pre-existing `hasConfiguredKey` carries the
+configured distinction — no model changes), `transactionsAvailable` threads from
+`RealFinanceSyncResult` into Connection Debt ("transactions unavailable" instead
+of false budget stability) and memory moments (no zero-delivery memory without
+data; text reworded to merchant-detection language), and the last real-network
+automated test was converted to a canned interceptor response (repo takes an
+optional `MuseService`, default unchanged; the test now also locks the
+`isConnected = true` provenance path). Scenario/README: rule summary, finance
+card, demo log label, and all late-night/1:1/Llama-key wordings corrected. Two
+review sub-items needed no change: zero-cloud scoping was already precise (§2
+states both modes), and no delivery-memory example exists in the README.
+SuccessTrap/MoneyLeak needed no new gates (existing `inflow > 0` / `count < 3`
+guards already prevent unknown-as-zero claims). Suite at **47/47 green**
 — see Current Verification Record.
 
 ---

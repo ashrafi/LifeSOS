@@ -35,7 +35,7 @@ class LifeMemoryMomentsTest {
       report = report()
     )
 
-  private fun finance(deliveries: Int = 1) = RealFinanceSyncResult(
+  private fun finance(deliveries: Int = 1, txnsAvailable: Boolean = true) = RealFinanceSyncResult(
     isConnected = true,
     sourceName = "Test Bank",
     statusLine = "connected",
@@ -45,6 +45,7 @@ class LifeMemoryMomentsTest {
     deliveryOrderCount = deliveries,
     deliverySpendUsd = 24.0,
     errorMessage = null,
+    transactionsAvailable = txnsAvailable,
     report = report()
   )
 
@@ -72,7 +73,7 @@ class LifeMemoryMomentsTest {
     )
 
     assertNotNull(moment)
-    assertTrue(moment!!.contains("zero late-night delivery"))
+    assertTrue(moment!!.contains("No delivery merchants were detected"))
   }
 
   @Test
@@ -108,6 +109,18 @@ class LifeMemoryMomentsTest {
       health = health(sleep = 7.3f, priorSleep = 7.1f),
       calendar = null,
       finance = finance(deliveries = 2),
+      social = null
+    )
+    assertNull(moment)
+  }
+
+  @Test
+  fun unknownTransactionsNeverProduceDeliveryFreeMemory() {
+    // Balance-only sync (transactions unavailable): zero counts are unknown, not a streak.
+    val moment = LifeMemoryMoments.momentFor(
+      health = null,
+      calendar = null,
+      finance = finance(deliveries = 0, txnsAvailable = false),
       social = null
     )
     assertNull(moment)

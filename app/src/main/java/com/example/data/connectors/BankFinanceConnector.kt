@@ -33,6 +33,7 @@ data class RealFinanceSyncResult(
     val deliveryOrderCount: Int,
     val deliverySpendUsd: Double,
     val errorMessage: String?,
+    val transactionsAvailable: Boolean = true,
     val report: ChannelTelemetryReport
 )
 
@@ -59,6 +60,7 @@ class BankFinanceConnector(
             deliveryOrderCount = 0,
             deliverySpendUsd = 0.0,
             errorMessage = error,
+            transactionsAvailable = false,
             report = ChannelTelemetryReport(
                 channelName = "Finance (Bank & Budget)",
                 headlineStatus = if (error != null) "Connection Error" else "Bank Link Needed",
@@ -545,6 +547,7 @@ class BankFinanceConnector(
             deliveryOrderCount = deliveryCount,
             deliverySpendUsd = deliverySpend,
             errorMessage = if (transactionsOk) null else "Balances synced; transaction fetch failed — spending shown as unknown, not zero.",
+            transactionsAvailable = transactionsOk,
             report = ChannelTelemetryReport(
                 channelName = "Finance ($sourceName)",
                 headlineStatus = if (!transactionsOk && totalBalance != null) {

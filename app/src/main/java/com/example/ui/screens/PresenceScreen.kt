@@ -1361,7 +1361,7 @@ private fun RealBankFinanceCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Pull real bank account balances, 30-day spending, and late-night food delivery convenience patterns via Plaid REST API, SimpleFIN Bridge, or any exported Bank .CSV statement.",
+                text = "Pull real bank account balances, 30-day spending, and merchant-matched food delivery spending patterns via Plaid REST API, SimpleFIN Bridge, or any exported Bank .CSV statement.",
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = WarmSlateCharcoal,
                     lineHeight = 19.sp

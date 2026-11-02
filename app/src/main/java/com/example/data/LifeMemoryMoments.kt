@@ -42,9 +42,9 @@ object LifeMemoryMoments {
     }
 
     private fun deliveryFreeStretch(finance: RealFinanceSyncResult?): String? {
-        if (finance?.isConnected != true) return null
+        if (finance?.isConnected != true || !finance.transactionsAvailable) return null
         if (finance.deliveryOrderCount != 0) return null
-        return "A full stretch with zero late-night delivery orders. " +
+        return "No delivery merchants were detected in the available transaction history. " +
             "Your evenings — and our budget — feel calmer already."
     }
 

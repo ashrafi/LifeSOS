@@ -76,7 +76,8 @@ class ExampleUnitTest {
       isLocalPrivacyMode = false
     )
     assertEquals(true, repo.metaAiConfig.value.hasConfiguredKey)
-    assertEquals(true, repo.metaAiConfig.value.isConnected)
+    // A saved key is configured but unproven: connected only after a cloud consult.
+    assertEquals(false, repo.metaAiConfig.value.isConnected)
     assertEquals("meta_spark_test_mock_secret_key_12345", repo.metaAiConfig.value.token)
     assertEquals(com.example.model.MetaModelEngine.MUSE_SPARK_1_3, repo.metaAiConfig.value.selectedEngine)
 

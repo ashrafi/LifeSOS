@@ -48,7 +48,8 @@ import java.util.Locale
 import java.util.UUID
 
 class SerenityRepository(
-    private val appContext: Context? = null
+    private val appContext: Context? = null,
+    private val museService: MuseService = MuseService()
 ) {
 
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -197,12 +198,11 @@ class SerenityRepository(
     )
     val vitalityCheckin: StateFlow<VitalityCheckin> = _vitalityCheckin.asStateFlow()
 
-    private val museService = MuseService()
 
     private val _metaAiConfig = MutableStateFlow(
         MetaAiConfig(
             token = prefsStore?.metaAiToken.orEmpty(),
-            isConnected = prefsStore?.metaAiToken?.isNotBlank() == true,
+            isConnected = false, // Proven only by a successful cloud consult (see sendAllInfoToMuse)
             lastSyncedAt = null,
             endpointUrl = prefsStore?.metaAiEndpoint ?: "https://api.meta.ai/v1/chat/completions",
             modelName = prefsStore?.metaAiModel ?: "muse-spark-1.3",
@@ -966,7 +966,7 @@ class SerenityRepository(
             MuseDemoScenario.INVISIBLE_MONEY_LEAK -> Triple(
                 "You made your 5-minute easy dinner at home and took a relaxing evening off! The delivery cycle is broken and we're thriving together! ✨",
                 "Logged Follow-Through: 5-Min Easy Dinner & Evening Unwind",
-                "Skipped late-night delivery (+$34 saved) • Peaceful evening routine"
+                "Skipped delivery order (+$34 saved) • Peaceful evening routine"
             )
             MuseDemoScenario.CONNECTION_DEBT -> Triple(
                 "You called your sibling and reconnected from the heart! My aura is bouncing with joy—you made room for the people who make life meaningful! 💖",
@@ -1137,7 +1137,7 @@ class SerenityRepository(
             modelName = trimmedModel,
             selectedEngine = engine,
             isLocalLlamaPrivacyMode = isLocalPrivacyMode,
-            isConnected = trimmedToken.isNotEmpty(),
+            isConnected = false, // New credentials must re-prove cloud reachability via a consult
             isKeyEncryptedInKeystore = true,
             hasConfiguredKey = trimmedToken.isNotEmpty()
         )

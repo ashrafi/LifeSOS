@@ -61,7 +61,8 @@ class LifeRuleEngineTest {
     deliveries: Int = 0,
     deliverySpend: Double = 0.0,
     spend: Double = 4000.0,
-    inflow: Double = 5000.0
+    inflow: Double = 5000.0,
+    txnsAvailable: Boolean = true
   ) = RealFinanceSyncResult(
     isConnected = true,
     sourceName = "Test Bank",
@@ -72,6 +73,7 @@ class LifeRuleEngineTest {
     deliveryOrderCount = deliveries,
     deliverySpendUsd = deliverySpend,
     errorMessage = null,
+    transactionsAvailable = txnsAvailable,
     report = report()
   )
 
@@ -227,5 +229,22 @@ class LifeRuleEngineTest {
         social = null
       )
     )
+  }
+
+  @Test
+  fun connectionDebtTreatsUnavailableTransactionsAsUnknownBudget() {
+    // Balance-only sync: bank connected, transactions unavailable → budget unknown.
+    val match = LifeRuleEngine.evaluateLiveRules(
+      health = health(),
+      calendar = calendar(),
+      finance = finance(txnsAvailable = false),
+      social = social(neglected = 2)
+    )
+
+    assertNotNull(match)
+    assertEquals("CONNECTION_DEBT", match!!.ruleId)
+    assertTrue(match.explanation.contains("transactions unavailable"))
+    assertFalse(match.explanation.contains("budget looks stable"))
+    assertFalse(match.explanation.contains("budget channels look stable"))
   }
 }

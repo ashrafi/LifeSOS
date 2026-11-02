@@ -168,14 +168,16 @@ object LifeRuleEngine {
             if (declined >= 1) add("$declined declined/canceled plan${if (declined == 1) "" else "s"}")
         }.joinToString(" + ")
 
-        // Never claim stability without evidence: unconnected channels are unknown.
+        // Never claim stability without evidence: unconnected channels are unknown,
+        // and a balance-only sync (transactions unavailable) is not a stable budget.
         val healthKnownStable = health?.isConnected == true
-        val budgetKnownStable = finance?.isConnected == true
+        val budgetKnownStable = finance?.isConnected == true && finance.transactionsAvailable
+        val budgetUnknownWhy = if (finance?.isConnected == true) "transactions unavailable" else "bank not connected"
         val stabilityNote = when {
             healthKnownStable && budgetKnownStable -> "health and budget channels look stable"
-            healthKnownStable -> "health looks stable but budget is unknown (bank not connected)"
+            healthKnownStable -> "health looks stable but budget is unknown ($budgetUnknownWhy)"
             budgetKnownStable -> "budget looks stable but health is unknown (Health Connect not linked)"
-            else -> "health and budget are both unknown (connect Health Connect and your bank to complete the picture)"
+            else -> "health is unknown (Health Connect not linked) and budget is unknown ($budgetUnknownWhy)"
         }
 
         return LiveRuleMatch(

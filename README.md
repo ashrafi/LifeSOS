@@ -115,7 +115,7 @@ flowchart TD
         HC["Android Health Connect<br/>(Steps, Sleep, HR, Water)"]
         CAL["Android Calendar & Tasks<br/>(Meetings, Deadlines, Late-Nights)"]
         SOC["Facebook Graph v21.0 & Contacts<br/>(Starred Friends, Interaction Cadence)"]
-        FIN["Plaid API / SimpleFIN / CSV<br/>(Balances, Late-Night Delivery Spend)"]
+        FIN["Plaid API / SimpleFIN / CSV<br/>(Balances, Merchant-Matched Delivery Spend)"]
     end
 
     subgraph CoreEngine["2. Telemetry Correlation & State Engine"]
@@ -236,7 +236,7 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
   * **Plaid API v2020-09-14**: Sandbox and production institution linking with 30-day transaction sync.
   * ⚠️ **PoC security scope**: this build calls Plaid directly from the app (sandbox by default), which is acceptable for a hackathon demo but **not for production** — a production release must move link-token creation and secret exchange to a backend server per Plaid's architecture, since any secret shipped in a mobile app is extractable.
   * **SimpleFIN Bridge**: Standard read-only open banking protocol.
-  * **Zero-Cloud Bank CSV Importer**: Complete client-side CSV parser that scans transaction descriptions for late-night food delivery (`DoorDash`, `Uber Eats`, `Deliveroo`, `Grubhub`) without sending financial data over the Internet.
+  * **Zero-Cloud Bank CSV Importer**: Complete client-side CSV parser that scans transaction descriptions for food delivery (`DoorDash`, `Uber Eats`, `Deliveroo`, `Grubhub`) without sending financial data over the Internet.
 
 ---
 
@@ -351,7 +351,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 * **Logged Follow-Through**: Logging 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
 
 ### Scenario 2: The Invisible Money Leak
-* **The Conflict**: Consecutive late-night work sessions past 9:30 PM correlate 1:1 with 9 convenience delivery orders ($318/mo).
+* **The Conflict**: Consecutive late-night work sessions past 9:30 PM coincide with elevated delivery-merchant spending (9 orders, $318/mo over 14 days; association, not established cause).
 * **Lumi's Reaction**: Lumi becomes **Tired & Drained (🥱)**.
 * **Spark's Diagnosis**: Identifies delivery spending clustering alongside short sleep and late-night work (pattern observed; cause not established).
 * **Actionable Nudge**: Suggests a 5-minute easy home meal and an evening screen cutoff.
@@ -485,7 +485,7 @@ adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 ### 1. Direct BYOK (Bring-Your-Own-Key) Cryptographic Architecture
 
 > [!IMPORTANT]
-> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Llama, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with Keystore-protected encryption.
+> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with Keystore-protected encryption.
 
 For users who configure their own Meta Model API / Muse Spark 1.3 or provider key, MetaMuse enforces strict defense-in-depth safeguards:
 * **Android Keystore Encryption (Meta token + Plaid client secret)**:
@@ -691,8 +691,8 @@ and committed by the human author. Listed in the order it happened.*
   known issue for post-submit.
 
 ### Verification ledger
-- Suite grown 15 → **45/45 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
-  `LifeRuleEngineTest` 9, `LifeMemoryMomentsTest` 5, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
+- Suite grown 15 → **47/47 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 18,
+  `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
   icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
   one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).
 
