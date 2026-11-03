@@ -11,7 +11,8 @@
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
 [![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
 
-> **Prize pledge:** If LifeSOS wins prize money, we will donate 100% of net winnings to charity (recipient to be announced). This project is our gift to the community, and any winnings should serve it.
+### User Guide: 
+> > 📖 **New here?** Start with the [LifeSOS User Guide](doc/user-guide.md) — name setup, keys & connections, and every feature explained.
 
 ---
 
@@ -547,6 +548,10 @@ All health data queries adhere to the Android Health Connect data minimization g
 ### 5. Resilient Offline CSV & Contacts
 No third-party bank credentials are required to evaluate spending; users can import bank statements directly as local CSV files.
 
+
+---
+### User Guide:
+> > 📖 **New here?** Start with the [LifeSOS User Guide](doc/user-guide.md) — name setup, keys & connections, and every feature explained.
 ---
 
 > The product roadmap — near-term ExecuTorch/Wear OS plans and the Meta spatial
