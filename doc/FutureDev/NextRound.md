@@ -366,19 +366,19 @@ Yes. We already have a dedicated product-vision document for the long-term direc
 
 I rechecked the repository:
 
-- [`doc/meta-product-vision.md`](https://github.com/ashrafi/MetaMuse/blob/main/doc/meta-product-vision.md?utm_source=chatgpt.com) contains the 40-Year Life Ledger, persistent memory, verified outcomes, proactive interventions, one Lumi across devices, Neural Band, Muse Charm, and future privacy architecture.&#x20;
+- [`doc/meta-product-vision.md`](https://github.com/ashrafi/LifeSOS/blob/main/doc/meta-product-vision.md?utm_source=chatgpt.com) contains the 40-Year Life Ledger, persistent memory, verified outcomes, proactive interventions, one Lumi across devices, Neural Band, Muse Charm, and future privacy architecture.&#x20;
 
   [image](https://www.google.com/s2/favicons?domain=https://raw.githubusercontent.com\&sz=32)
 
   GitHub
 
-- [`README.md — Future Roadmap`](https://github.com/ashrafi/MetaMuse?utm_source=chatgpt.com#-future-roadmap--meta-ecosystem-synergy) already separates Hackathon MVP, Phase 1, and Phase 2.&#x20;
+- [`README.md — Future Roadmap`](https://github.com/ashrafi/LifeSOS?utm_source=chatgpt.com#-future-roadmap--meta-ecosystem-synergy) already separates Hackathon MVP, Phase 1, and Phase 2.&#x20;
 
   [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
-  ashrafi/MetaMuse: Meta AI Hackathon · GitHub
+  ashrafi/LifeSOS: Meta AI Hackathon · GitHub
 
-- [`doc/muse-thoughts.md`](https://github.com/ashrafi/MetaMuse/blob/main/doc/muse-thoughts.md?utm_source=chatgpt.com) also captures longer-term opportunities, including longitudinal demo mode and Wear OS.
+- [`doc/muse-thoughts.md`](https://github.com/ashrafi/LifeSOS/blob/main/doc/muse-thoughts.md?utm_source=chatgpt.com) also captures longer-term opportunities, including longitudinal demo mode and Wear OS.
 
 One distinction: the four labels I proposed—Understand, Imagine, Act, Evolve—are a useful way to organize the vision, but they aren't currently a named four-part implementation plan in the product-vision document.
 

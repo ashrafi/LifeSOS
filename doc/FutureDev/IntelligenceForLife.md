@@ -64,7 +64,7 @@ Currently, LifeSOS has core values and cross-channel scoring. The README already
 
 [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
-ashrafi/MetaMuse: Meta AI Hackathon · GitHub+1
+ashrafi/LifeSOS: Meta AI Hackathon · GitHub+1
 
 
 
@@ -392,7 +392,7 @@ Your current README already has the foundations for this storyline through its S
 
 [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
-ashrafi/MetaMuse: Meta AI Hackathon · GitHub+1
+ashrafi/LifeSOS: Meta AI Hackathon · GitHub+1
 
 
 

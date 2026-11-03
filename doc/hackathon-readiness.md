@@ -99,7 +99,7 @@ perceived quality; P2 items are nice-to-have polish.
 ### 9. [DONE] Repo hygiene (public push = owner)
 - `.idea/` project files are tracked in git — either commit this deliberately or untrack them
   (keep `runConfigurations` if they help judges run the app).
-- Confirm `github.com/ashrafi/MetaMuse` exists, is **public**, and matches the clone URL in the
+- Confirm `github.com/ashrafi/LifeSOS` exists, is **public**, and matches the clone URL in the
   README before the deadline.
 - Add a `LICENSE` file (check hackathon rules for requirements — Apache-2.0/MIT is typical).
 - Update the author/credits section (see open question below).
@@ -345,6 +345,12 @@ and Muse hardware-ecosystem names (factual Meta references), internal code
 identifiers, the `metamuse://` deep-link scheme (must match the Facebook app
 dashboard), and the AI-tool credit. Suite stays **59/59 green** — see Current
 Verification Record.
+
+Owner-scoped honesty note: the Facebook Graph cloud path ships code-complete
+but will never be live-validated pre-submission (no time for Meta app review).
+Per owner call, the caveat lives in the README Tier 2 line and the demo video
+— not as an in-app note — and the validated social demo path is
+starred-contacts sync. No code removed.
 
 ---
 

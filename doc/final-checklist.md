@@ -11,7 +11,7 @@ Check the box only when you see it.
 
 **1.1 Fresh clone to a new directory**
 ```bash
-git clone https://github.com/ashrafi/MetaMuse.git LifeSOS-final-check
+git clone https://github.com/ashrafi/LifeSOS.git LifeSOS-final-check
 cd LifeSOS-final-check
 ```
 Expected: clone succeeds (proves the repo URL in the README is real and public).

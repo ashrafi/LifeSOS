@@ -1355,6 +1355,17 @@ private fun RealFacebookSocialCard(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "Contacts sync above is the validated social path.",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = WarmSlateCharcoal,
+                    fontSize = 10.sp,
+                    lineHeight = 14.sp
+                )
+            )
         }
     }
 }

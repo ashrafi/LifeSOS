@@ -140,6 +140,7 @@ fun AttuneScreen(
     val isSyncingWithMuse by viewModel.isSyncingWithMuse.collectAsState()
     val chatPendingCount by viewModel.chatPendingCount.collectAsState()
     val chatReplyStatus by viewModel.chatReplyStatus.collectAsState()
+    val whatsAppInstalled = rememberIsWhatsAppInstalled()
 
     var isInputFocused by remember { mutableStateOf(false) }
 
@@ -179,6 +180,7 @@ fun AttuneScreen(
                 onExecuteNudge = { nudge ->
                     viewModel.executeActionableNudge(context, nudge)
                 },
+                isWhatsAppInstalled = whatsAppInstalled,
                 modifier = modifier
             )
         } else {
@@ -516,6 +518,61 @@ fun AttuneScreen(
                         )
                     }
 
+                    // Same actionable nudge, right under Consult — no trip back
+                    // to the front page. WhatsApp actions gray out when the app
+                    // isn't installed.
+                    val hubNudge = latestMuseAdvice?.actionableNudge
+                    if (hubNudge != null) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        val hubIsWhatsApp = hubNudge.type.equals("WHATSAPP", ignoreCase = true)
+                        val hubNudgeEnabled = !hubIsWhatsApp || whatsAppInstalled
+                        val nudgeContext = LocalContext.current
+                        Surface(
+                            shape = CircleShape,
+                            color = when {
+                                !hubNudgeEnabled -> SubtleContainer
+                                hubIsWhatsApp -> Color(0xFFE7FCE8)
+                                else -> MintContainer
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    1.dp,
+                                    when {
+                                        !hubNudgeEnabled -> WarmBorder
+                                        hubIsWhatsApp -> Color(0xFF25D366)
+                                        else -> MintSecondary
+                                    },
+                                    CircleShape
+                                )
+                                .clip(CircleShape)
+                                .then(
+                                    if (hubNudgeEnabled) {
+                                        Modifier.clickable {
+                                            viewModel.executeActionableNudge(nudgeContext, hubNudge)
+                                        }
+                                    } else Modifier
+                                )
+                                .testTag("hub_nudge_pill")
+                        ) {
+                            Text(
+                                text = hubNudge.actionButtonText,
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = if (!hubNudgeEnabled) {
+                                        WarmSlateCharcoal
+                                    } else if (hubIsWhatsApp) {
+                                        Color(0xFF0F5A29)
+                                    } else {
+                                        DarkSageText
+                                    },
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+
                     latestMuseAdvice?.let { advice ->
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(
@@ -703,6 +760,7 @@ private fun AvatarOnlyHomeView(
     onOpenFullHome: () -> Unit,
     onToggleSpeech: () -> Unit,
     onExecuteNudge: (ActionableNudge) -> Unit,
+    isWhatsAppInstalled: Boolean,
     modifier: Modifier = Modifier
 ) {
     val moodPulseColor = when (tamagotchi.mood) {
@@ -915,6 +973,8 @@ private fun AvatarOnlyHomeView(
                 tamagotchi.mood == TamagotchiMood.HOPEFUL -> MintSecondary.copy(alpha = 0.65f)
                 else -> WarmBorder
             }
+            var dialogExpanded by rememberSaveable { mutableStateOf(true) }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -967,9 +1027,21 @@ private fun AvatarOnlyHomeView(
                                     fontSize = 10.sp
                                 )
                             )
+                            IconButton(
+                                onClick = { dialogExpanded = !dialogExpanded },
+                                modifier = Modifier.size(26.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (dialogExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                    contentDescription = if (dialogExpanded) "Collapse dialogue" else "Expand dialogue",
+                                    tint = SoftMutedText,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
                         }
                     }
 
+                    if (dialogExpanded) {
                     Spacer(modifier = Modifier.height(4.dp))
 
                     val displayedSpeech = latestCompanionMessage?.content ?: tamagotchi.speech
@@ -988,14 +1060,27 @@ private fun AvatarOnlyHomeView(
                     if (actionableNudge != null) {
                         Spacer(modifier = Modifier.height(8.dp))
                         val isWhatsApp = actionableNudge.type.equals("WHATSAPP", ignoreCase = true)
+                        val nudgeEnabled = !isWhatsApp || isWhatsAppInstalled
                         Surface(
                             shape = CircleShape,
-                            color = if (isWhatsApp) Color(0xFFE7FCE8) else MintContainer,
+                            color = when {
+                                !nudgeEnabled -> SubtleContainer
+                                isWhatsApp -> Color(0xFFE7FCE8)
+                                else -> MintContainer
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, if (isWhatsApp) Color(0xFF25D366) else MintSecondary, CircleShape)
+                                .border(
+                                    1.dp,
+                                    when {
+                                        !nudgeEnabled -> WarmBorder
+                                        isWhatsApp -> Color(0xFF25D366)
+                                        else -> MintSecondary
+                                    },
+                                    CircleShape
+                                )
                                 .clip(CircleShape)
-                                .clickable { onExecuteNudge(actionableNudge) }
+                                .then(if (nudgeEnabled) Modifier.clickable { onExecuteNudge(actionableNudge) } else Modifier)
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
@@ -1005,7 +1090,7 @@ private fun AvatarOnlyHomeView(
                                 Text(
                                     text = actionableNudge.actionButtonText,
                                     style = MaterialTheme.typography.labelSmall.copy(
-                                        color = if (isWhatsApp) Color(0xFF0F5A29) else DarkSageText,
+                                        color = if (!nudgeEnabled) WarmSlateCharcoal else if (isWhatsApp) Color(0xFF0F5A29) else DarkSageText,
                                         fontWeight = FontWeight.Bold
                                     ),
                                     maxLines = 1,
@@ -1062,6 +1147,7 @@ private fun AvatarOnlyHomeView(
                             )
                         }
                     }
+                    }
                 }
             }
 
@@ -1074,6 +1160,14 @@ private fun AvatarOnlyHomeView(
                 testTag = "open_full_home_button"
             )
         }
+    }
+}
+
+@Composable
+private fun rememberIsWhatsAppInstalled(): Boolean {
+    val context = LocalContext.current
+    return remember {
+        context.packageManager.getLaunchIntentForPackage("com.whatsapp") != null
     }
 }
 

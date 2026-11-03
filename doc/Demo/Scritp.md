@@ -40,7 +40,7 @@ The main attraction is the Success Trap scenario. The README describes it clearl
 
 [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
-ashrafi/MetaMuse: Meta AI Hackathon · GitHub
+ashrafi/LifeSOS: Meta AI Hackathon · GitHub
 
 
 

@@ -231,7 +231,7 @@ LifeSOS continuously aggregates real-world data across four distinct pillars wit
 * **API**: Facebook Graph API v21.0 OAuth + Native Android `ContactsContract`
 * **Two-Tier Resilient Design**:
   * **Tier 1 (Android Contacts Provider)**: Reads starred/favorite close contacts and computes interaction recency. Runs with zero external API dependencies or review hurdles for 100% demo reliability.
-  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 token flow (system browser + `lifesos://oauth` deep-link callback) for public profile, family circles, and social events. PKCE code-verifier hardening is on the roadmap.
+  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 token flow (system browser + `metamuse://oauth` deep-link callback, kept to match the registered Facebook app dashboard) for public profile, family circles, and social events. Code-complete but **unvalidated for the hackathon — live Graph calls need a Meta-reviewed app**; Tier 1 contacts are the validated demo path. PKCE code-verifier hardening is on the roadmap.
 
 ### 4. Financial Equilibrium (Plaid API, SimpleFIN & Zero-Cloud CSV)
 * **Connectors**:
@@ -442,7 +442,7 @@ LifeSOS/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/ashrafi/MetaMuse.git
+git clone https://github.com/ashrafi/LifeSOS.git
 cd LifeSOS
 ```
 
