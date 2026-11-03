@@ -1,12 +1,12 @@
-You're absolutely right. I evaluated MetaMuse too heavily through a production SaaS lens. That isn't the assignment.
+You're absolutely right. I evaluated LifeSOS too heavily through a production SaaS lens. That isn't the assignment.
 
-MetaMuse is a proof of concept for a hackathon. We are not building a backend, operating a financial platform, or launching a production service.
+LifeSOS is a proof of concept for a hackathon. We are not building a backend, operating a financial platform, or launching a production service.
 
 The objective is to demonstrate an original idea, a compelling Android experience, and a meaningful integration with Meta Muse Spark.
 
 That changes my recommendations considerably.
 
-# MetaMuse — Revised Repository Review
+# LifeSOS — Revised Repository Review
 
 # 8.8/10
 
@@ -94,7 +94,7 @@ C. Fix missing-data handling.
 
 This one matters a lot.
 
-If Health Connect isn't connected, MetaMuse must not interpret missing health data as healthy or stable.
+If Health Connect isn't connected, LifeSOS must not interpret missing health data as healthy or stable.
 
 Use three states:
 
@@ -173,15 +173,15 @@ GitHub
 
 For financial data, Plaid Sandbox or imported CSV data is perfectly adequate for the demonstration. The embedded sandbox secret is a demo-only limitation, not a reason to introduce backend infrastructure.
 
-## 3. What I would add to make MetaMuse genuinely impressive
+## 3. What I would add to make LifeSOS genuinely impressive
 
 This is where I would spend the majority of your remaining development effort.
 
-I still believe the earlier Life Decision Intelligence idea is the best evolution of MetaMuse.
+I still believe the earlier Life Decision Intelligence idea is the best evolution of LifeSOS.
 
 But I would implement a very focused version.
 
-# MetaMuse Intelligence
+# LifeSOS Intelligence
 
 ## Understand. Imagine. Act. Evolve.
 
@@ -192,7 +192,7 @@ But I would implement a very focused version.
 Four capabilities
 
 1. Understand: Lumi recognizes patterns in the user's life.
-2. Imagine: MetaMuse explores alternative decisions and possible consequences.
+2. Imagine: LifeSOS explores alternative decisions and possible consequences.
 3. Act: The user selects an action and approves it.
 4. Evolve: Lumi responds to the resulting progress.
 
@@ -212,7 +212,7 @@ For example:
 | Creativity | Three hours weekly      |
 | Career     | Build meaningful things |
 
-This makes MetaMuse personal rather than imposing universal definitions of success.
+This makes LifeSOS personal rather than imposing universal definitions of success.
 
 It also gives the existing LifeRuleEngine something meaningful to evaluate.
 
@@ -226,7 +226,7 @@ Let the user ask Lumi:
 
 "What happens if I take on another project?"
 
-MetaMuse generates two possible paths.
+LifeSOS generates two possible paths.
 
 [How AI Transforms Scheduling to Give You a Competitive Edge](https://images.openai.com/static-rsc-4/lfHbkjPC7SFDREaTliFu1c5SE9QAHRnzkTJ2PQqdNcJt5v3rCc9CmJvkADookCkeyGcctTkQfW3dkADCd0eL4qDSuyNiUk5ewJ16Wi5gHGVsnpwQ8V35guv_0YXhJQ0yDMhZ7wkLg6ajU3sDr6KwtHSGE_Y8Im1-IJSlC_H8gNM?purpose=inline)
 
@@ -287,7 +287,7 @@ Act 1 — Lumi notices something.
 
 "You're accomplishing more than ever. But something else seems to be getting left behind."
 
-Act 2 — MetaMuse explains.
+Act 2 — LifeSOS explains.
 
 The deterministic engine identifies:
 
@@ -348,7 +348,7 @@ Those activities don't materially improve your primary hackathon demonstration.
 
 These are subjective assessments, not benchmark results.
 
-My revised conclusion is that MetaMuse already has a strong foundation. It needs refinement, not reinvention.
+My revised conclusion is that LifeSOS already has a strong foundation. It needs refinement, not reinvention.
 
 I would concentrate the remaining work on three things:
 
@@ -360,7 +360,7 @@ And there is one design principle I would put at the top of the project:
 
 > Lumi should never judge the life someone is living. She should help them understand the life they're creating.
 
-That's MetaMuse. That's the idea I'd take to the hackathon.
+That's LifeSOS. That's the idea I'd take to the hackathon.
 ----
 Yes. We already have a dedicated product-vision document for the long-term direction. I should have respected that separation instead of bringing those ideas back into the immediate implementation plan.
 
@@ -401,6 +401,6 @@ Keep those in the future vision.
 
 My recommendation is to freeze feature development and spend the remaining time making the existing experience exceptional.
 
-We should demonstrate what MetaMuse already is, not dilute it trying to demonstrate what MetaMuse might become.
+We should demonstrate what LifeSOS already is, not dilute it trying to demonstrate what LifeSOS might become.
 
 The hackathon is about proving the idea. The Future Direction documents describe building the idea into a much bigger product.

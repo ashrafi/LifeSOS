@@ -85,7 +85,7 @@ on the band NPU; the phone is a display, sync hub, and Life Engine host.*
   Steps/Sleep/HeartRate/SpO2 records to Health Connect, making Meta a first-class
   citizen in Android's health graph (and feeding every HC reader, including competitors'
   apps — confidence as strategy).
-- **MetaMuse Life Engine feed:** macro-state (Health Connect batch: sleep, RHR, HRV)
+- **LifeSOS Life Engine feed:** macro-state (Health Connect batch: sleep, RHR, HRV)
   + micro-state (band real-time: tension spike? just stood up? mid-workout?) — exactly
   the article's split. Life Engine rules (§repo `LifeRuleEngine`) gain band-native
   triggers: `TENSION_SUSTAINED_30MIN`, `SEDENTARY_WITH_ELEVATED_HR`, `WORKOUT_COMPLETED`.

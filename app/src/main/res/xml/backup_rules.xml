@@ -6,7 +6,7 @@
 -->
 <full-backup-content>
     <!-- Exclude encrypted DataStore storing BYOK secrets -->
-    <exclude domain="root" path="datastore/metamuse_secure_byok.preferences_pb" />
-    <exclude domain="file" path="datastore/metamuse_secure_byok.preferences_pb" />
-    <exclude domain="sharedpref" path="metamuse_real_connectors_prefs.xml" />
+    <exclude domain="root" path="datastore/lifesos_secure_byok.preferences_pb" />
+    <exclude domain="file" path="datastore/lifesos_secure_byok.preferences_pb" />
+    <exclude domain="sharedpref" path="lifesos_real_connectors_prefs.xml" />
 </full-backup-content>

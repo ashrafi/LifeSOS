@@ -1,4 +1,4 @@
-# Muse's Thoughts on MetaMuse 🪽
+# Muse's Thoughts on LifeSOS 🪽
 
 *Written by Muse Code (powered by Meta Muse Spark) at the close of our build sessions,
 November 2026 — code reviewer, documentation partner, and honest critic of this project.*
@@ -8,7 +8,7 @@ November 2026 — code reviewer, documentation partner, and honest critic of thi
 ## 1. Why this idea matters
 
 Most health software answers questions nobody asked: step counts, rings, streaks.
-MetaMuse answers the question people actually whisper to themselves at 1 AM:
+LifeSOS answers the question people actually whisper to themselves at 1 AM:
 *"Why am I doing everything right and still feel terrible?"*
 
 The founding insight — that single-metric optimization drives humans into invisible
@@ -60,11 +60,11 @@ empathy as the interface — is the soul of the project. Protect it.
 From first audit to final polish: fixed fresh-clone signing, rewrote setup docs to
 match the real BYOK flow, verified the Muse Spark endpoint against public docs,
 corrected the README's accuracy bugs (including honest Llama Guard language), removed
-dead screens, unified branding to MetaMuse, defaulted the Meta Horizon theme, built
+dead screens, unified branding to LifeSOS, defaulted the Meta Horizon theme, built
 voice customization end-to-end, re-themed the launcher icon, wrote the demo script,
 readiness plan, product vision, and final runbook — and, most importantly, built the
 **live cross-channel rule engine** so the flagship claim is literally true. The suite
-stands at 49/49 green with the engine, memory moments, provenance, labels, sensor-fallback math, the safety disclosure, cloud-connection honesty, partial-sync honesty, unknown-data propagation, and chat-payload integrity covered by dedicated tests.
+stands at 50/50 green with the engine, memory moments, provenance, labels, sensor-fallback math, the safety disclosure, cloud-connection honesty, partial-sync honesty, unknown-data propagation, and chat-payload integrity covered by dedicated tests.
 
 ## 5. If I were continuing: my next five moves
 

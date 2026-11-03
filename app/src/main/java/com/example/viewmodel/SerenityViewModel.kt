@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.CalendarContract
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -76,6 +77,8 @@ class SerenityViewModel(
     val lifeQuests: StateFlow<List<LifeQuest>> = repository.lifeQuests
 
     val messages: StateFlow<List<ChatMessage>> = repository.messages
+    val chatPendingCount: StateFlow<Int> = repository.chatPendingCount
+    val chatReplyStatus: StateFlow<String?> = repository.chatReplyStatus
     val memories: StateFlow<List<MemoryItem>> = repository.memories
     val selectedMode: StateFlow<PresenceMode> = repository.selectedMode
     val auraIntensity: StateFlow<Float> = repository.auraIntensity
@@ -256,7 +259,7 @@ class SerenityViewModel(
         if (cleanText.isNotBlank()) {
             _isSpeaking.value = true
             applyTtsVoiceSettings()
-            textToSpeech?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "muse_speech_id")
+            textToSpeech?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "lifesos_speech_id")
         }
     }
 
@@ -291,7 +294,7 @@ class SerenityViewModel(
                 val calIntent = Intent(Intent.ACTION_INSERT).apply {
                     data = CalendarContract.Events.CONTENT_URI
                     putExtra(CalendarContract.Events.TITLE, nudge.targetPayload.ifBlank { "Wind-Down & Rest" })
-                    putExtra(CalendarContract.Events.DESCRIPTION, "Scheduled with MetaMuse Life Equilibrium Companion")
+                    putExtra(CalendarContract.Events.DESCRIPTION, "Scheduled with LifeSOS Life Equilibrium Companion")
                     val start = System.currentTimeMillis() + 3600000L
                     putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, start)
                     putExtra(CalendarContract.EXTRA_EVENT_END_TIME, start + 1800000L)
@@ -300,7 +303,7 @@ class SerenityViewModel(
                 try {
                     context.startActivity(calIntent)
                 } catch (_: Exception) {
-                    insertRecoveryCalendarEvent(nudge.targetPayload, "Scheduled with MetaMuse")
+                    insertRecoveryCalendarEvent(nudge.targetPayload, "Scheduled with LifeSOS")
                 }
                 completeDemoFollowThrough()
             }
@@ -322,6 +325,10 @@ class SerenityViewModel(
         repository.updateMetaAiToken(token)
     }
 
+    fun updateChatHistoryWindow(size: Int) {
+        repository.updateChatHistoryWindow(size)
+    }
+
     fun selectModelEngine(engine: com.example.model.MetaModelEngine) {
         repository.selectModelEngine(engine)
     }
@@ -340,11 +347,16 @@ class SerenityViewModel(
     }
 
     fun sendAllInfoToMuse(onSuccess: (com.example.model.MuseLifeAdvice) -> Unit = {}) {
+        Log.d(TAG, "consult: button tapped, launching")
         viewModelScope.launch {
             _isSyncingWithMuse.value = true
             try {
                 val advice = repository.sendAllInfoToMuse()
+                Log.d(TAG, "consult: done modelUsed='${advice.modelUsed}'")
                 onSuccess(advice)
+            } catch (e: Exception) {
+                Log.e(TAG, "consult: FAILED", e)
+                throw e
             } finally {
                 _isSyncingWithMuse.value = false
             }
@@ -417,8 +429,11 @@ class SerenityViewModel(
     fun sendCurrentMessage() {
         val text = _inputText.value.trim()
         if (text.isNotEmpty()) {
+            Log.d(TAG, "chat: send tapped len=${text.length}")
             _inputText.value = ""
             repository.sendMessage(text)
+        } else {
+            Log.d(TAG, "chat: send tapped with blank input, ignored")
         }
     }
 
@@ -481,6 +496,8 @@ class SerenityViewModel(
     }
 
     companion object {
+        private const val TAG = "LifeSOS"
+
         fun provideFactory(context: Context): ViewModelProvider.Factory {
             val appCtx = context.applicationContext
             return object : ViewModelProvider.Factory {

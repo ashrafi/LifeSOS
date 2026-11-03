@@ -66,8 +66,9 @@ class BankFinanceConnector(
                 headlineStatus = if (error != null) "Connection Error" else "Bank Link Needed",
                 summary = error
                     ?: "Connect a real bank account via Plaid API (Sandbox or Production), SimpleFIN Open Banking Bridge, or import a real bank .CSV export.",
-                scorePercent = 50,
+                scorePercent = 0,
                 isAlert = error != null,
+                isAvailable = false,
                 metrics = listOf(
                     ChannelMetricItem("Bank Balance", "—", "Link Plaid / CSV"),
                     ChannelMetricItem("30d Outflow", "—", "No account linked"),

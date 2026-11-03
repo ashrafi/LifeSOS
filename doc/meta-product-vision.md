@@ -1,11 +1,11 @@
-# MetaMuse: A Product Vision Gift for Meta ⌚🪽
+# LifeSOS: A Product Vision Gift for Meta ⌚🪽
 
 > **This project is a gift to Meta — a thank-you for the invitation to Meta Connect.**
 > The Android app in this repository is a working prototype of the architecture proposed in
 > [*Bio-Responsive Digital Companion*](https://zoewave.medium.com/bio-responsive-digital-companion-1c1b36f2788c)
 > (YLabZ, Sep 2026; local copy: [`OrigArticle/zoewave-medium-com.md`](OrigArticle/zoewave-medium-com.md)):
 > a living creature whose well-being reflects the user's choices — with the **Meta Neural Band**
-> and **Meta Muse** as its true devices. We truly hope you and Meta like the idea.
+> and **LifeSOS** as its true devices. We truly hope you and Meta like the idea.
 
 **Thesis: superintelligence as a life coach.** Human lives fail at the margin — one late
 night, one delivery order, one postponed call at a time. A companion that sees *all* life
@@ -27,7 +27,7 @@ the evidence base that makes Lumi a health intervention, not a toy:
   it as *their own* neglect — and fixing her means fixing themselves.
 - **Social Cognitive Theory** (Bandura): behavior change emerges from cognition × social
   context × environment. Clinical virtual-pet systems ("Virtual Fitness Buddy", "Draco")
-  produced **statistically significant increases in daily steps and MVPA**. MetaMuse's
+  produced **statistically significant increases in daily steps and MVPA**. LifeSOS's
   differentiator is *continuous contextual awareness* — a persistent entity instead of
   a kiosk demo.
 
@@ -62,7 +62,7 @@ signal; sEMG pinch-and-drag plus haptics become a private, zero-tap channel for
 accepting or snoozing nudges. Wrist SNR is lower than forearm, but modern CNN/SVM
 classifiers still exceed 90% gesture accuracy — good enough for companion control.
 
-### Meta Muse + Muse Charm — the mind and the body 🧠🪆
+### LifeSOS + Muse Charm — the mind and the body 🧠🪆
 
 - **Muse Spark 1.3** (1M-token context) is the generative orchestrator: it interprets
   Life Engine state vectors against weeks of history, references past actions, and
@@ -129,4 +129,4 @@ design, and the Life Ledger idea, and build the version only Meta can build: not
 another dashboard, but a companion that lives alongside us, reflects what we do,
 remembers what we care about — and helps us become the person we intended to be.
 
-*MetaMuse — micro-optimization today, global optimum for life.* 🪽
+*LifeSOS — micro-optimization today, global optimum for life.* 🪽

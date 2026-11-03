@@ -16,7 +16,7 @@ catalyst in both directions.
 - [`hardware/spec.md`](hardware/spec.md) — form factor, sEMG array, optical/motion/thermal
   sensors, compute, power budget, materials, durability, manufacturing, regulatory hooks.
 - [`software/spec.md`](software/spec.md) — firmware, DSP pipelines, on-device ML,
-  metric algorithms, phone SDK, Health Connect + MetaMuse integration, cloud/security,
+  metric algorithms, phone SDK, Health Connect + LifeSOS integration, cloud/security,
   validation protocols, competitive teardown, roadmap.
 
 *Status: proposal spec. All figures are engineering targets ("shall") or explicit

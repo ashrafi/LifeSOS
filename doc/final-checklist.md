@@ -1,6 +1,6 @@
-# MetaMuse — Final Pre-Submission Runbook ✅
+# LifeSOS — Final Pre-Submission Runbook ✅
 
-Everything Muse Code could do from here is done (code, tests 49/49 green, docs,
+Everything Muse Code could do from here is done (code, tests 59/59 green, docs,
 icon, live rule engine). This runbook is the **human-only remainder**: device work,
 proof capture, and submission. Do the steps in order; each ends with an expected result.
 Check the box only when you see it.
@@ -11,8 +11,8 @@ Check the box only when you see it.
 
 **1.1 Fresh clone to a new directory**
 ```bash
-git clone https://github.com/ashrafi/MetaMuse.git MetaMuse-final-check
-cd MetaMuse-final-check
+git clone https://github.com/ashrafi/MetaMuse.git LifeSOS-final-check
+cd LifeSOS-final-check
 ```
 Expected: clone succeeds (proves the repo URL in the README is real and public).
 
@@ -35,8 +35,8 @@ committed `debug.keystore` signs correctly on a machine that never saw this repo
 ./gradlew testDebugUnitTest
 grep -h "<testsuite " app/build/test-results/testDebugUnitTest/*.xml
 ```
-Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 20/20`, `LifeRuleEngineTest 10/10`,
-`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, zero failures/errors — **49/49 green**, matching the last verified run.
+Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 29/29`, `LifeRuleEngineTest 11/11`,
+`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, zero failures/errors — **59/59 green**, matching the last verified run.
 
 ---
 
@@ -47,14 +47,18 @@ Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 20/20`, `LifeRuleEngine
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 ```
-Expected: app launches to Home with Lumi **Radiant ✨ on the Meta Horizon (Meta Blue)
-theme** — no onboarding, no key prompt blocking the screen.
+Expected: app launches to Home with Lumi **Dormant 💤 (gray, zero vitals, "—" score)
+on the Meta Horizon (Meta Blue) theme** — no onboarding, no key prompt blocking
+the screen, no fake baseline data. Show Data: all four channels gray/"—" with a
+"No Live Signals Yet" header. Consult button reads "Awaiting First Signal" (disabled).
+Front page: 4 satellite chips gray ("Health —" etc.); full Home habitat shows
+"Life Score: —", gray vital bars, and grayed-out caretaker pills.
 
 **2.2 Launcher check.** Find the app in the launcher.
-Expected: new Meta Blue→Violet Lumi starburst icon, app name **MetaMuse**.
+Expected: new Meta Blue→Violet Lumi starburst icon, app name **LifeSOS**.
 
 **2.3 Kill + relaunch.** Force-stop, reopen.
-Expected: theme, companion name, and vitals persist; still Radiant.
+Expected: theme, companion name, and vitals persist; still Dormant gray with no connections.
 
 ---
 
@@ -64,7 +68,7 @@ Rehearse [demo-script.md](demo-script.md) verbatim. For **each** of the 5 states
 (science-icon menu → Live Data, Healthy Baseline, Success Trap, Money Leak,
 Connection Debt):
 
-- [ ] Correct Lumi mood (Radiant / Radiant / Sick 🤒 / Sick 🤒→Tired narrative / Sad 🥺).
+- [ ] Correct Lumi mood (Dormant 💤 on Live Data with no connections / Radiant / Sick 🤒 / Sick 🤒→Tired narrative / Sad 🥺).
 - [ ] Diagnosis card renders with headline + prescription + WhatsApp nudge (no blank cards).
 - [ ] Tapping the WhatsApp nudge opens WhatsApp with a pre-filled message
       (or the system share sheet on devices without WhatsApp).
@@ -85,7 +89,7 @@ cross-channel pattern you may see a genuine `LIVE RULE TRIGGERED` explanation �
 screenshot it if so, it's the strongest possible demo evidence.
 
 **3.3 Cloud proof pass.** Enter a real Meta Model API key, trigger Success Trap,
-tap **Consult Muse for Advice**.
+tap **Consult LifeSOS for Advice**.
 Expected: card shows `modelUsed: Meta Muse Spark 1.3 (Meta Model API)`. Screenshot
 this card — it is the flagship-claim proof. Then **Remove Key** and confirm the app
 falls back to offline cleanly.
@@ -117,7 +121,7 @@ Expected: README renders fully offline in GitHub preview — no broken image lin
 - [ ] `LICENSE` (MIT) present; author credit line final.
 - [ ] Re-read the hackathon's official rules once: eligibility, deadline + timezone,
       required submission fields (repo link, video link, description), license
-      constraints, and any AI-disclosure requirement — MetaMuse already discloses
+      constraints, and any AI-disclosure requirement — LifeSOS already discloses
       AI assistance in the README; mirror that in the portal if asked.
 - [ ] Confirm no secrets anywhere: `git log -p -- .env | head` empty, no tokens in
       README/screenshots/video (revoke + re-shoot if a key is visible in any pixel).

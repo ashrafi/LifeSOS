@@ -112,6 +112,7 @@ object LifeRuleEngine {
         finance: RealFinanceSyncResult?
     ): LiveRuleMatch? {
         if (finance?.isConnected != true) return null
+        if (!finance.transactionsAvailable) return null
         if (finance.deliveryOrderCount < 3) return null
 
         val poorSleep = health?.isConnected == true &&

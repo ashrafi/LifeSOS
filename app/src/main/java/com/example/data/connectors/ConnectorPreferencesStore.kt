@@ -11,7 +11,7 @@ class ConnectorPreferencesStore(context: Context) {
     private val secureByokStore = SecureByokStore.getInstance(context)
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences("metamuse_real_connectors_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
 
     var metaAiToken: String
         get() = secureByokStore.getMetaAiTokenSync()
@@ -122,32 +122,40 @@ class ConnectorPreferencesStore(context: Context) {
     // Persisted live companion state: written by every live evaluation (foreground or
     // background Worker) so Lumi's body survives process death and app-closed periods.
     var vitalHydration: Float
-        get() = prefs.getFloat("live_vital_hydration", 0.85f)
+        get() = prefs.getFloat("live_vital_hydration", 0f)
         set(value) = prefs.edit().putFloat("live_vital_hydration", value).apply()
 
     var vitalFocus: Float
-        get() = prefs.getFloat("live_vital_focus", 0.90f)
+        get() = prefs.getFloat("live_vital_focus", 0f)
         set(value) = prefs.edit().putFloat("live_vital_focus", value).apply()
 
     var vitalInnerPeace: Float
-        get() = prefs.getFloat("live_vital_inner_peace", 0.82f)
+        get() = prefs.getFloat("live_vital_inner_peace", 0f)
         set(value) = prefs.edit().putFloat("live_vital_inner_peace", value).apply()
 
     var vitalPhysicalEnergy: Float
-        get() = prefs.getFloat("live_vital_physical_energy", 0.78f)
+        get() = prefs.getFloat("live_vital_physical_energy", 0f)
         set(value) = prefs.edit().putFloat("live_vital_physical_energy", value).apply()
 
     var vitalConnection: Float
-        get() = prefs.getFloat("live_vital_connection", 0.80f)
+        get() = prefs.getFloat("live_vital_connection", 0f)
         set(value) = prefs.edit().putFloat("live_vital_connection", value).apply()
 
     var liveMoodName: String
-        get() = prefs.getString("live_mood", "RADIANT") ?: "RADIANT"
+        get() = prefs.getString("live_mood", "DORMANT") ?: "DORMANT"
         set(value) = prefs.edit().putString("live_mood", value).apply()
 
     var liveSpeech: String
         get() = prefs.getString("live_speech", "") ?: ""
         set(value) = prefs.edit().putString("live_speech", value).apply()
+
+    var chatHistoryJson: String
+        get() = prefs.getString("chat_history_json", "") ?: ""
+        set(value) = prefs.edit().putString("chat_history_json", value).apply()
+
+    var chatHistoryWindow: Int
+        get() = prefs.getInt("chat_history_window", 7).coerceIn(1, 7)
+        set(value) = prefs.edit().putInt("chat_history_window", value.coerceIn(1, 7)).apply()
 
     var lastLiveSyncEpochMillis: Long
         get() = prefs.getLong("live_last_sync_epoch", 0L)

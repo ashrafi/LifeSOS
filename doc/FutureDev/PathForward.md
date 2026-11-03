@@ -1,6 +1,6 @@
 # Path Forward: From Hackathon to Product 🛤️
 
-*My thoughts on where MetaMuse goes from here — written Nov 2026, grounded in the
+*My thoughts on where LifeSOS goes from here — written Nov 2026, grounded in the
 actual state of this repo: what works, what's honest, and what's still theater.*
 
 > **How to read the FutureDev folder:** this file is the growth path — *what* to build,

@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -249,7 +250,7 @@ fun VitalityScreen(
                     }
                 }
 
-        // 2. Pump Synthetic Data Switcher (Switch between the 3 MuseLife Demos right on Data tab)
+        // 2. Pump Synthetic Data Switcher (Switch between the 3 LifeSOS Demos right on Data tab)
         item {
             var isExpanded by rememberSaveable { mutableStateOf(false) }
 
@@ -509,6 +510,16 @@ fun VitalityScreen(
                             .height(120.dp)
                     )
 
+                    if (!telemetry.healthReport.isAvailable) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "No sleep data yet — connect Health Connect to light up this wave.",
+                            style = MaterialTheme.typography.labelSmall.copy(color = WarmSlateCharcoal),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(14.dp))
 
                     Row(
@@ -728,7 +739,7 @@ fun VitalityScreen(
                         )
                     )
                     Text(
-                        text = "Muse compares your pinned values against your real telemetry.",
+                        text = "LifeSOS compares your pinned values against your real telemetry.",
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = WarmSlateCharcoal
                         )
@@ -923,13 +934,19 @@ private fun SimpleDataGraphicView(
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                val anyChannelAvailable = telemetry.healthReport.isAvailable ||
+                    telemetry.tasksReport.isAvailable ||
+                    telemetry.financeReport.isAvailable ||
+                    telemetry.socialReport.isAvailable
                 SerenityStatusChip(
                     text = if (telemetry.deterministicTriggerActive) {
                         "Anomaly Detected • ${activeScenario.title}"
+                    } else if (!anyChannelAvailable) {
+                        "No Live Signals Yet — Connect a Channel"
                     } else {
                         "4-Channel Bio-Telemetry • $compositeScore% Harmony"
                     },
-                    pulseColor = if (telemetry.deterministicTriggerActive) SerenityError else MintSecondary,
+                    pulseColor = if (telemetry.deterministicTriggerActive) SerenityError else if (!anyChannelAvailable) WarmSlateCharcoal else MintSecondary,
                     modifier = Modifier.align(Alignment.Center)
                 )
 
@@ -1132,8 +1149,8 @@ private fun CompactChannelTelemetryTile(
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (report.isAlert) SerenityError.copy(alpha = 0.55f) else WarmBorder
-    val badgeBg = if (report.isAlert) SerenityErrorContainer else accentColor.copy(alpha = 0.14f)
-    val badgeTextCol = if (report.isAlert) SerenityError else DarkSageText
+    val badgeBg = if (report.isAlert) SerenityErrorContainer else if (!report.isAvailable) SubtleContainer else accentColor.copy(alpha = 0.14f)
+    val badgeTextCol = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else DarkSageText
 
     Box(
         modifier = modifier
@@ -1161,7 +1178,7 @@ private fun CompactChannelTelemetryTile(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = if (report.isAlert) SerenityError else accentColor,
+                            tint = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else accentColor,
                             modifier = Modifier.size(13.dp)
                         )
                     }
@@ -1180,7 +1197,7 @@ private fun CompactChannelTelemetryTile(
                     color = badgeBg
                 ) {
                     Text(
-                        text = "${report.scorePercent}%",
+                        text = if (report.isAvailable) "${report.scorePercent}%" else "—",
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = badgeTextCol,
                             fontWeight = FontWeight.ExtraBold,
@@ -1260,8 +1277,15 @@ private fun DataTelemetryGraphic(
         val cy = (h / 2f) + floatOffset
         val isAlert = telemetry.deterministicTriggerActive
 
+        val channelAvailable = listOf(
+            telemetry.healthReport.isAvailable,
+            telemetry.tasksReport.isAvailable,
+            telemetry.financeReport.isAvailable,
+            telemetry.socialReport.isAvailable
+        )
+
         // 1. Soft Ambient Aura
-        val auraColor = if (isAlert) SerenityError else MintSecondary
+        val auraColor = if (isAlert) SerenityError else if (!channelAvailable.any { it }) WarmSlateCharcoal else MintSecondary
         val auraRadius = (w * 0.48f) * pulseScale
         drawCircle(
             brush = Brush.radialGradient(
@@ -1290,11 +1314,16 @@ private fun DataTelemetryGraphic(
         val outerRadius = w * 0.40f
 
         channels.forEachIndexed { idx, (progress, baseColor, channelAlert) ->
+            val available = channelAvailable[idx]
             val r = outerRadius - (idx * ringGap)
             val topLeft = Offset(cx - r, cy - r)
             val arcSize = Size(r * 2f, r * 2f)
-            val activeColor = if (channelAlert) SerenityError else baseColor
-            val sweepDeg = 260f * progress.coerceIn(0.12f, 1f)
+            val activeColor = when {
+                channelAlert -> SerenityError
+                !available -> WarmSlateCharcoal.copy(alpha = 0.55f)
+                else -> baseColor
+            }
+            val sweepDeg = if (!available) 0f else 260f * progress.coerceIn(0.12f, 1f)
 
             // Subtle track ring
             drawArc(
@@ -1322,11 +1351,13 @@ private fun DataTelemetryGraphic(
             val endAngleRad = Math.toRadians((-220f + sweepDeg).toDouble())
             val tipX = cx + (r * cos(endAngleRad)).toFloat()
             val tipY = cy + (r * sin(endAngleRad)).toFloat()
-            drawCircle(
-                color = Color.White,
-                radius = 2.8.dp.toPx(),
-                center = Offset(tipX, tipY)
-            )
+            if (available) {
+                drawCircle(
+                    color = Color.White,
+                    radius = 2.8.dp.toPx(),
+                    center = Offset(tipX, tipY)
+                )
+            }
         }
 
         // 3. Central Luminous Pulse Core + Sleep Waveform
@@ -1402,14 +1433,14 @@ private fun ChannelDataCard(
                             .size(40.dp)
                             .clip(CircleShape)
                             .background(
-                                if (report.isAlert) SerenityErrorContainer else accentColor.copy(alpha = 0.14f)
+                                if (report.isAlert) SerenityErrorContainer else if (!report.isAvailable) SubtleContainer else accentColor.copy(alpha = 0.14f)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = if (report.isAlert) SerenityError else accentColor,
+                            tint = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else accentColor,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -1425,7 +1456,7 @@ private fun ChannelDataCard(
                         Text(
                             text = report.headlineStatus,
                             style = MaterialTheme.typography.labelMedium.copy(
-                                color = if (report.isAlert) SerenityError else DarkSageText,
+                                color = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else DarkSageText,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -1434,12 +1465,12 @@ private fun ChannelDataCard(
 
                 Surface(
                     shape = CircleShape,
-                    color = if (report.isAlert) SerenityErrorContainer else MintContainer
+                    color = if (report.isAlert) SerenityErrorContainer else if (!report.isAvailable) SubtleContainer else MintContainer
                 ) {
                     Text(
-                        text = "${report.scorePercent}%",
+                        text = if (report.isAvailable) "${report.scorePercent}%" else "—",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = if (report.isAlert) SerenityError else DarkSageText,
+                            color = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else DarkSageText,
                             fontWeight = FontWeight.ExtraBold
                         ),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -1605,6 +1636,16 @@ private fun EquilibriumWaveCanvas(
     Canvas(modifier = modifier) {
         val width = size.width
         val height = size.height
+        if (sleepHours.none { it > 0f }) {
+            drawLine(
+                color = WarmBorder,
+                start = Offset(0f, height / 2),
+                end = Offset(width, height / 2),
+                strokeWidth = 4.dp.toPx(),
+                cap = StrokeCap.Round
+            )
+            return@Canvas
+        }
         val safeHours = if (sleepHours.size >= 2) sleepHours else listOf(7f, 7f, 7f, 7f, 7f, 7f, 7f)
 
         val points = safeHours.mapIndexed { idx, hrs ->
@@ -1766,7 +1807,7 @@ private fun DataVaultMemoryCard(
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "Reflect on this with Muse",
+                    text = "Reflect on this with LifeSOS",
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = CoralPrimary,
                         fontWeight = FontWeight.Bold

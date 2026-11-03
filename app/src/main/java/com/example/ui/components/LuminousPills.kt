@@ -59,10 +59,12 @@ fun SerenityPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    testTag: String = "serenity_primary_button"
+    testTag: String = "serenity_primary_button",
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .testTag(testTag)
             .heightIn(min = 48.dp)

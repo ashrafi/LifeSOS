@@ -1,4 +1,4 @@
-# MetaMuse Product Development Plan: Client + Server 📋
+# LifeSOS Product Development Plan: Client + Server 📋
 
 *Program plan implementing [PathForward.md](PathForward.md), scoped by
 [FutureDirections.md](FutureDirections.md). Read those two first; this file turns

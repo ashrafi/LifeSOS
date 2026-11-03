@@ -29,10 +29,10 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-private val Context.byokDataStore: DataStore<Preferences> by preferencesDataStore(name = "metamuse_secure_byok")
+private val Context.byokDataStore: DataStore<Preferences> by preferencesDataStore(name = "lifesos_secure_byok")
 
 /**
- * Secure Bring-Your-Own-Key (BYOK) manager for MetaMuse.
+ * Secure Bring-Your-Own-Key (BYOK) manager for LifeSOS.
  *
  * Safeguards implemented:
  * 1. Keystore Encryption: AES-256-GCM key generated inside AndroidKeyStore (hardware backing where the device provides it; StrongBox/hardware level is neither requested nor verified at runtime).
@@ -46,7 +46,7 @@ class SecureByokStore(private val context: Context) {
 
     companion object {
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
-        private const val KEY_ALIAS = "metamuse_byok_aes_key_v1"
+        private const val KEY_ALIAS = "lifesos_byok_aes_key_v1"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val GCM_TAG_LENGTH = 128
         private const val PAYLOAD_PREFIX = "v1"
@@ -288,7 +288,7 @@ class SecureByokStore(private val context: Context) {
         scope.launch {
             try {
                 val legacyPrefs: SharedPreferences = context.getSharedPreferences(
-                    "metamuse_real_connectors_prefs",
+                    "lifesos_real_connectors_prefs",
                     Context.MODE_PRIVATE
                 )
                 val legacyToken = legacyPrefs.getString("meta_ai_token", null)?.trim()

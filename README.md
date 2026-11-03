@@ -1,4 +1,4 @@
-# MetaMuse 🪽
+# LifeSOS 🪽
 
 > **Bio-Responsive Personal Intelligence & Life Companion — powered by Meta Muse Spark 1.3**  
 > *Connecting Health Connect, Calendar, Financial Outflows, and Social Ties into an Empathetic, Living Virtual Companion.*
@@ -11,6 +11,8 @@
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
 [![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
 
+> **Prize pledge:** If LifeSOS wins prize money, we will donate 100% of net winnings to charity (recipient to be announced). This project is our gift to the community, and any winnings should serve it.
+
 ---
 
 ## 📖 Executive Summary & The Problem We Solve
@@ -19,7 +21,7 @@ Every modern productivity and wellness application looks at human life through a
 
 * **Your Calendar App** schedules 8 consecutive sprint meetings, completely unaware you only slept 4.5 hours last night.
 * **Your Fitness Tracker** congratulates you on hitting 10,000 steps, blind to the fact that you’ve canceled dinner plans with your closest friends three weeks in a row to hit arbitrary work deadlines.
-* **Your Bank App** celebrates a +20% monthly savings rate, completely unaware that your late-night food delivery orders and isolation are warning signs of impending burnout.
+* **Your Bank App** celebrates a +20% monthly savings rate, completely unaware that your delivery spending patterns and isolation are warning signs of impending burnout.
 
 Single-metric optimization inevitably forces humans into a dangerous local maximum: **invisible burnout**.
 
@@ -37,11 +39,11 @@ Single-metric optimization inevitably forces humans into a dangerous local maxim
                          └───────────────────────────┘
 ```
 
-### The Solution: MetaMuse
+### The Solution: LifeSOS
 
-**MetaMuse** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
+**LifeSOS** introduces a unified, bio-responsive personal superintelligence embodied in a living virtual companion named **Lumi**. 
 
-Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, MetaMuse leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with the deterministic offline engine as the zero-cloud alternative and prompt-level safety guidance (no separate classifier call)) to detect hidden life trade-offs *before* they turn into exhaustion. 
+Instead of passive graphs or nagging notifications, Lumi acts as a **living emotional mirror** of your cross-channel equilibrium. Correlating data across **Google Health Connect**, **Android Calendar & Google Tasks**, **Facebook Graph API & Contacts**, and **Plaid/Open Banking**, LifeSOS leverages **Meta Muse Spark 1.3** through the **Meta Model API** (with the deterministic offline engine as the zero-cloud alternative and prompt-level safety guidance (no separate classifier call)) to detect hidden life trade-offs *before* they turn into exhaustion. 
 
 When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates a proactive conversation, interprets cross-channel patterns with Muse Spark 1.3 and suggests possible next steps, and provides a **1-tap frictionless WhatsApp nudge** to restore your real-world balance.
 
@@ -51,7 +53,7 @@ When Lumi detects an unsustainable pattern, she reflects your fatigue, initiates
 
 ### Official Meta AI Tooling Alignment (25% Judging Score)
 
-MetaMuse is architected specifically around the **Meta AI Tooling** stack recommended for the October 2026 Meta AI Hackathon:
+LifeSOS is architected specifically around the **Meta AI Tooling** stack recommended for the October 2026 Meta AI Hackathon:
 
 | Component | Technology / Meta Tooling | Hackathon Role |
 | :--- | :--- | :--- |
@@ -76,7 +78,7 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
 ```
 
 1. **Meta Muse Spark 1.3 as the Primary Star**:
-   Powered through the official **Meta Model API**, Muse Spark 1.3 acts as the central brain of MuseLife, identifying non-obvious conflicts across disparate life streams.
+   Powered through the official **Meta Model API**, Muse Spark 1.3 acts as the central brain of LifeSOS, identifying non-obvious conflicts across disparate life streams.
 2. **Deterministic Multi-Channel Life State Engine**:
    Cross-references asynchronous biometric, schedule, spending, and relationship metrics in real time.
    `LifeRuleEngine` evaluates the named trade-off rules against **live synced telemetry** (e.g. real
@@ -88,7 +90,7 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    The schema never asks the model for a safety verdict (a model grading its own output is not
    screening); a dedicated classifier call is the planned roadmap hardening step.
 4. **Frictionless Actionable Nudges via WhatsApp**:
-   Instead of passive advice, MetaMuse generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
+   Instead of passive advice, LifeSOS generates pre-filled 1-tap Android Intent deep links to WhatsApp (`api.whatsapp.com/send?text=...`) for instant reconnection with loved ones.
 5. **Auditory Warmth (Native Text-To-Speech)**:
    Lumi speaks her prescriptions out loud using voice synthesis with user-customizable pitch and
    tempo sliders (Connections → Voice Output, with live preview and persistence across launches).
@@ -173,11 +175,11 @@ flowchart TD
 
 ## 📱 Three-Tab Application Interface
 
-MetaMuse features an uncluttered 3-tab navigation hierarchy with full dynamic support for both the **Meta Horizon** and **Luminous Serenity** theme palettes:
+LifeSOS features an uncluttered 3-tab navigation hierarchy with full dynamic support for both the **Meta Horizon** and **Luminous Serenity** theme palettes:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       METAMUSE / SERENITY                   │
+│                          LIFESOS                            │
 ├──────────────────────────────┬──────────────────────────────┤
 │ Tab 1: Home (Habitat)        │ Living Lumi Companion        │
 │                              │ Reactive Emotional Moods     │
@@ -205,7 +207,7 @@ MetaMuse features an uncluttered 3-tab navigation hierarchy with full dynamic su
 
 ## 🔬 Multi-Channel Telemetry Ingestion Deep-Dive
 
-MetaMuse continuously aggregates real-world data across four distinct pillars without requiring manual tracking:
+LifeSOS continuously aggregates real-world data across four distinct pillars without requiring manual tracking:
 
 ### 1. Physical Health (Google Health Connect & Hardware Step Counter)
 * **SDK**: `androidx.health.connect.client:health-connect-client`
@@ -214,7 +216,7 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
   * 7-day sleep sessions and duration (`SleepSessionRecord`)
   * 7-day heart-rate aggregate, preferring minimum (`HeartRateRecord` BPM_MIN/BPM_AVG)
   * Hydration intake in liters (`HydrationRecord`)
-* **Permission Model**: Android 14+ system Health Connect permission dialogue with fallback for Android 13 APK.
+* **Permission Model**: Android 14+ system Health Connect permission dialogue with a fallback path on Android 13 (API 33).
 * **Background Sync**: `LumiBackgroundSyncWorker` (WorkManager, 6-hourly) re-runs the full live evaluation while the app is closed, persisting Lumi's vitals/mood/speech for next launch. Uses `READ_HEALTH_DATA_HISTORY` + `READ_HEALTH_DATA_IN_BACKGROUND` (background access is enabled by the user in Health Connect system settings; without it the worker safely no-ops).
 
 ### 2. Cognitive Tasks & Schedule (Android Calendar Provider & Google Tasks API)
@@ -222,14 +224,14 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
 * **Metrics Read**:
   * Total scheduled meetings today vs completed agenda items
   * Late-night work events scheduled past 9:30 PM
-  * 14-day history of canceled, declined, or rescheduled social commitments
+  * 14-day history of canceled or declined social commitments
   * Optional Google Tasks REST API v1 synchronization
 
 ### 3. Social Fabric (Facebook Graph API v21.0 & Android Contacts)
 * **API**: Facebook Graph API v21.0 OAuth + Native Android `ContactsContract`
 * **Two-Tier Resilient Design**:
   * **Tier 1 (Android Contacts Provider)**: Reads starred/favorite close contacts and computes interaction recency. Runs with zero external API dependencies or review hurdles for 100% demo reliability.
-  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 token flow (system browser + `metamuse://oauth` deep-link callback) for public profile, family circles, and social events. PKCE code-verifier hardening is on the roadmap.
+  * **Tier 2 (Facebook Graph API v21.0)**: OAuth 2.0 token flow (system browser + `lifesos://oauth` deep-link callback) for public profile, family circles, and social events. PKCE code-verifier hardening is on the roadmap.
 
 ### 4. Financial Equilibrium (Plaid API, SimpleFIN & Zero-Cloud CSV)
 * **Connectors**:
@@ -244,15 +246,15 @@ MetaMuse continuously aggregates real-world data across four distinct pillars wi
 
 ### Flagship Intelligence: Meta Muse Spark 1.3 via Meta Model API
 
-**Meta Muse Spark 1.3** is the primary cognitive engine of MetaMuse, accessible via the official **Meta Model API**. Unlike generic chatbots, Muse Spark 1.3 is prompted to operate as an empathetic, bio-responsive life coach that synthesizes cross-stream friction across biometrics, schedules, spending, and human connections.
+**Meta Muse Spark 1.3** is the primary cognitive engine of LifeSOS, accessible via the official **Meta Model API**. Unlike generic chatbots, Muse Spark 1.3 is prompted to operate as an empathetic, bio-responsive life coach that synthesizes cross-stream friction across biometrics, schedules, spending, and human connections.
 
 ### Structured Telemetry Prompting
 
-When multi-channel telemetry suggests an emerging conflict, MetaMuse packages the complete state—including Lumi's hydration, energy, focus, channel reports, and user-pinned core values—into a structured JSON payload submitted to **Meta Muse Spark 1.3**:
+When multi-channel telemetry suggests an emerging conflict, LifeSOS packages the complete state—including Lumi's hydration, energy, focus, channel reports, and user-pinned core values—into a structured JSON payload submitted to **Meta Muse Spark 1.3**:
 
 ```json
 {
-  "client": "MetaMuse Bio-Responsive Companion",
+  "client": "LifeSOS Bio-Responsive Companion",
   "timestamp": "1:24 PM, Oct 31",
   "companion": {
     "name": "Lumi",
@@ -316,7 +318,7 @@ Muse Spark returns an expected structured JSON response (via `response_format: j
 
 ## 🎨 Meta Horizon-Inspired Visual Language
 
-MetaMuse incorporates a **Meta Horizon-inspired visual language** configured alongside the original Luminous Serenity palette:
+LifeSOS incorporates a **Meta Horizon-inspired visual language** configured alongside the original Luminous Serenity palette:
 
 | Token Name | Hex Code | Visual Swatch | Semantic Purpose |
 |:---|:---|:---:|:---|
@@ -334,7 +336,7 @@ MetaMuse incorporates a **Meta Horizon-inspired visual language** configured alo
 
 ## 🎭 Demo States & Hackathon Scenarios
 
-MetaMuse ships five telemetry states — Live Real Data, a Healthy Baseline, and three
+LifeSOS ships five telemetry states — Live Real Data, a Healthy Baseline, and three
 pre-configured conflict scenarios — switchable from the discreet science-icon menu in the app header:
 
 ```
@@ -342,6 +344,10 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 │ 🟢 Live Data │ Healthy Baseline │ 1. Success Trap │ 2. Money Leak │ 3. Debt │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+Live Real Data starts honestly empty: with no channels connected Lumi is **Dormant**
+(gray, zero vitals, "—" score) and every channel reads unavailable until real
+signals arrive — the four scripted states above are opt-in demos from the science-icon menu.
 
 ### Scenario 1: The Success Trap
 * **The Conflict**: High productivity (98% tasks completed) and +20% monthly savings, but sleep drops from 7.5h to 5.0h with 3 canceled social plans.
@@ -351,7 +357,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 * **Logged Follow-Through**: Logging 7.5h sleep + weekend plans restores Lumi to **Radiant (✨)**.
 
 ### Scenario 2: The Invisible Money Leak
-* **The Conflict**: Consecutive late-night work sessions past 9:30 PM coincide with elevated delivery-merchant spending (9 orders, $318/mo over 14 days; association, not established cause).
+* **The Conflict**: Consecutive late-night work sessions past 9:30 PM coincide with elevated delivery-merchant spending (9 orders totaling $318 over 14 days; association, not established cause).
 * **Lumi's Reaction**: Lumi becomes **Tired & Drained (🥱)**.
 * **Spark's Diagnosis**: Identifies delivery spending clustering alongside short sleep and late-night work (pattern observed; cause not established).
 * **Actionable Nudge**: Suggests a 5-minute easy home meal and an evening screen cutoff.
@@ -370,7 +376,7 @@ pre-configured conflict scenarios — switchable from the discreet science-icon 
 ## 📂 Project Structure & Key Files
 
 ```
-MetaMuse/
+LifeSOS/
 ├── app/
 │   ├── src/
 │   │   ├── main/
@@ -380,7 +386,7 @@ MetaMuse/
 │   │   │       ├── model/
 │   │   │       │   └── CompanionModels.kt   # Telemetry, TamagotchiState, Nudges, Scenarios & Connectors
 │   │   │       ├── data/
-│   │   │       │   ├── MuseService.kt       # Meta Model API (Muse Spark), Guard-aligned prompts & On-Device Engine
+│   │   │       │   ├── MuseService.kt       # Meta Model API (Muse Spark), safety-prompted cloud & Offline Engine
 │   │   │       │   ├── LifeRuleEngine.kt    # Pure-Kotlin cross-channel trade-off rules on live telemetry
 │   │   │       │   ├── SerenityRepository.kt# Single source of truth, StateFlows & sync logic
 │   │   │       │   ├── security/
@@ -399,7 +405,7 @@ MetaMuse/
 │   │   │           │   ├── VitalityScreen.kt  # Tab 2: 4-Channel concentric bio-radar telemetry
 │   │   │           │   └── PresenceScreen.kt  # Tab 3: Connections, theme switcher & settings
 │   │   │           ├── components/
-│   │   │           │   ├── TamagotchiCreature.kt # Canvas rendering of Lumi, eyes, halo & motes
+│   │   │           │   ├── TamagotchiCreature.kt # Canvas Lumi: ears, arms, feet, antenna, dance & moods
 │   │   │           │   ├── TamagotchiHabitat.kt  # Ambient environment, clouds & glowing aura
 │   │   │           │   ├── LuminousAura.kt       # Animated gradient pulses
 │   │   │           │   ├── LuminousPills.kt      # Material3 buttons, cards & status chips
@@ -410,15 +416,15 @@ MetaMuse/
 │   │   │               └── Type.kt              # Typography styles
 │   │   └── test/
 │   │       └── java/com/example/
-│   │           ├── ExampleUnitTest.kt       # Theme, model-engine, BYOK & TTS voice unit tests
-│   │           ├── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows & nav
+│   │           ├── ExampleUnitTest.kt       # Theme, engine, BYOK, TTS, labels & safety unit tests
+│   │           ├── ExampleRobolectricTest.kt# Robolectric: branding, prefs, demo flows, provenance & sync
 │   │           ├── LifeRuleEngineTest.kt    # JVM tests for live cross-channel rule detection
 │   │           ├── LifeMemoryMomentsTest.kt # JVM tests for trend-aware memory moments
 │   │           └── SyncFallbackMathTest.kt  # JVM tests for sensor-fallback math
 │   ├── build.gradle.kts                     # App dependencies & SDK configuration
 │   └── proguard-rules.pro
 ├── gradle/
-│   └── libs.versions.toml                   # Version catalog (Compose BOM, Health Connect, Retrofit)
+│   └── libs.versions.toml                   # Version catalog (Compose BOM, Health Connect, Room, WorkManager)
 ├── build.gradle.kts                         # Root build configuration
 ├── settings.gradle.kts                      # Module settings
 └── README.md                                # Comprehensive Project Documentation
@@ -437,12 +443,12 @@ MetaMuse/
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/ashrafi/MetaMuse.git
-cd MetaMuse
+cd LifeSOS
 ```
 
 ### 2. Configure API Keys (In-App BYOK — No `.env` Needed)
 
-MetaMuse uses strict client-side **Bring-Your-Own-Key**: no secrets are needed to build or run
+LifeSOS uses strict client-side **Bring-Your-Own-Key**: no secrets are needed to build or run
 the app, and **zero keys exist in the repository or APK**. After installing:
 
 1. Open the app → **Connections** tab → **AI Configuration**.
@@ -454,7 +460,7 @@ the app, and **zero keys exist in the repository or APK**. After installing:
 The Meta token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (see
 🔒 Security below) and can be wiped anytime via **"Remove Key"**.
 
-*(Note: If no token is provided, MetaMuse automatically activates its **Zero-Cloud On-Device
+*(Note: If no token is provided, LifeSOS automatically activates its **Zero-Cloud On-Device
 Engine**, ensuring the AI fallback and every demo beat work fully offline (cloud connectors need connectivity to refresh live data). The `.env.example` file documents variable names
 for local tooling reference only — the app does not read `BuildConfig` secrets at runtime.)*
 
@@ -485,19 +491,19 @@ adb shell am start -n com.aistudio.serenity.lmns/com.example.MainActivity
 ### 1. Direct BYOK (Bring-Your-Own-Key) Cryptographic Architecture
 
 > [!IMPORTANT]
-> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, securities files, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; MetaMuse enforces strict client-side entry with Keystore-protected encryption.
+> **Strict Client-Side BYOK Policy**: All API keys (Meta Model API / Muse Spark, Plaid) are entered directly by the user on the device. **Zero keys exist in the codebase, properties, resources, or the compiled APK.** Any API key embedded directly into an Android APK can be decompiled and easily extracted by an attacker within minutes; LifeSOS enforces strict client-side entry with Keystore-protected encryption.
 
-For users who configure their own Meta Model API / Muse Spark 1.3 or provider key, MetaMuse enforces strict defense-in-depth safeguards:
+For users who configure their own Meta Model API / Muse Spark 1.3 or provider key, LifeSOS enforces strict defense-in-depth safeguards:
 * **Android Keystore Encryption (Meta token + Plaid client secret)**:
   Those two credentials are encrypted at rest using **AES-256-GCM** with a key generated inside the `AndroidKeyStore` (hardware backing where the device provides it; StrongBox/hardware level is neither requested nor verified at runtime). Facebook, Google Tasks, Plaid access, and SimpleFIN tokens live in private app storage and are excluded from backups.
 * **Encrypted Jetpack DataStore**:
-  Ciphertext and 12-byte initialization vectors (IVs) are stored in an isolated Preferences DataStore (`metamuse_secure_byok`), eliminating insecure plaintext SharedPreferences.
+  Ciphertext and 12-byte initialization vectors (IVs) are stored in an isolated Preferences DataStore (`lifesos_secure_byok`), eliminating insecure plaintext SharedPreferences.
 * **Zero Cloud Backups & Zero Exfiltration**:
   Configured in `data_extraction_rules.xml` and `backup_rules.xml` to explicitly exclude all BYOK DataStore files from Google Drive cloud backups and device-to-device transfers. Keys are never printed in Logcat, analytics, or crash reports.
 * **Instant User Revocation**:
   Users can tap **"Remove Key"** at any time to instantly wipe and purge the encrypted payload from DataStore and flush active runtime memory.
 * **Security Threat Model Disclosure**:
-  While Keystore-protected encryption shields stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, MetaMuse offers its **100% On-Device Privacy Mode**.
+  While Keystore-protected encryption shields stored credentials from unprivileged applications and filesystem extraction, a determined attacker with root access, physical device compromise, or an attached debugger on a compromised device may extract secrets from active process memory. For maximum security on untrusted devices, LifeSOS offers its **100% On-Device Privacy Mode**.
 
 ### 2. Offline On-Device Privacy Engine
 Biometric health records, calendar instances, and bank transaction histories are analyzed locally inside the application sandbox. The app can operate entirely offline without network access.
@@ -512,13 +518,25 @@ telemetry/chat payloads (the Meta token and Plaid credentials travel only as aut
 to their own API endpoints).
 Derived summaries can still be sensitive — treat the cloud path as "de-identified
 telemetry + your own pinned values," and stay offline whenever that bar isn't met.
-The separate chat path additionally transmits your current message plus up to four
-prior turns alongside companion context — never raw records or credentials.
+The separate chat path additionally transmits your current message plus up to seven
+prior turns (a 1–7 Connections → AI Engine slider, 7 by default) alongside
+companion context — never raw records or credentials.
+
+**Token window & production memory.** The Chat Completions API is stateless —
+Meta's side keeps no conversation memory, so every chat request re-sends the
+window it should consider: the system prompt, companion context, and your
+current message plus up to seven prior turns (consult calls send a fixed-size
+derived payload with no chat history at all). Per-message token cost is
+therefore roughly constant no matter how long you talk — but Lumi genuinely
+forgets anything older than that window, while the full 40-message journal on
+your phone is display-only. A production system needs memory on Meta's side
+(server-side conversation state or a memory API) so long-term context survives
+without re-sending ever-larger windows on every turn.
 
 ### 3. Responsible AI with Prompt-Level Safety Guidance
 All proactive conversational advice and Lumi prescriptions are generated under safety instructions
 embedded in the system prompt (supportive, compassionate, non-clinical).
-MetaMuse never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness
+LifeSOS never provides medical diagnosis, clinical prescriptions, or guilt-inducing fitness
 pressure. The response schema requests no safety verdict — a model grading its own output is not
 screening — and a dedicated classifier call in front of every response is the planned
 roadmap hardening step.
@@ -531,31 +549,9 @@ No third-party bank credentials are required to evaluate spending; users can imp
 
 ---
 
-## 🗺️ Future Roadmap & Meta Ecosystem Synergy
-
-```mermaid
-timeline
-    title MetaMuse Evolution Roadmap
-    section Hackathon MVP (Today)
-        Multi-Channel Telemetry Ingestion : Health Connect, Calendar, Facebook Graph, Plaid/CSV
-        Meta Muse Spark 1.3 & Guard-Aligned Prompts : Structured JSON multi-step reasoning
-        WhatsApp 1-Tap Nudges            : Deep-link integration
-        Meta Horizon Brand Theme         : Dynamic reactive color system
-    section Phase 1 (Near-Term)
-        ExecuTorch On-Device Llama 3.2   : Quantized 1B/3B running locally on NPU
-        Meta Messenger Bi-Directional Bot: Check in with Lumi via Messenger chat
-        Wear OS Companion Watch Face     : Real-time glanceable Lumi aura on wrist
-    section Phase 2 (Meta Spatial)
-        Ray-Ban Meta Smart Glasses HUD   : Audio whispers when stress spikes detected
-        Meta Horizon OS (Quest 3 / Pro)  : Spatial 3D companion floating in your room
-```
-
-* **Ray-Ban Meta Smart Glasses**:
-  Leverage the glasses' microphone and open-ear speakers to deliver ambient, whisper-quiet voice check-ins when telemetry detects elevated heart rates or marathon screen sessions.
-* **Meta Horizon OS / Quest**:
-  Port Lumi from a 2D Jetpack Compose Canvas into a volumetric 3D spatial companion floating in Mixed Reality alongside your work monitors.
-* **ExecuTorch On-Device Deployment**:
-  Package Meta Llama 3.2 1B/3B via ExecuTorch to achieve sub-100ms local reasoning on Android NPUs with mathematical zero-cloud privacy.
+> The product roadmap — near-term ExecuTorch/Wear OS plans and the Meta spatial
+> vision (glasses, Quest) — lives in [`doc/FutureDev/`](doc/FutureDev/) alongside
+> [`doc/meta-product-vision.md`](doc/meta-product-vision.md).
 
 ---
 
@@ -591,7 +587,7 @@ deterministic state machine + generative expression — never raw telemetry into
 * **Meta Neural Band ⌚** — sEMG muscle-activation sensing (not just movement) as Lumi's
   real-time micro-state organ, plus pinch-and-drag micro-gestures turning nudges from
   one-tap to zero-tap — a novel recontextualization of an input device into a sense organ.
-* **Meta Muse 🧠 + Muse Charm 🪆** — Muse Spark 1.3 as the 40-year brain (Life Ledger of
+* **LifeSOS 🧠 + Muse Charm 🪆** — Muse Spark 1.3 as the 40-year brain (Life Ledger of
   values and verified outcomes, 1M-token history); the palm-sized Charm totem as the
   creature's permanent physical residency with instant voice — presence no phone app can bond.
 * **Why creatures beat dashboards 🧠** — the **Proteus Effect** (Stanford VHIL: users
@@ -606,99 +602,8 @@ We truly hope you and Meta like the idea. 🪽
 
 ---
 
-## 🛠️ Build Log: Everything Muse Code Built Here
-
-*Every item below was implemented by Muse Code (powered by Meta Muse Spark), reviewed
-and committed by the human author. Listed in the order it happened.*
-
-### 1. Audit & planning
-- Full README-vs-codebase audit: 13 findings, 4 rated as judging blockers.
-- [`doc/hackathon-readiness.md`](doc/hackathon-readiness.md): 10 prioritized items
-  (P0/P1/P2) with a pre-submission checklist, kept current through the whole project.
-- [`doc/demo-script.md`](doc/demo-script.md): verbatim 60-second judge script + shot list.
-- [`doc/final-checklist.md`](doc/final-checklist.md): 6-phase human runbook (clean-room
-  build → install → 5-state rehearsal → assets → compliance → submission).
-
-### 2. P0 — judging blockers, fixed
-- `debug.keystore` un-ignored and committed so fresh clones sign debug builds.
-- Setup docs rewritten to the real in-app BYOK flow (the old `.env` steps did nothing —
-  nothing reads `BuildConfig`); `.env.example` corrected; fixed a literal `\n` fence bug.
-- Muse Spark flagship claim verified against public Meta docs (`api.meta.ai/v1`,
-  `muse-spark-1.3` over `/v1/chat/completions`).
-- "4 scenarios" → the real 5 states; deleted orphaned `DialogueScreen.kt`/`VaultScreen.kt`
-  (717 lines, zero references); reworded all 11 Llama Guard mentions to honest
-  prompt-level alignment; removed SeaWeed (docs + system prompt); rewired the disconnected
-  SPARK node in the architecture diagram.
-
-### 3. P1 — presentation
-- Meta Horizon made the first-run default (`SerenityRepository`, prefs, `ThemeState`).
-- Branding unified to MetaMuse (launcher label, chat tag, project, metadata).
-- `.idea/` untracked, MIT `LICENSE` added, no-key airplane path statically verified.
-
-### 4. P2 — voice customization + nits
-- Real TTS pitch/tempo sliders in Connections → Voice Output: persisted prefs,
-  repository flows, ViewModel wiring, live preview button — the README claim made true.
-- SDK matrix, test docs, SICK emoji corrected.
-
-### 5. The caveat fix — real detection, not just scripts
-- New pure-Kotlin **`LifeRuleEngine`**: Success Trap, Money Leak, and Connection Debt
-  evaluated against *live synced telemetry* (sleep drops, late nights, canceled plans,
-  delivery volume, neglected contacts, pinned-value conflicts), driving Lumi's live
-  mood/speech and the Muse Spark prompt — with single-channel alerts as fallback.
-
-### 6. Vision, gift & thoughts docs
-- [`doc/meta-product-vision.md`](doc/meta-product-vision.md): Proteus Effect + Bandura
-  science, Body→Life Engine→Creature mapping onto this codebase, Neural Band as sEMG
-  sense organ, Muse Charm embodiment, Secure VM→Confidential VM trajectory, 10
-  product-winner ideas — all grounded in the source article (`doc/OrigArticle/`).
-- The 🎁 gift section above; [`doc/muse-thoughts.md`](doc/muse-thoughts.md): honest
-  assessment, concerns, and next-five-moves.
-
-### 7. Launcher icon
-- Existing starburst vector re-themed Coral → Meta Blue→Violet + Meta Cyan; all 10
-  legacy PNGs re-rendered from the vector geometry via script; fresh APK verified
-  pixel-by-pixel to contain the new art.
-
-### 8. Article gaps — background sync + memory
-- `LumiBackgroundSyncWorker` (new WorkManager dep, 6-hourly) re-runs live evaluation
-  with the app closed — required new vitals/mood/speech persistence plus
-  `READ_HEALTH_DATA_HISTORY`/`IN_BACKGROUND` permissions; documented dependency
-  exclusions included.
-- `LifeMemoryMoments`: trend-aware lines (sleep recovery, delivery-free stretches,
-  active days) proving Lumi remembers.
-
-### 9. Neural Band fitness-tracker spec package
-- [`doc/neural-band-fitness-tracker/`](doc/neural-band-fitness-tracker/): thesis README,
-  10-section hardware spec (sEMG array, PPG parity, power budget, regulatory hooks),
-  10-section software spec (DSP, on-device ML, metric algorithms, validation, teardown,
-  roadmap), and **5 hand-authored SVG schematics** (block diagram, sEMG chain, power
-  tree, main interconnect, front-end detail).
-
-### 10. External-review honesty pass
-- Answered an 8.5/10 external review point-by-point (verified 6 of 8 claims in code,
-  refuted 1): fallback advice now discloses `Offline Rules Engine` provenance instead
-  of Spark branding; "On-Device Llama" renamed to Offline Engine everywhere (ExecuTorch
-  kept as roadmap); recovery flow relabeled logged/self-reported with a
-  Suggested→Logged→Sensor-verified ladder; added exact what-leaves-the-device disclosure,
-  Plaid-backend production note, and PKCE correction.
-
-### 11. Technical-debt batch (fifth review)
-- Fixed the reboot-cumulative step-counter bug (persisted midnight baseline), implemented
-  the neglected-contacts 14-day query (correcting my own earlier wrong "refuted"),
-  removed unused retrofit/moshi (room kept deliberately: removal destabilized offline
-  resolution), replaced the TTS `delay(7500)` with `UtteranceProgressListener`, and
-  corrected the IDE prerequisite. `runBlocking` cold-start reads logged as a minor
-  known issue for post-submit.
-
-### Verification ledger
-- Suite grown 15 → **49/49 green** (`ExampleUnitTest` 8, `ExampleRobolectricTest` 20,
-  `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5), `assembleDebug` clean, APK
-  icon pixel-verified. Fixed along the way and disclosed: 2 `@Composable` annotations,
-  one Gradle atomic-group exclusion (commented in `app/build.gradle.kts`).
-
-> *And you only cost us 43 cents.* 🪽
-
-"  Best 43 cents ever spent, if I may say so. The rest is yours — go win it. 🏆" -- Meta Spark.
+> The full session build log — everything Muse Code implemented, in order — lives in
+> [`doc/build-log.md`](doc/build-log.md).
 ---
 
 ## 👥 Authors & Acknowledgments
@@ -708,4 +613,4 @@ and committed by the human author. Listed in the order it happened.*
 * Special thanks to the amazing orgs that make all this cool tech **Meta Super Intelligence**, **Meta Llama Open Source Community**, the **PyTorch / ExecuTorch Team**, and the **Android Health Connect Team**.
 
 ---
-*MetaMuse — Empathetic AI that cares about the whole human.* 🪽
+*LifeSOS — Empathetic AI that cares about the whole human.* 🪽

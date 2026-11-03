@@ -1,14 +1,14 @@
-# MetaMuse — Hackathon Readiness Plan
+# LifeSOS — Hackathon Readiness Plan
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 49/49 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 59/59 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 1)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **49/49 green**,
-  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 20,
-  `LifeRuleEngineTest` 10, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5.
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **59/59 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 29,
+  `LifeRuleEngineTest` 11, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
   earlier in the day, not conflicting claims — this section is the current truth.
@@ -75,9 +75,9 @@ perceived quality; P2 items are nice-to-have polish.
   For a Meta hackathon, judges should see Meta Blue `#0866FF` first. Keep Serenity as the toggle
   alternative.
 
-### 6. [DONE] Branding unified: MetaMuse vs Serenity
+### 6. [DONE] Branding unified: LifeSOS vs Serenity
 - Launcher label is "Serenity" (`strings.xml`), `rootProject.name` is "Serenity", but the README
-  brands "MetaMuse". Pick one user-facing name and apply it to `app_name`, README title, and
+  brands "LifeSOS". Pick one user-facing name and apply it to `app_name`, README title, and
   store listing text. Also update stale [metadata.json](../metadata.json) (still says Serenity +
   `SERVER_SIDE_GEMINI_API`, contradicting the Meta-first story).
 
@@ -89,7 +89,7 @@ perceived quality; P2 items are nice-to-have polish.
   2. Tap science icon → trigger "Success Trap" → Lumi turns Sick, Spark diagnosis + WhatsApp
      nudge appears (10–35s).
   3. Tap WhatsApp nudge → pre-filled message (35–45s).
-  4. Tap "Verify Follow-Through" → Lumi recovers to Radiant; show TTS readout (45–60s).
+  4. Tap "Log Follow-Through" → Lumi recovers to Radiant; show TTS readout (45–60s).
 
 ### 8. [PARTIAL] Offline demo path (static done, device = owner)
 - Code paths look correct (offline synthesis when token blank), but confirm on-device with **no
@@ -242,7 +242,7 @@ An eighth review verified all actionable items: the retired-model Llama cloud op
 was removed end-to-end (enum entry, selector card, `selectModelEngine` branch,
 compact-card mapping, `fromModelName` default now Spark-first; stored
 `llama_3_1_70b` prefs fall back to Spark safely), the chat prompt was branched on
-the selected engine so non-Spark custom endpoints no longer misidentify as Muse
+the selected engine so non-Spark custom endpoints no longer misidentify as Muse Spark
 Spark, Plaid partial syncs now report "spend unknown" with a warning instead of
 `$0` (`transactionsOk` plumbing across status line, headline, metrics, log, and
 error message; 2 new Robolectric tests), the compact-card button reflects the real
@@ -287,6 +287,65 @@ delivery language was already fixed in earlier batches, and the
 project brief; implementation sections say "companion"). Suite at **49/49 green**
 — see Current Verification Record.
 
+An eleventh review verified all actionable items: Money Leak now enforces the
+`transactionsAvailable` contract explicitly (same guard Debt and memory already
+carry), with a regression test proving a 4-delivery fixture triggers when
+available and stays silent when not; the `$318/mo over 14 days` unit mix was
+corrected to a 14-day total; and the last stale "Verify Follow-Through" line in
+the readiness doc now reads "Log Follow-Through". Two holds: the intro
+late-night wording was already fixed in the unpushed tenth batch (stale-snapshot
+finding), and the "superintelligence" thesis framing stays per the owner's
+branding call. Suite at **50/50 green** — see Current Verification Record.
+
+A twelfth, owner-requested batch removed all hardcoded first-run data: fresh
+installs now open with Lumi **Dormant** (gray creature, zero vitals, "—" score),
+all four channels `isAvailable = false` (gray cards/tiles/rings, "—" badges,
+sleep wave draws a gray baseline), a dormant banner in Connections, and the
+Consult button disabled as "Awaiting First Signal" until the first real signal
+arrives. Demo scenarios no longer rewrite the measured integrations flags;
+`evaluateMood` keeps Live mode dormant with zero connected results; dormant
+consults skip the cloud call entirely. Locked by 4 new Robolectric tests
+(fresh-install dormant state, dormant consult skip, demo/integration
+separation, nurture-keeps-dormant) plus updated initial-state assertions.
+Follow-up in the same batch: the 4 front-page satellite chips, the habitat
+Life Score/vital bars, and the 5 caretaker pills also go gray until data
+arrives (pills non-interactive while dormant; UI-only, no new tests).
+Suite at **54/54 green** — see Current Verification Record.
+
+A thirteenth, owner-requested batch added conversation persistence: chat
+history is journaled to the backup-excluded private prefs (last 40 messages,
+full thought-steps/prompts preserved) and restored on launch, so
+conversations survive process death. Locked by a Robolectric round-trip test
+(send → recreate repo → history restored). Suite at **55/55 green** — see
+Current Verification Record.
+
+A follow-up widened the cloud chat window from 4 to 7 prior turns and
+documented the token/window tradeoff plus the production need for server-side
+Meta memory in the README privacy section. Locked by a request-capture test
+proving the 8th-back turn never leaves the device. Suite at **56/56 green** —
+see Current Verification Record.
+
+A follow-up made the window a user setting: a 1–7 "Chat memory" slider under
+the Meta key in Connections → AI Engine, persisted to prefs, threaded through
+`MetaAiConfig` into the chat call (clamped 1–7 at prefs, repo, and service).
+Locked by a narrow-window capture test plus a persist/clamp round-trip test.
+Suite at **58/58 green** — see Current Verification Record.
+
+A follow-up added live-reply progress to the chat input: a pending counter +
+status flow in the repo (set on cloud send, cleared in `finally` so it can
+never stick), a spinner inside the send button, and a "Contacting LifeSOS
+Spark…" / "Offline Engine drafting reply…" status line above the input, both
+visible until the answer lands. Locked by an idle-contract test proving the
+synchronous local path never raises the sending state. Suite at **59/59
+green** — see Current Verification Record.
+
+A follow-up renamed the product LifeSOS (app name, UI strings, prompts,
+prefs/DataStore/Keystore names, docs). Deliberately kept: Meta Muse Spark
+and Muse hardware-ecosystem names (factual Meta references), internal code
+identifiers, the `metamuse://` deep-link scheme (must match the Facebook app
+dashboard), and the AI-tool credit. Suite stays **59/59 green** — see Current
+Verification Record.
+
 ---
 
 ## Pre-submission checklist
@@ -296,8 +355,9 @@ project brief; implementation sections say "companion"). Suite at **49/49 green*
 - [x] Muse Spark endpoint externally verified — Meta Model API at `api.meta.ai/v1` serving `muse-spark-1.3` confirmed via public docs (P0-3). Still needed: one real on-device cloud call + screenshot
 - [x] README accuracy bugs fixed — 5 states, dead screens deleted, Guard reworded, SeaWeed removed (P0-4)
 - [x] Meta Horizon is the first-run theme — repo, prefs, and ThemeState defaults flipped + 2 new tests (P1-5). Verified green (see Current Verification Record)
-- [x] Single product name — launcher, chat tag, project, metadata now MetaMuse (P1-6). Kept deliberately: `applicationId`, code identifiers, "Luminous Serenity" theme name, AI-Studio `majorCapabilities`
+- [x] Single product name — launcher, chat tag, project, metadata now LifeSOS (P1-6). Kept deliberately: `applicationId`, code identifiers, "Luminous Serenity" theme name, AI-Studio `majorCapabilities`
 - [x] Demo script written — [demo-script.md](demo-script.md) + `screenshots/` shot list (P1-7). Still needed: capture 7 shots + record/link video, link from README
 - [x] No-key path statically verified — blank token → offline synthesis → full card render, no blank states (P1-8). Still needed: airplane-mode pass on all 5 states on-device
 - [x] `.idea` untracked, MIT LICENSE added (P1-9). Still needed: push repo public, confirm credits
 - [ ] Fresh-APK install proof re-run (P1-10)
+- [ ] Dormant first-run verified on-device — gray Lumi, unavailable channels, disabled Consult (empty-state batch). Still needed: fresh-APK proof + screenshot

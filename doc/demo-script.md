@@ -1,4 +1,4 @@
-# MetaMuse — 60-Second Judge Demo Script
+# LifeSOS — 60-Second Judge Demo Script
 
 Rehearse this verbatim. Total: ~60 seconds. **Two separate paths — never mix them:**
 **Path A (primary):** Meta Model API key entered, Wi-Fi on → genuine Muse Spark 1.3
@@ -13,17 +13,18 @@ diagnosis. **Path B (backup):** airplane mode, no keys → Offline Rules Engine 
 
 ## Setup (before recording)
 
-- Fresh install; Meta Horizon theme active (first-run default).
+- Fresh install; Meta Horizon theme active (first-run default); Lumi opens **Dormant**
+  (gray, honest empty state — zero fake baseline data).
 - **Path A:** enter the Meta Model API key in Connections → AI Configuration.
-- Kill and relaunch the app so Lumi opens **Radiant** on the Meta Horizon theme.
+- Kill and relaunch the app so Lumi opens **Dormant gray** on the Meta Horizon theme.
 - Have a WhatsApp account on the device so the nudge deep-link resolves.
 
 ## The 60 seconds (Path A — live Muse Spark)
 
 | Time | Action | What the judge sees |
 | ---- | ------ | ------------------- |
-| 0–10s | Open the app. | Lumi **Radiant ✨**, Meta Blue theme, overall life score high. Say: "This is Lumi — a living mirror of your whole life, not one metric." |
-| 10–35s | Tap the science icon → **1. The Success Trap**, then **Consult Muse for Advice**. | Lumi turns **Sick 🤒**, aura dims; genuine Muse Spark 1.3 diagnosis card appears (`modelUsed` proves it): 98% tasks + savings vs 5h sleep + 3 canceled plans; WhatsApp nudge drafted. Say: "High output is secretly borrowing from sleep and friendships — Lumi shows it before burnout." |
+| 0–10s | Open the app. | Lumi **Dormant 💤** (gray, "—" score — nothing made up), Meta Blue theme. Say: "This is Lumi — she starts honest, with zero fake data. Watch what happens when life gets complicated." |
+| 10–35s | Tap the science icon → **1. The Success Trap**, then **Consult LifeSOS for Advice**. | Lumi turns **Sick 🤒**, aura dims; genuine Muse Spark 1.3 diagnosis card appears (`modelUsed` proves it): 98% tasks + savings vs 5h sleep + 3 canceled plans; WhatsApp nudge drafted. Say: "High output is secretly borrowing from sleep and friendships — Lumi shows it before burnout." |
 | 35–45s | Tap **💬 Open WhatsApp & Reach Out**. | WhatsApp opens with the check-in pre-filled. Say: "One tap turns insight into reconnection." |
 | 45–60s | Back in app → **Log Follow-Through**, then tap 🔊 voice. | Lumi recovers to **Radiant ✨**; Lumi speaks the prescription aloud. Say: "Only logged follow-through heals her — agreement alone doesn't. Sensor-verified recovery is on our roadmap." |
 

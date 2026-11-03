@@ -2,6 +2,7 @@ package com.example.data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.example.data.connectors.BankFinanceConnector
 import com.example.data.connectors.CalendarTasksConnector
 import com.example.data.connectors.ConnectorPreferencesStore
@@ -39,6 +40,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -51,6 +54,10 @@ class SerenityRepository(
     private val appContext: Context? = null,
     private val museService: MuseService = MuseService()
 ) {
+    companion object {
+        private const val TAG = "LifeSOS"
+        private const val CHAT_HISTORY_LIMIT = 40
+    }
 
     private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -135,23 +142,20 @@ class SerenityRepository(
             level = initialLevel,
             xp = initialXp,
             xpForNextLevel = 1000,
-            hydration = prefsStore?.vitalHydration ?: 0.85f,
-            focus = prefsStore?.vitalFocus ?: 0.90f,
-            innerPeace = prefsStore?.vitalInnerPeace ?: 0.82f,
-            physicalEnergy = prefsStore?.vitalPhysicalEnergy ?: 0.78f,
-            connection = prefsStore?.vitalConnection ?: 0.80f,
+            hydration = prefsStore?.vitalHydration ?: 0f,
+            focus = prefsStore?.vitalFocus ?: 0f,
+            innerPeace = prefsStore?.vitalInnerPeace ?: 0f,
+            physicalEnergy = prefsStore?.vitalPhysicalEnergy ?: 0f,
+            connection = prefsStore?.vitalConnection ?: 0f,
             mood = prefsStore?.liveMoodName?.let {
                 try {
                     TamagotchiMood.valueOf(it)
                 } catch (e: Exception) {
-                    TamagotchiMood.RADIANT
+                    TamagotchiMood.DORMANT
                 }
-            } ?: TamagotchiMood.RADIANT,
-            speech = prefsStore?.liveSpeech?.takeIf { it.isNotBlank() } ?: if (appContext != null) {
-                "Ready for real-world telemetry! Connect Health Connect, Calendar, Facebook, or your Bank in Connections."
-            } else {
-                "I feel so radiant today! You've nurtured our mind and body beautifully."
-            },
+            } ?: TamagotchiMood.DORMANT,
+            speech = prefsStore?.liveSpeech?.takeIf { it.isNotBlank() }
+                ?: "Still asleep — connect a channel in the Connections tab and I'll wake up. 💤",
             equippedAccessory = "Celestial Halo",
             isSleeping = false,
             totalPets = initialPets,
@@ -176,8 +180,23 @@ class SerenityRepository(
     private val _lifeQuests = MutableStateFlow<List<LifeQuest>>(initialLifeQuests())
     val lifeQuests: StateFlow<List<LifeQuest>> = _lifeQuests.asStateFlow()
 
-    private val _messages = MutableStateFlow<List<ChatMessage>>(initialMessages())
+    private val _messages = MutableStateFlow<List<ChatMessage>>(loadChatHistory())
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
+
+    // Every conversation update is journaled to private prefs so chats survive
+    // process death; a collector covers all mutation points (there are many).
+    @Suppress("unused")
+    private val persistChatJob = _messages
+        .onEach { persistChatHistory(it) }
+        .launchIn(repositoryScope)
+
+    // Live-reply progress: how many cloud chat calls are still in flight, plus
+    // the status line shown beside the spinner until the answer lands.
+    private val _chatPendingCount = MutableStateFlow(0)
+    val chatPendingCount: StateFlow<Int> = _chatPendingCount.asStateFlow()
+
+    private val _chatReplyStatus = MutableStateFlow<String?>(null)
+    val chatReplyStatus: StateFlow<String?> = _chatReplyStatus.asStateFlow()
 
     private val _memories = MutableStateFlow<List<MemoryItem>>(loadMemories())
     val memories: StateFlow<List<MemoryItem>> = _memories.asStateFlow()
@@ -209,7 +228,8 @@ class SerenityRepository(
             selectedEngine = com.example.model.MetaModelEngine.fromId(prefsStore?.selectedModelEngine),
             isLocalLlamaPrivacyMode = prefsStore?.isLocalLlamaPrivacyMode ?: false,
             isKeyEncryptedInKeystore = true,
-            hasConfiguredKey = prefsStore?.metaAiToken?.isNotBlank() == true
+            hasConfiguredKey = prefsStore?.metaAiToken?.isNotBlank() == true,
+            chatHistoryWindow = prefsStore?.chatHistoryWindow ?: 7
         )
     )
     val metaAiConfig: StateFlow<MetaAiConfig> = _metaAiConfig.asStateFlow()
@@ -600,26 +620,26 @@ class SerenityRepository(
         val hydrationVital = when {
             h?.isConnected == true && h.hydrationLitersToday > 0.1 ->
                 (h.hydrationLitersToday / 2.2).toFloat().coerceIn(0.35f, 1.0f)
-            else -> 0.80f
+            else -> 0f
         }
         val physicalVital = if (h?.isConnected == true) {
             (h.report.scorePercent / 100f).coerceIn(0.25f, 1.0f)
-        } else 0.75f
+        } else 0f
         val focusVital = if (c?.isConnected == true) {
             (c.report.scorePercent / 100f).coerceIn(0.35f, 1.0f)
-        } else 0.78f
+        } else 0f
         val peaceVital = if (f?.isConnected == true) {
             (f.report.scorePercent / 100f).coerceIn(0.30f, 1.0f)
-        } else 0.78f
+        } else 0f
         val connectionVital = if (s?.isConnected == true) {
             (s.report.scorePercent / 100f).coerceIn(0.25f, 1.0f)
-        } else 0.75f
+        } else 0f
 
         val (liveMood, liveSpeech, liveStage) = when {
             connectedCount == 0 -> Triple(
-                TamagotchiMood.BALANCED,
-                "Live mode active! Open the Connections tab to authorize Health Connect, Calendar, Facebook, or your Bank account.",
-                DemoRecoveryStage.RECOVERED_HAPPY
+                TamagotchiMood.DORMANT,
+                "Live mode active, but no live signals yet. Open the Connections tab to authorize Health Connect, Calendar, Facebook, or your Bank account.",
+                DemoRecoveryStage.PROACTIVE_CONCERN
             )
             ruleMatch != null -> Triple(
                 ruleMatch.mood,
@@ -681,11 +701,11 @@ class SerenityRepository(
     }
 
     private fun buildLiveTelemetrySnapshot(): SyntheticTelemetrySnapshot {
-        val hReport = latestHealthResult?.report ?: ChannelTelemetryReport(
+        val hReport = (latestHealthResult?.report ?: ChannelTelemetryReport(
             channelName = "Health (Health Connect)",
             headlineStatus = "Permission Needed",
             summary = "Grant Android Health Connect access in Connections to stream real steps, sleep, heart rate, and hydration.",
-            scorePercent = 50,
+            scorePercent = 0,
             isAlert = false,
             metrics = listOf(
                 ChannelMetricItem("Steps Today", "—", "Connect Health"),
@@ -693,13 +713,13 @@ class SerenityRepository(
                 ChannelMetricItem("Heart Rate", "—", "Connect Health")
             ),
             historyLog = listOf("Open Connections → Connect to Google Health to authorize live Health Connect records.")
-        )
+        )).copy(isAvailable = latestHealthResult?.isConnected == true)
 
-        val cReport = latestCalendarResult?.report ?: ChannelTelemetryReport(
+        val cReport = (latestCalendarResult?.report ?: ChannelTelemetryReport(
             channelName = "Calendar & Google Tasks",
             headlineStatus = "Permission Needed",
             summary = "Grant Android Calendar permission or link a Google Tasks OAuth token to read your real schedule and focus load.",
-            scorePercent = 50,
+            scorePercent = 0,
             isAlert = false,
             metrics = listOf(
                 ChannelMetricItem("Today's Events", "—", "Connect Calendar"),
@@ -707,15 +727,16 @@ class SerenityRepository(
                 ChannelMetricItem("Google Tasks", "—", "Optional OAuth")
             ),
             historyLog = listOf("Open Connections → Connect Calendar & Tasks to read live device events.")
-        )
+        )).copy(isAvailable = latestCalendarResult?.isConnected == true)
 
-        val fReport = latestFinanceResult?.report ?: bankFinanceConnector.unconfiguredResult().report
+        val fReport = (latestFinanceResult?.report ?: bankFinanceConnector.unconfiguredResult().report)
+            .copy(isAvailable = latestFinanceResult?.isConnected == true)
 
-        val sReport = latestSocialResult?.report ?: ChannelTelemetryReport(
+        val sReport = (latestSocialResult?.report ?: ChannelTelemetryReport(
             channelName = "Social (Facebook & Contacts)",
             headlineStatus = "Connection Needed",
             summary = "Sign in with Facebook Graph API v21.0 or grant Contacts permission to track close relationships, events, and birthdays.",
-            scorePercent = 50,
+            scorePercent = 0,
             isAlert = false,
             metrics = listOf(
                 ChannelMetricItem("Facebook Graph", "Not linked", "OAuth / Token"),
@@ -723,7 +744,7 @@ class SerenityRepository(
                 ChannelMetricItem("Birthdays", "—", "Contacts sync")
             ),
             historyLog = listOf("Open Connections → Connect to Facebook to link Graph API or starred contacts.")
-        )
+        )).copy(isAvailable = latestSocialResult?.isConnected == true)
 
         val anyAlert = hReport.isAlert || cReport.isAlert || fReport.isAlert || sReport.isAlert
         val connectedNames = buildList {
@@ -737,7 +758,7 @@ class SerenityRepository(
             connectedNames.isEmpty() ->
                 "LIVE MODE: 0 channels connected yet. Go to the Connections tab to authorize real Google Health, Calendar, Facebook, and Bank feeds."
             anyAlert ->
-                "LIVE ANOMALY DETECTED across ${connectedNames.joinToString(", ")}: Muse's rules engine flagged a real-world imbalance."
+                "LIVE ANOMALY DETECTED across ${connectedNames.joinToString(", ")}: LifeSOS's rules engine flagged a real-world imbalance."
             else ->
                 "LIVE TELEMETRY ACTIVE (${connectedNames.joinToString(", ")}): All connected real-world channels are within healthy bounds."
         }
@@ -755,7 +776,7 @@ class SerenityRepository(
     }
 
     /**
-     * Deterministic Event Detection & Synthetic Data Pump for the 3 MuseLife Demos.
+     * Deterministic Event Detection & Synthetic Data Pump for the 3 LifeSOS Demos.
      * Pre-loads multi-channel history, evaluates the rules engine, makes the companion
      * visibly sick/sad, and proactively initiates the conversation on the Home tab.
      */
@@ -784,16 +805,7 @@ class SerenityRepository(
                     activeScenario = MuseDemoScenario.NONE,
                     recoveryStage = DemoRecoveryStage.RECOVERED_HAPPY
                 )
-                _integrations.value = LifeSyncIntegrations(
-                    googleHealthConnected = true,
-                    googleHealthStats = "7,840 steps • 7.4h sleep • 1.8L water synced",
-                    facebookConnected = true,
-                    facebookStats = "Synced: 4 close friend interactions & community circles",
-                    financeAppConnected = true,
-                    financeAppStats = "Daily mindful budget on track • Peace of mind +15%",
-                    tasksAppConnected = true,
-                    tasksAppStats = "4 of 5 focus tasks completed today (+20% Flow)"
-                )
+                // Demo narratives never rewrite the integrations flags; real connectivity stays as measured.
                 _messages.value = initialMessages()
             }
 
@@ -811,16 +823,7 @@ class SerenityRepository(
                     activeScenario = MuseDemoScenario.SUCCESS_TRAP,
                     recoveryStage = DemoRecoveryStage.PROACTIVE_CONCERN
                 )
-                _integrations.value = LifeSyncIntegrations(
-                    googleHealthConnected = true,
-                    googleHealthStats = "ALERT: Sleep dropped from 7.5h to 5.0h over two weeks",
-                    facebookConnected = true,
-                    facebookStats = "ALERT: 3 canceled plans with close friends; 0 social time this week",
-                    financeAppConnected = true,
-                    financeAppStats = "Savings increased +20% this month",
-                    tasksAppConnected = true,
-                    tasksAppStats = "98% complete • Working past midnight every night"
-                )
+                // Demo narratives never rewrite the integrations flags; real connectivity stays as measured.
                 _vitalityCheckin.value = VitalityCheckin(
                     clarityScore = 76,
                     emotionalEquilibrium = 42,
@@ -860,16 +863,7 @@ class SerenityRepository(
                     activeScenario = MuseDemoScenario.INVISIBLE_MONEY_LEAK,
                     recoveryStage = DemoRecoveryStage.PROACTIVE_CONCERN
                 )
-                _integrations.value = LifeSyncIntegrations(
-                    googleHealthConnected = true,
-                    googleHealthStats = "ALERT: Poor sleep (5.4h) on 5 consecutive nights",
-                    facebookConnected = true,
-                    facebookStats = "Most evenings spent alone at home (6 of 7 nights)",
-                    financeAppConnected = true,
-                    financeAppStats = "ALERT: 9 small food-delivery orders ($284) • Savings falling behind",
-                    tasksAppConnected = true,
-                    tasksAppStats = "Important tasks done, but high evening stress load"
-                )
+                // Demo narratives never rewrite the integrations flags; real connectivity stays as measured.
                 _vitalityCheckin.value = VitalityCheckin(
                     clarityScore = 68,
                     emotionalEquilibrium = 45,
@@ -909,16 +903,7 @@ class SerenityRepository(
                     activeScenario = MuseDemoScenario.CONNECTION_DEBT,
                     recoveryStage = DemoRecoveryStage.PROACTIVE_CONCERN
                 )
-                _integrations.value = LifeSyncIntegrations(
-                    googleHealthConnected = true,
-                    googleHealthStats = "7.8h sleep • 9,200 steps • Physically thriving",
-                    facebookConnected = true,
-                    facebookStats = "ALERT: Postponed sibling call 3x • Missed friend's birthday • Family visit rescheduled 2x",
-                    financeAppConnected = true,
-                    financeAppStats = "Budget on track • Emergency & goal savings growing",
-                    tasksAppConnected = true,
-                    tasksAppStats = "100% of daily tasks completed on schedule"
-                )
+                // Demo narratives never rewrite the integrations flags; real connectivity stays as measured.
                 _vitalityCheckin.value = VitalityCheckin(
                     clarityScore = 90,
                     emotionalEquilibrium = 62,
@@ -947,7 +932,7 @@ class SerenityRepository(
 
     /**
      * Simulates or verifies the user's real-world follow-through action.
-     * Agreement alone makes Muse HOPEFUL; verified follow-through makes Muse RADIANT (healthy & happy).
+     * Agreement alone makes LifeSOS HOPEFUL; verified follow-through makes LifeSOS RADIANT (healthy & happy).
      */
     fun completeDemoFollowThrough() {
         val scenario = _activeDemoScenario.value
@@ -1156,7 +1141,34 @@ class SerenityRepository(
         updateMetaAiConfig(newToken)
     }
 
+    fun updateChatHistoryWindow(size: Int) {
+        val clamped = size.coerceIn(1, 7)
+        prefsStore?.chatHistoryWindow = clamped
+        _metaAiConfig.value = _metaAiConfig.value.copy(chatHistoryWindow = clamped)
+        Log.d(TAG, "chat: history window set to $clamped")
+    }
+
     suspend fun sendAllInfoToMuse(): MuseLifeAdvice {
+        Log.d(TAG, "consult: entry mood=${_tamagotchiState.value.mood} scenario=${_activeDemoScenario.value} tokenSet=${_metaAiConfig.value.token.isNotBlank()}")
+        // A dormant companion has no signals worth consulting about: skip the cloud call
+        // entirely instead of sending an empty payload and pretending the answer means something.
+        if (_tamagotchiState.value.mood == TamagotchiMood.DORMANT &&
+            _activeDemoScenario.value == MuseDemoScenario.LIVE_REAL_DATA
+        ) {
+            val dormantAdvice = MuseLifeAdvice(
+                id = UUID.randomUUID().toString(),
+                timestamp = currentTimeFormatted(),
+                headline = "Connect a channel to wake Lumi up",
+                overallDiagnosis = "Lumi is still dormant — no live signals yet, so there is nothing to interpret.",
+                pillars = emptyList(),
+                tamagotchiPrescription = "Still asleep — connect a channel in the Connections tab and I'll wake up. 💤",
+                modelUsed = "Dormant — No Live Signals (Consult Skipped)"
+            )
+            Log.d(TAG, "consult: dormant short-circuit, cloud call skipped")
+            _latestMuseAdvice.value = dormantAdvice
+            _metaAiConfig.value = _metaAiConfig.value.copy(isConnected = false)
+            return dormantAdvice
+        }
         val advice = museService.sendLifeTelemetryToMuse(
             metaAiToken = _metaAiConfig.value.token,
             tamagotchiState = _tamagotchiState.value,
@@ -1169,6 +1181,7 @@ class SerenityRepository(
             modelName = _metaAiConfig.value.modelName,
             isLocalPrivacyMode = _metaAiConfig.value.isLocalLlamaPrivacyMode
         )
+        Log.d(TAG, "consult: advice ready modelUsed='${advice.modelUsed}'")
         _latestMuseAdvice.value = advice
         // isConnected means the last consult actually reached the cloud: both offline
         // fallbacks report modelUsed containing "Offline", no cloud response does.
@@ -1177,12 +1190,12 @@ class SerenityRepository(
             lastSyncedAt = advice.timestamp
         )
 
-        // Update tamagotchi speech to Muse's live prescription
+        // Update tamagotchi speech to LifeSOS's live prescription
         _tamagotchiState.value = _tamagotchiState.value.copy(
             speech = advice.tamagotchiPrescription
         )
 
-        val museMessage = ChatMessage(
+        val adviceMessage = ChatMessage(
             id = UUID.randomUUID().toString(),
             isFromUser = false,
             content = "✨ **${advice.modelUsed} Prescription:**\n\n${advice.headline}\n\n${advice.overallDiagnosis}\n\n💡 **Prescription for ${_tamagotchiState.value.name}:** ${advice.tamagotchiPrescription}\n\n🛡️ **Safety:** ${advice.llamaGuardStatus}",
@@ -1191,9 +1204,9 @@ class SerenityRepository(
                 ThoughtStep("${it.pillar} (${it.score}%)", it.recommendation)
             },
             suggestedPrompts = advice.pillars.map { it.suggestedAction }.take(3),
-            category = "Muse Life Intelligence"
+            category = "LifeSOS Intelligence"
         )
-        _messages.value = _messages.value + museMessage
+        _messages.value = _messages.value + adviceMessage
 
         return advice
     }
@@ -1296,12 +1309,20 @@ class SerenityRepository(
         val curr = _tamagotchiState.value
         val newSleep = !curr.isSleeping
         val name = getDisplayName()
+        // Waking re-derives the mood from whatever signals exist — a dormant
+        // companion with no connections wakes dormant, not radiant.
+        val mood = if (newSleep) {
+            TamagotchiMood.SLEEPY
+        } else {
+            evaluateMood(curr.copy(isSleeping = false))
+        }
         val speech = if (newSleep) {
             "Resting our eyes in gentle twilight... Sweet dreams, $name. 🌙"
+        } else if (mood == TamagotchiMood.DORMANT) {
+            "Still asleep — connect a channel in the Connections tab and I'll wake up. 💤"
         } else {
             "Awake and refreshed! Ready to craft a radiant day with you! ☀️"
         }
-        val mood = if (newSleep) TamagotchiMood.SLEEPY else TamagotchiMood.RADIANT
         _tamagotchiState.value = curr.copy(
             isSleeping = newSleep,
             speech = speech,
@@ -1397,6 +1418,17 @@ class SerenityRepository(
 
     private fun evaluateMood(state: TamagotchiState): TamagotchiMood {
         if (state.isSleeping) return TamagotchiMood.SLEEPY
+        // Without any connected signal the companion stays dormant instead of inventing a mood.
+        if (state.activeScenario == MuseDemoScenario.LIVE_REAL_DATA &&
+            listOf(
+                latestHealthResult?.isConnected == true,
+                latestCalendarResult?.isConnected == true,
+                latestSocialResult?.isConnected == true,
+                latestFinanceResult?.isConnected == true
+            ).none { it }
+        ) {
+            return TamagotchiMood.DORMANT
+        }
         if (state.hydration < 0.40f) return TamagotchiMood.THIRSTY
         if (state.innerPeace < 0.45f) return TamagotchiMood.SLEEPY
         if (state.focus < 0.45f) return TamagotchiMood.RESTLESS
@@ -1508,6 +1540,7 @@ class SerenityRepository(
     }
 
     fun sendMessage(userText: String) {
+        Log.d(TAG, "chat: sendMessage len=${userText.length} scenario=${_activeDemoScenario.value} tokenSet=${_metaAiConfig.value.token.isNotBlank()}")
         // Quick Demo Switchers from chat chips
         when {
             userText.contains("Try Demo 1", ignoreCase = true) -> {
@@ -1536,9 +1569,17 @@ class SerenityRepository(
 
         val scenario = _activeDemoScenario.value
         if (scenario == MuseDemoScenario.LIVE_REAL_DATA && _metaAiConfig.value.token.isNotBlank()) {
+            Log.d(TAG, "chat: live cloud path; user msg appended, awaiting Spark reply")
+            _chatPendingCount.value = _chatPendingCount.value + 1
+            _chatReplyStatus.value = if (_metaAiConfig.value.isLocalLlamaPrivacyMode) {
+                "Offline Engine drafting reply…"
+            } else {
+                "Contacting Meta Muse Spark…"
+            }
             _messages.value = currentList
             repositoryScope.launch {
-                val companionReply = museService.chatWithMuseSpark(
+                try {
+                    val companionReply = museService.chatWithMuseSpark(
                     metaAiToken = _metaAiConfig.value.token,
                     userMessage = userText,
                     history = _messages.value,
@@ -1547,14 +1588,31 @@ class SerenityRepository(
                     endpointUrl = _metaAiConfig.value.endpointUrl,
                     modelName = _metaAiConfig.value.modelName,
                     isLocalPrivacyMode = _metaAiConfig.value.isLocalLlamaPrivacyMode,
-                    userName = getDisplayName()
+                    userName = getDisplayName(),
+                    historyWindowSize = _metaAiConfig.value.chatHistoryWindow
                 )
-                _messages.value = _messages.value + companionReply
-                _tamagotchiState.value = _tamagotchiState.value.copy(
-                    speech = companionReply.content.take(120) + if (companionReply.content.length > 120) "..." else ""
-                )
+                    _messages.value = _messages.value + companionReply
+                    _tamagotchiState.value = _tamagotchiState.value.copy(
+                        speech = companionReply.content.take(120) + if (companionReply.content.length > 120) "..." else ""
+                    )
+                    Log.d(TAG, "chat: Spark reply appended (${companionReply.content.length} chars)")
+                } catch (e: Exception) {
+                    Log.e(TAG, "chat: reply failed; posting visible error", e)
+                    _messages.value = _messages.value + ChatMessage(
+                        id = UUID.randomUUID().toString(),
+                        isFromUser = false,
+                        content = "Hmm, my reply got lost in transit (${e.message ?: "unknown error"}). Your message was received — try again in a moment.",
+                        timestamp = currentTimeFormatted(),
+                        category = "Connection Error"
+                    )
+                } finally {
+                    val remaining = (_chatPendingCount.value - 1).coerceAtLeast(0)
+                    _chatPendingCount.value = remaining
+                    if (remaining == 0) _chatReplyStatus.value = null
+                }
             }
         } else {
+            Log.d(TAG, "chat: local scripted reply (scenario=$scenario)")
             val companionReply = generateCompanionReply(userText, _selectedMode.value)
             currentList.add(companionReply)
             _messages.value = currentList
@@ -1678,7 +1736,7 @@ class SerenityRepository(
                     timestamp = timeStr,
                     thoughtSteps = listOf(
                         ThoughtStep("Plan Accepted", "User accepted low-friction 5-minute evening meal plan"),
-                        ThoughtStep("State Transition → Hopeful", "Muse transitions from Sick to Hopeful; awaiting simulated follow-through")
+                        ThoughtStep("State Transition → Hopeful", "LifeSOS transitions from Sick to Hopeful; awaiting simulated follow-through")
                     ),
                     suggestedPrompts = listOf(
                         "What 5-minute meals do you suggest?",
@@ -2203,6 +2261,93 @@ class SerenityRepository(
             LifeQuest("q5", "Gentle spine stretch & shoulder roll", "+15% Physical • +20 XP", "Physical", false)
         )
         return baseQuests.map { it.copy(isCompleted = completed.contains(it.id)) }
+    }
+
+    private fun loadChatHistory(): List<ChatMessage> {
+        val json = prefsStore?.chatHistoryJson
+        if (!json.isNullOrBlank()) {
+            try {
+                val array = JSONArray(json)
+                val list = mutableListOf<ChatMessage>()
+                for (i in 0 until array.length()) {
+                    val obj = array.getJSONObject(i)
+                    val steps = mutableListOf<ThoughtStep>()
+                    val stepsArray = obj.optJSONArray("thoughtSteps")
+                    if (stepsArray != null) {
+                        for (s in 0 until stepsArray.length()) {
+                            val step = stepsArray.getJSONObject(s)
+                            steps.add(
+                                ThoughtStep(
+                                    title = step.optString("title", ""),
+                                    detail = step.optString("detail", "")
+                                )
+                            )
+                        }
+                    }
+                    val prompts = mutableListOf<String>()
+                    val promptsArray = obj.optJSONArray("suggestedPrompts")
+                    if (promptsArray != null) {
+                        for (p in 0 until promptsArray.length()) {
+                            prompts.add(promptsArray.optString(p, ""))
+                        }
+                    }
+                    list.add(
+                        ChatMessage(
+                            id = obj.optString("id", UUID.randomUUID().toString()),
+                            isFromUser = obj.optBoolean("isFromUser", false),
+                            content = obj.optString("content", ""),
+                            timestamp = obj.optString("timestamp", ""),
+                            thoughtSteps = steps,
+                            suggestedPrompts = prompts.filter { it.isNotEmpty() },
+                            category = obj.optString("category", "").ifEmpty { null }
+                        )
+                    )
+                }
+                if (list.isNotEmpty()) {
+                    Log.d(TAG, "chat: restored ${list.size} persisted messages")
+                    return list
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "chat: persisted history unreadable, starting fresh (${e.message})")
+            }
+        }
+        return initialMessages()
+    }
+
+    private fun persistChatHistory(messages: List<ChatMessage>) {
+        if (prefsStore == null) return
+        try {
+            val array = JSONArray()
+            for (m in messages.takeLast(CHAT_HISTORY_LIMIT)) {
+                val stepsArray = JSONArray()
+                for (step in m.thoughtSteps) {
+                    stepsArray.put(
+                        JSONObject().apply {
+                            put("title", step.title)
+                            put("detail", step.detail)
+                        }
+                    )
+                }
+                val promptsArray = JSONArray()
+                for (prompt in m.suggestedPrompts) {
+                    promptsArray.put(prompt)
+                }
+                array.put(
+                    JSONObject().apply {
+                        put("id", m.id)
+                        put("isFromUser", m.isFromUser)
+                        put("content", m.content)
+                        put("timestamp", m.timestamp)
+                        put("thoughtSteps", stepsArray)
+                        put("suggestedPrompts", promptsArray)
+                        put("category", m.category ?: "")
+                    }
+                )
+            }
+            prefsStore?.chatHistoryJson = array.toString()
+        } catch (e: Exception) {
+            Log.w(TAG, "chat: persist failed (${e.message})")
+        }
     }
 
     private fun initialMessages(): List<ChatMessage> {

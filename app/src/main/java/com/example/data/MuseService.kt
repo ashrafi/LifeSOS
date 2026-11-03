@@ -1,5 +1,6 @@
 package com.example.data
 
+import android.util.Log
 import com.example.model.ActionableNudge
 import com.example.model.CareActionLog
 import com.example.model.ChatMessage
@@ -32,6 +33,9 @@ class MuseService(
         .readTimeout(20, TimeUnit.SECONDS)
         .build()
 ) {
+    companion object {
+        private const val TAG = "LifeSOS"
+    }
 
     suspend fun sendLifeTelemetryToMuse(
         metaAiToken: String,
@@ -46,14 +50,16 @@ class MuseService(
         isLocalPrivacyMode: Boolean = false
     ): MuseLifeAdvice = withContext(Dispatchers.IO) {
         val currentTime = SimpleDateFormat("h:mm a, MMM d", Locale.getDefault()).format(Date())
+        Log.d(TAG, "consult: entry model=$modelName privacy=$isLocalPrivacyMode tokenSet=${metaAiToken.isNotBlank()}")
 
         if (isLocalPrivacyMode) {
+            Log.d(TAG, "consult: zero-cloud privacy mode, skipping network")
             return@withContext synthesizeOfflinePrivacyAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         }
 
         // 1. Construct Telemetry Payload for Muse Spark reasoning
         val telemetryJson = JSONObject().apply {
-            put("client", "MetaMuse Bio-Responsive Companion")
+            put("client", "LifeSOS Bio-Responsive Companion")
             put("timestamp", currentTime)
             put("companion", JSONObject().apply {
                 put("name", tamagotchiState.name)
@@ -114,7 +120,7 @@ class MuseService(
             try {
                 val systemPrompt = if (isSparkModel) {
                     """
-                        You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach integrated into MuseLife.
+                        You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach integrated into LifeSOS.
                         You analyze the user's multi-channel life telemetry across Health (Health Connect), Tasks (Calendar), Finance (Plaid / SimpleFIN), and Social (Facebook Graph).
                         Your core purpose is to discover hidden cross-stream trade-offs (e.g. overwork suppressing sleep, delivery spending occurring alongside reduced sleep and late-night work, or social debt eroding relationships).
                         Synthesize proactive, compassionate coaching under supportive, non-clinical safety guidance (prompt-level only — no separate classifier call).
@@ -133,7 +139,7 @@ class MuseService(
                             {"pillar": "Financial Peace", "score": 85, "recommendation": "...", "suggestedAction": "..."},
                             {"pillar": "Social Connection", "score": 60, "recommendation": "...", "suggestedAction": "..."}
                           ],
-                          "tamagotchiPrescription": "Gentle, warm direct message from Lumi / Muse to the user",
+                          "tamagotchiPrescription": "Gentle, warm direct message from Lumi (LifeSOS) to the user",
                           "actionableNudge": {
                             "type": "WHATSAPP", // "WHATSAPP", "CALENDAR", "WATER", or "WALK"
                             "title": "Action title",
@@ -145,7 +151,7 @@ class MuseService(
                     """.trimIndent()
                 } else {
                     """
-                        You are MetaMuse, an empathetic bio-responsive companion powered by Meta Llama.
+                        You are LifeSOS, an empathetic bio-responsive companion powered by Meta Llama.
                         Analyze the user's multi-channel life telemetry across Health, Tasks, Finance, and Social.
                         Look for hidden cross-stream trade-offs (e.g. high task productivity occurring alongside sleep loss or social drift).
                         Keep advice supportive, compassionate, and non-clinical (prompt-level guidance only — no separate classifier call).
@@ -164,7 +170,7 @@ class MuseService(
                             {"pillar": "Financial Peace", "score": 85, "recommendation": "...", "suggestedAction": "..."},
                             {"pillar": "Social Connection", "score": 60, "recommendation": "...", "suggestedAction": "..."}
                           ],
-                          "tamagotchiPrescription": "Gentle, warm direct message from Lumi/Muse to the user",
+                          "tamagotchiPrescription": "Gentle, warm direct message from Lumi (LifeSOS) to the user",
                           "actionableNudge": {
                             "type": "WHATSAPP", // "WHATSAPP", "CALENDAR", "WATER", or "WALK"
                             "title": "Action title",
@@ -199,11 +205,13 @@ class MuseService(
                     .url(endpointUrl.ifBlank { if (isSparkModel) "https://api.meta.ai/v1/chat/completions" else "https://api.groq.com/openai/v1/chat/completions" })
                     .addHeader("Authorization", "Bearer $cleanToken")
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("X-Meta-Client", if (isSparkModel) "MetaMuse-Spark-1.3" else "MetaMuse-Llama")
+                    .addHeader("X-Meta-Client", if (isSparkModel) "LifeSOS-Spark-1.3" else "LifeSOS-Llama")
                     .post(requestPayload.toString().toRequestBody(mediaType))
                     .build()
 
+                Log.d(TAG, "consult: POST $modelName tokenSet=${cleanToken.isNotBlank()}")
                 val response = client.newCall(request).execute()
+                Log.d(TAG, "consult: HTTP ${response.code}")
                 if (response.isSuccessful) {
                     val bodyString = response.body?.string()
                     if (!bodyString.isNullOrBlank()) {
@@ -212,11 +220,12 @@ class MuseService(
                     }
                 }
             } catch (e: Exception) {
-                // Network unavailable or endpoint error; proceed to deterministic synthesis
+                Log.w(TAG, "consult: cloud call failed (${e.message}); using offline fallback")
             }
         }
 
         // 3. Fallback to offline flagship-style synthesis or the offline privacy engine
+        Log.d(TAG, "consult: offline fallback (sparkPath=$isSparkModel)")
         if (isSparkModel) {
             synthesizeOfflineFlagshipAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         } else {
@@ -233,10 +242,12 @@ class MuseService(
         endpointUrl: String = "https://api.meta.ai/v1/chat/completions",
         modelName: String = "muse-spark-1.3",
         isLocalPrivacyMode: Boolean = false,
-        userName: String = "Friend"
+        userName: String = "Friend",
+        historyWindowSize: Int = 7
     ): ChatMessage = withContext(Dispatchers.IO) {
         val currentTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
         val cleanToken = metaAiToken.trim()
+        Log.d(TAG, "chat: entry msgLen=${userMessage.length} history=${history.size} window=$historyWindowSize privacy=$isLocalPrivacyMode tokenSet=${cleanToken.isNotBlank()}")
         val isSpark = modelName.contains("spark", ignoreCase = true)
         val id = UUID.randomUUID().toString()
 
@@ -245,7 +256,7 @@ class MuseService(
                 val assistantIdentity = if (isSpark) {
                     "You are Meta Muse Spark (Meta Model API v1.3), an empathetic bio-responsive life coach companion named ${tamagotchiState.name}."
                 } else {
-                    "You are MetaMuse, an empathetic bio-responsive companion named ${tamagotchiState.name}."
+                    "You are LifeSOS, an empathetic bio-responsive companion named ${tamagotchiState.name}."
                 }
                 val systemPrompt = """
                     $assistantIdentity
@@ -276,8 +287,8 @@ class MuseService(
                     val historyEndsWithCurrent = history.lastOrNull()?.let {
                         it.isFromUser && it.content == userMessage
                     } == true
-                    // Add recent chat context (up to 4 recent messages)
-                    history.takeLast(4).forEach { msg ->
+                    // Recent chat context: 1-7 turn window (Connections → AI Engine setting).
+                    history.takeLast(historyWindowSize.coerceIn(1, 7)).forEach { msg ->
                         put(JSONObject().apply {
                             put("role", if (msg.isFromUser) "user" else "assistant")
                             put("content", msg.content)
@@ -305,11 +316,13 @@ class MuseService(
                     .url(endpointUrl.ifBlank { if (isSpark) "https://api.meta.ai/v1/chat/completions" else "https://api.groq.com/openai/v1/chat/completions" })
                     .addHeader("Authorization", "Bearer $cleanToken")
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("X-Meta-Client", if (isSpark) "MetaMuse-Spark-1.3" else "MetaMuse-Llama")
+                    .addHeader("X-Meta-Client", if (isSpark) "LifeSOS-Spark-1.3" else "LifeSOS-Llama")
                     .post(requestPayload.toString().toRequestBody(mediaType))
                     .build()
 
+                Log.d(TAG, "chat: POST model=$modelName")
                 val response = client.newCall(request).execute()
+                Log.d(TAG, "chat: HTTP ${response.code}")
                 if (response.isSuccessful) {
                     val bodyString = response.body?.string()
                     if (!bodyString.isNullOrBlank()) {
@@ -350,7 +363,7 @@ class MuseService(
                     }
                 }
             } catch (e: Exception) {
-                // Fallback below
+                Log.w(TAG, "chat: cloud call failed (${e.message}); using offline reply")
             }
         }
 

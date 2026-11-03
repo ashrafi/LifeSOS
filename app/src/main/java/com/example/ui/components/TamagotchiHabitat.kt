@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.model.TamagotchiMood
 import com.example.model.TamagotchiState
 import com.example.ui.theme.AmberTertiary
 import com.example.ui.theme.CoralActive
@@ -74,6 +75,7 @@ fun TamagotchiHabitat(
     modifier: Modifier = Modifier
 ) {
     val podShape = RoundedCornerShape(36.dp)
+    val isDormant = state.mood == TamagotchiMood.DORMANT
 
     Box(
         modifier = modifier
@@ -150,9 +152,9 @@ fun TamagotchiHabitat(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Life Score: ${state.overallLifeScore}%",
+                        text = if (isDormant) "Life Score: —" else "Life Score: ${state.overallLifeScore}%",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = CoralPrimary,
+                            color = if (isDormant) WarmSlateCharcoal else CoralPrimary,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -240,30 +242,35 @@ fun TamagotchiHabitat(
 
                 LifeVitalBar(
                     label = "Hydration",
+                    isAvailable = !isDormant,
                     percent = state.hydration,
                     color = MintSecondary,
                     icon = Icons.Default.LocalDrink
                 )
                 LifeVitalBar(
                     label = "Mind & Focus",
+                    isAvailable = !isDormant,
                     percent = state.focus,
                     color = CoralPrimary,
                     icon = Icons.Default.Psychology
                 )
                 LifeVitalBar(
                     label = "Inner Peace",
+                    isAvailable = !isDormant,
                     percent = state.innerPeace,
                     color = SageAccent,
                     icon = Icons.Default.SelfImprovement
                 )
                 LifeVitalBar(
                     label = "Physical Energy",
+                    isAvailable = !isDormant,
                     percent = state.physicalEnergy,
                     color = AmberTertiary,
                     icon = Icons.AutoMirrored.Filled.DirectionsWalk
                 )
                 LifeVitalBar(
                     label = "Connection",
+                    isAvailable = !isDormant,
                     percent = state.connection,
                     color = CoralActive,
                     icon = Icons.Default.Favorite
@@ -291,35 +298,40 @@ fun TamagotchiHabitat(
                     icon = Icons.Default.LocalDrink,
                     color = MintSecondary,
                     onClick = onWater,
-                    testTag = "care_action_water"
+                    testTag = "care_action_water",
+                    enabled = !isDormant
                 )
                 CaretakerActionButton(
                     label = "+ Breathe",
                     icon = Icons.Default.SelfImprovement,
                     color = SageAccent,
                     onClick = onBreathe,
-                    testTag = "care_action_breathe"
+                    testTag = "care_action_breathe",
+                    enabled = !isDormant
                 )
                 CaretakerActionButton(
                     label = "+ Walk",
                     icon = Icons.AutoMirrored.Filled.DirectionsWalk,
                     color = AmberTertiary,
                     onClick = onWalk,
-                    testTag = "care_action_walk"
+                    testTag = "care_action_walk",
+                    enabled = !isDormant
                 )
                 CaretakerActionButton(
                     label = "+ Focus",
                     icon = Icons.Default.Psychology,
                     color = CoralPrimary,
                     onClick = onFocus,
-                    testTag = "care_action_focus"
+                    testTag = "care_action_focus",
+                    enabled = !isDormant
                 )
                 CaretakerActionButton(
                     label = "+ Connect",
                     icon = Icons.Default.Favorite,
                     color = CoralActive,
                     onClick = onConnect,
-                    testTag = "care_action_connect"
+                    testTag = "care_action_connect",
+                    enabled = !isDormant
                 )
             }
         }
@@ -331,8 +343,10 @@ private fun LifeVitalBar(
     label: String,
     percent: Float,
     color: Color,
-    icon: ImageVector
+    icon: ImageVector,
+    isAvailable: Boolean = true
 ) {
+    val barColor = if (isAvailable) color else WarmSlateCharcoal.copy(alpha = 0.55f)
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -340,7 +354,7 @@ private fun LifeVitalBar(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = color,
+            tint = barColor,
             modifier = Modifier.size(15.dp)
         )
         Spacer(modifier = Modifier.width(6.dp))
@@ -353,19 +367,19 @@ private fun LifeVitalBar(
             modifier = Modifier.width(96.dp)
         )
         LinearProgressIndicator(
-            progress = { percent },
+            progress = { if (isAvailable) percent else 0f },
             modifier = Modifier
                 .weight(1f)
                 .height(7.dp)
                 .clip(CircleShape),
-            color = color,
+            color = barColor,
             trackColor = Color.White.copy(alpha = 0.8f)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "${(percent * 100).toInt()}%",
+            text = if (isAvailable) "${(percent * 100).toInt()}%" else "—",
             style = MaterialTheme.typography.labelSmall.copy(
-                color = color,
+                color = barColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 10.sp
             ),
@@ -380,14 +394,15 @@ private fun CaretakerActionButton(
     icon: ImageVector,
     color: Color,
     onClick: () -> Unit,
-    testTag: String
+    testTag: String,
+    enabled: Boolean = true
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .testTag(testTag)
             .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
+            .then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = 4.dp, vertical = 4.dp)
     ) {
         Box(
@@ -400,13 +415,13 @@ private fun CaretakerActionButton(
                     spotColor = color.copy(alpha = 0.35f)
                 )
                 .clip(CircleShape)
-                .background(color),
+                .background(if (enabled) color else WarmSlateCharcoal.copy(alpha = 0.35f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = Color.White,
+                tint = if (enabled) Color.White else WarmSlateCharcoal,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -416,7 +431,7 @@ private fun CaretakerActionButton(
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = DeepEspresso
+                color = if (enabled) DeepEspresso else WarmSlateCharcoal
             )
         )
     }

@@ -75,6 +75,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import kotlin.math.roundToInt
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -100,6 +101,7 @@ import com.example.model.LifeSyncIntegrations
 import com.example.model.MetaModelEngine
 import com.example.model.MuseLifeAdvice
 import com.example.model.RealConnectorState
+import com.example.model.TamagotchiMood
 import com.example.ui.components.SerenityCard
 import com.example.ui.components.SerenityPillChip
 import com.example.ui.components.SerenityPrimaryButton
@@ -440,6 +442,7 @@ fun PresenceScreen(
                             showProfileSavedBanner = true
                         },
                         showSavedBanner = showProfileSavedBanner,
+                        companionMood = tamagotchiState.mood,
                         companionLevel = tamagotchiState.level,
                         companionXp = tamagotchiState.xp,
                         totalPets = tamagotchiState.totalPets,
@@ -468,7 +471,7 @@ fun PresenceScreen(
                         onRateChange = { viewModel.setTtsSpeechRate(it) },
                         onPreview = {
                             viewModel.speakPrescription(
-                                "Hi, I'm Lumi, your MetaMuse companion. Let's protect your rest tonight.",
+                                "Hi, I'm Lumi, your LifeSOS companion. Let's protect your rest tonight.",
                                 context
                             )
                         }
@@ -504,8 +507,8 @@ fun PresenceScreen(
                         },
                         onInsertRecoveryBlock = {
                             viewModel.insertRecoveryCalendarEvent(
-                                title = "Muse Restorative Wind-Down",
-                                description = "Protected evening recovery window created from MetaMuse"
+                                title = "LifeSOS Restorative Wind-Down",
+                                description = "Protected evening recovery window created from LifeSOS"
                             )
                         }
                     )
@@ -571,7 +574,7 @@ fun PresenceScreen(
                 }
 
                 // =============================================================
-                // 5. META AI KEY & MUSE SUPERINTELLIGENCE CARD
+                // 5. META AI KEY & LIFESOS SUPERINTELLIGENCE CARD
                 // =============================================================
                 item {
                     SerenityCard(
@@ -894,6 +897,42 @@ fun PresenceScreen(
                                     shape = RoundedCornerShape(16.dp),
                                     colors = connectorTextFieldColors()
                                 )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Chat memory",
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = DeepEspresso
+                                        )
+                                    )
+                                    Text(
+                                        text = "${metaAiConfig.chatHistoryWindow} msgs",
+                                        style = MaterialTheme.typography.bodyMedium.copy(color = CoralPrimary)
+                                    )
+                                }
+                                Slider(
+                                    value = metaAiConfig.chatHistoryWindow.toFloat(),
+                                    onValueChange = { viewModel.updateChatHistoryWindow(it.roundToInt()) },
+                                    valueRange = 1f..7f,
+                                    steps = 5,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .testTag("chat_memory_slider")
+                                )
+                                Text(
+                                    text = "Prior turns re-sent with each message. More memory = better context, more tokens.",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        color = WarmSlateCharcoal,
+                                        fontSize = 10.sp
+                                    )
+                                )
                             }
 
                             Spacer(modifier = Modifier.height(12.dp))
@@ -1044,7 +1083,7 @@ fun PresenceScreen(
                             if (metaAiConfig.lastSyncedAt != null) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Last synced with Muse: ${metaAiConfig.lastSyncedAt}",
+                                    text = "Last synced with LifeSOS: ${metaAiConfig.lastSyncedAt}",
                                     style = MaterialTheme.typography.labelSmall.copy(
                                         color = SoftMutedText,
                                         fontSize = 11.sp
@@ -1055,7 +1094,7 @@ fun PresenceScreen(
                     }
                 }
 
-                // Latest Muse Life Advice Card (When present)
+                // Latest LifeSOS Advice Card (When present)
                 latestMuseAdvice?.let { advice ->
                     item {
                         MuseAdviceSnippet(advice = advice)
@@ -1814,7 +1853,7 @@ private fun SimpleConnectionsGraphicView(
                 }
             }
 
-            // Meta AI Key & Instant Muse Sync Strip
+            // Meta AI Key & Instant LifeSOS Sync Strip
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -2159,7 +2198,7 @@ private fun MuseAdviceSnippet(advice: MuseLifeAdvice) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Muse Life Superintelligence",
+                        text = "LifeSOS Superintelligence",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = DeepEspresso
@@ -2534,7 +2573,8 @@ private fun UserProfileCard(
     companionLevel: Int,
     companionXp: Int,
     totalPets: Int,
-    evolution: String
+    evolution: String,
+    companionMood: TamagotchiMood
 ) {
     SerenityCard(
         modifier = Modifier
@@ -2546,6 +2586,24 @@ private fun UserProfileCard(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
+            if (companionMood == TamagotchiMood.DORMANT) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(SubtleContainer)
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
+                ) {
+                    Text(
+                        text = "💤 Lumi is dormant — connect your first channel below to wake up live telemetry.",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = WarmSlateCharcoal,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

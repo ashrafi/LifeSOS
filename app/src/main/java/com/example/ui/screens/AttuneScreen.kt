@@ -52,6 +52,7 @@ import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.ui.platform.LocalContext
 import com.example.model.ActionableNudge
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -92,6 +93,7 @@ import com.example.model.ThoughtStream
 import com.example.ui.components.SerenityCard
 import com.example.ui.components.SerenityPrimaryButton
 import com.example.ui.components.SerenitySecondaryButton
+import com.example.ui.components.CreatureHabitatBackdrop
 import com.example.ui.components.SerenityStatusChip
 import com.example.ui.components.TamagotchiCreature
 import com.example.ui.components.TamagotchiHabitat
@@ -136,6 +138,8 @@ fun AttuneScreen(
     val metaAiConfig by viewModel.metaAiConfig.collectAsState()
     val latestMuseAdvice by viewModel.latestMuseAdvice.collectAsState()
     val isSyncingWithMuse by viewModel.isSyncingWithMuse.collectAsState()
+    val chatPendingCount by viewModel.chatPendingCount.collectAsState()
+    val chatReplyStatus by viewModel.chatReplyStatus.collectAsState()
 
     var isInputFocused by remember { mutableStateOf(false) }
 
@@ -239,6 +243,7 @@ fun AttuneScreen(
                             TamagotchiMood.SICK -> SerenityError
                             TamagotchiMood.SAD, TamagotchiMood.TIRED -> AmberTertiary
                             TamagotchiMood.HOPEFUL -> MintSecondary
+                            TamagotchiMood.DORMANT -> WarmSlateCharcoal
                             else -> CoralPrimary
                         }
                         SerenityStatusChip(
@@ -248,7 +253,7 @@ fun AttuneScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = "MuseLife Companion",
+                            text = "LifeSOS Companion",
                             style = MaterialTheme.typography.headlineLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = DeepEspresso
@@ -264,7 +269,7 @@ fun AttuneScreen(
                     }
                 }
 
-        // 2. Interactive MuseLife Demo Switcher (Pre-loads synthetic data & deterministic trigger)
+        // 2. Interactive LifeSOS Demo Switcher (Pre-loads synthetic data & deterministic trigger)
         item {
             MuseDemoSelectorCard(
                 activeScenario = activeScenario,
@@ -292,7 +297,7 @@ fun AttuneScreen(
             )
         }
 
-        // 4. Proactive Companion Dialogue Stream (Muse initiates & user responds directly on Home)
+        // 4. Proactive Companion Dialogue Stream (LifeSOS initiates & user responds directly on Home)
         item {
             ProactiveCompanionDialogueCard(
                 companionName = tamagotchi.name,
@@ -305,7 +310,9 @@ fun AttuneScreen(
                 onInputChange = { viewModel.updateInputText(it) },
                 onSend = { viewModel.sendCurrentMessage() },
                 onPromptClick = { viewModel.sendQuickPrompt(it) },
-                onLogFollowThrough = { viewModel.completeDemoFollowThrough() }
+                onLogFollowThrough = { viewModel.completeDemoFollowThrough() },
+                isAwaitingReply = chatPendingCount > 0,
+                replyStatus = chatReplyStatus
             )
         }
 
@@ -383,7 +390,7 @@ fun AttuneScreen(
             }
         }
 
-        // 6. Muse Superintelligence Life Telemetry Sync
+        // 6. LifeSOS Superintelligence Life Telemetry Sync
         item {
             SerenityCard(
                 modifier = Modifier
@@ -418,7 +425,7 @@ fun AttuneScreen(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 Text(
-                                    text = "Send Info to Muse",
+                                    text = "Send Info to LifeSOS",
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.Bold,
                                         color = DeepEspresso
@@ -484,7 +491,7 @@ fun AttuneScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "Packages ${tamagotchi.name}'s 5 vitals, habit quests, and care history to Muse to generate an adaptive life prescription.",
+                        text = "Packages ${tamagotchi.name}'s 5 vitals, habit quests, and care history to LifeSOS to generate an adaptive life prescription.",
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = WarmSlateCharcoal,
                             lineHeight = 18.sp
@@ -497,12 +504,15 @@ fun AttuneScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        val consultDormant = tamagotchi.mood == TamagotchiMood.DORMANT &&
+                            activeScenario == MuseDemoScenario.LIVE_REAL_DATA
                         SerenityPrimaryButton(
-                            text = if (isSyncingWithMuse) "Transmitting..." else "Consult Muse for Advice",
+                            text = if (isSyncingWithMuse) "Transmitting..." else if (consultDormant) "Awaiting First Signal" else "Consult LifeSOS for Advice",
                             icon = Icons.Default.Sync,
                             onClick = { viewModel.sendAllInfoToMuse() },
                             modifier = Modifier.weight(1f),
-                            testTag = "home_send_to_muse_button"
+                            testTag = "home_send_to_muse_button",
+                            enabled = !consultDormant && !isSyncingWithMuse
                         )
                     }
 
@@ -699,6 +709,7 @@ private fun AvatarOnlyHomeView(
         TamagotchiMood.SICK -> SerenityError
         TamagotchiMood.SAD, TamagotchiMood.TIRED -> AmberTertiary
         TamagotchiMood.HOPEFUL -> MintSecondary
+        TamagotchiMood.DORMANT -> WarmSlateCharcoal
         else -> CoralPrimary
     }
 
@@ -727,7 +738,11 @@ private fun AvatarOnlyHomeView(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 SerenityStatusChip(
-                    text = "${tamagotchi.mood.emoji} ${tamagotchi.name} is ${tamagotchi.mood.title} • ${tamagotchi.overallLifeScore}%",
+                    text = if (tamagotchi.mood == TamagotchiMood.DORMANT) {
+                        "${tamagotchi.mood.emoji} ${tamagotchi.name} is ${tamagotchi.mood.title} • —"
+                    } else {
+                        "${tamagotchi.mood.emoji} ${tamagotchi.name} is ${tamagotchi.mood.title} • ${tamagotchi.overallLifeScore}%"
+                    },
                     pulseColor = moodPulseColor,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -820,10 +835,16 @@ private fun AvatarOnlyHomeView(
                 .padding(vertical = 4.dp),
             contentAlignment = Alignment.Center
         ) {
+            // Full-bleed habitat backdrop reaching all four channel chips.
+            CreatureHabitatBackdrop(
+                state = tamagotchi,
+                modifier = Modifier.fillMaxSize()
+            )
             // Top-Left Satellite: Health
             HomeChannelSatellitePill(
                 label = "Health",
                 score = telemetry.healthReport.scorePercent,
+                isAvailable = telemetry.healthReport.isAvailable,
                 isAlert = telemetry.healthReport.isAlert,
                 accentColor = MintSecondary,
                 onClick = onOpenDataTab,
@@ -834,6 +855,7 @@ private fun AvatarOnlyHomeView(
             HomeChannelSatellitePill(
                 label = "Tasks",
                 score = telemetry.tasksReport.scorePercent,
+                isAvailable = telemetry.tasksReport.isAvailable,
                 isAlert = telemetry.tasksReport.isAlert,
                 accentColor = SageAccent,
                 onClick = onOpenDataTab,
@@ -847,7 +869,8 @@ private fun AvatarOnlyHomeView(
                 TamagotchiCreature(
                     state = tamagotchi,
                     onPet = onPet,
-                    size = 225.dp
+                    size = 225.dp,
+                    showBackdrop = false
                 )
                 Text(
                     text = "✨ Tap ${tamagotchi.name} to nurture (${tamagotchi.totalPets} hugs)",
@@ -863,6 +886,7 @@ private fun AvatarOnlyHomeView(
             HomeChannelSatellitePill(
                 label = "Finance",
                 score = telemetry.financeReport.scorePercent,
+                isAvailable = telemetry.financeReport.isAvailable,
                 isAlert = telemetry.financeReport.isAlert,
                 accentColor = AmberTertiary,
                 onClick = onOpenDataTab,
@@ -873,6 +897,7 @@ private fun AvatarOnlyHomeView(
             HomeChannelSatellitePill(
                 label = "Social",
                 score = telemetry.socialReport.scorePercent,
+                isAvailable = telemetry.socialReport.isAvailable,
                 isAlert = telemetry.socialReport.isAlert,
                 accentColor = CoralPrimary,
                 onClick = onOpenDataTab,
@@ -1059,12 +1084,13 @@ private fun HomeChannelSatellitePill(
     isAlert: Boolean,
     accentColor: Color,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isAvailable: Boolean = true
 ) {
     val bgColor = if (isAlert) SerenityErrorContainer else FloatingSurface
     val borderColor = if (isAlert) SerenityError.copy(alpha = 0.55f) else WarmBorder
-    val dotColor = if (isAlert) SerenityError else accentColor
-    val textColor = if (isAlert) SerenityError else DeepEspresso
+    val dotColor = if (isAlert) SerenityError else if (!isAvailable) WarmSlateCharcoal else accentColor
+    val textColor = if (isAlert) SerenityError else if (!isAvailable) WarmSlateCharcoal else DeepEspresso
 
     Surface(
         shape = CircleShape,
@@ -1087,7 +1113,7 @@ private fun HomeChannelSatellitePill(
             )
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "$label $score%",
+                text = if (isAvailable) "$label $score%" else "$label —",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = textColor,
                     fontWeight = FontWeight.Bold,
@@ -1146,7 +1172,7 @@ private fun MuseDemoSelectorCard(
                     }
                     Column {
                         Text(
-                            text = "MuseLife Proactive Demos",
+                            text = "LifeSOS Proactive Demos",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = DeepEspresso
@@ -1154,7 +1180,7 @@ private fun MuseDemoSelectorCard(
                         )
                         Text(
                             text = if (isExpanded) {
-                                "Pump synthetic data → Deterministic rule triggers sick state → Muse initiates care"
+                                "Pump synthetic data → Deterministic rule triggers sick state → LifeSOS initiates care"
                             } else {
                                 "Demo tooling • Active: ${activeScenario.title}"
                             },
@@ -1317,7 +1343,9 @@ private fun ProactiveCompanionDialogueCard(
     onInputChange: (String) -> Unit,
     onSend: () -> Unit,
     onPromptClick: (String) -> Unit,
-    onLogFollowThrough: () -> Unit
+    onLogFollowThrough: () -> Unit,
+    isAwaitingReply: Boolean,
+    replyStatus: String?
 ) {
     SerenityCard(
         modifier = Modifier
@@ -1408,6 +1436,29 @@ private fun ProactiveCompanionDialogueCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Live-reply progress + status, visible together until the answer lands.
+            if (isAwaitingReply) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                        color = CoralPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = replyStatus ?: "Waiting for reply…",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = WarmSlateCharcoal,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
             // Inline Chat Input Bar
             val containerShape = RoundedCornerShape(24.dp)
             val borderModifier = if (isInputFocused) {
@@ -1461,19 +1512,28 @@ private fun ProactiveCompanionDialogueCard(
                     Spacer(modifier = Modifier.width(6.dp))
 
                     IconButton(
-                        onClick = onSend,
+                        onClick = { if (!isAwaitingReply) onSend() },
+                        enabled = !isAwaitingReply,
                         modifier = Modifier
                             .size(38.dp)
                             .clip(CircleShape)
-                            .background(CoralPrimary)
+                            .background(if (isAwaitingReply) WarmSlateCharcoal else CoralPrimary)
                             .testTag("dialogue_send_button")
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Send,
-                            contentDescription = "Send message",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
+                        if (isAwaitingReply) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                                color = Color.White
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = "Send message",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
                     }
                 }
             }

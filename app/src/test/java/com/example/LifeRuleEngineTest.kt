@@ -247,4 +247,25 @@ class LifeRuleEngineTest {
     assertFalse(match.explanation.contains("budget looks stable"))
     assertFalse(match.explanation.contains("budget channels look stable"))
   }
+
+  @Test
+  fun moneyLeakRequiresTransactionAvailability() {
+    // Four deliveries + poor sleep would trigger — unless transactions are unavailable.
+    val available = LifeRuleEngine.evaluateLiveRules(
+      health = health(sleep = 6.0f, priorSleep = 6.2f),
+      calendar = calendar(lateNights = 3),
+      finance = finance(deliveries = 4, deliverySpend = 180.0),
+      social = social()
+    )
+    assertNotNull(available)
+    assertEquals("MONEY_LEAK", available!!.ruleId)
+
+    val unknown = LifeRuleEngine.evaluateLiveRules(
+      health = health(sleep = 6.0f, priorSleep = 6.2f),
+      calendar = calendar(lateNights = 3),
+      finance = finance(deliveries = 4, deliverySpend = 180.0, txnsAvailable = false),
+      social = social()
+    )
+    assertNull(unknown)
+  }
 }

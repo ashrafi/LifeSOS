@@ -1,6 +1,6 @@
-# My bigger idea: MetaMuse 2.0 — Your Personal Life Intelligence
+# My bigger idea: LifeSOS 2.0 — Your Personal Life Intelligence
 
-I think we can make MetaMuse substantially more interesting without throwing away what you've built.
+I think we can make LifeSOS substantially more interesting without throwing away what you've built.
 
 Actually, I think there is an opportunity to turn it into something quite a bit bigger.
 
@@ -10,7 +10,7 @@ Your life generates data → Lumi recognizes a problem → Muse Spark explains i
 
 My proposed concept is:
 
-Your life generates signals → MetaMuse understands your priorities → Lumi predicts the consequences of your decisions → you choose a better path → the system learns from the outcome.
+Your life generates signals → LifeSOS understands your priorities → Lumi predicts the consequences of your decisions → you choose a better path → the system learns from the outcome.
 
 The difference is enormous.
 
@@ -18,7 +18,7 @@ The first is an AI life coach. The second is a Personal Decision Intelligence En
 
 ## 1. Change the central idea
 
-TODAY'S METAMUSE
+TODAY'S LIFESOS
 
 # Reflect on your life.
 
@@ -28,7 +28,7 @@ MY PROPOSED DIRECTION
 
 # See the consequences before they happen.
 
-MetaMuse helps you understand the trade-offs behind decisions you're about to make.
+LifeSOS helps you understand the trade-offs behind decisions you're about to make.
 
 Imagine someone has an opportunity to take on another project.
 
@@ -36,7 +36,7 @@ A normal AI assistant might say:
 
 "Congratulations! Here are five ways to manage your schedule."
 
-MetaMuse should be different.
+LifeSOS should be different.
 
 Lumi looks at the person's own priorities, recent sleep patterns, calendar, financial commitments, and protected personal time.
 
@@ -46,11 +46,11 @@ She might say:
 
 That is a much more sophisticated interaction.
 
-MetaMuse becomes a system that understands the consequences of everyday decisions.
+LifeSOS becomes a system that understands the consequences of everyday decisions.
 
 ## 2. The five things I would build
 
-I would evolve MetaMuse around five connected capabilities.
+I would evolve LifeSOS around five connected capabilities.
 
 ### A. The Personal Compass
 
@@ -60,7 +60,7 @@ I would evolve MetaMuse around five connected capabilities.
 
 This is the most important architectural addition.
 
-Currently, MetaMuse has core values and cross-channel scoring. The README already describes pinned values, health, finance, tasks, and social telemetry.&#x20;
+Currently, LifeSOS has core values and cross-channel scoring. The README already describes pinned values, health, finance, tasks, and social telemetry.&#x20;
 
 [image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
 
@@ -96,7 +96,7 @@ My favorite new feature
 
 [devpost.com](https://devpost.com/software/dreamweaver-ai?utm_source=chatgpt.com)
 
-This is where I think MetaMuse could become genuinely special.
+This is where I think LifeSOS could become genuinely special.
 
 Give users a way to ask:
 
@@ -142,7 +142,7 @@ This is not about predicting the future with certainty.
 
 The deterministic engine calculates scheduling conflicts, available time, and measurable consequences. Muse Spark helps interpret the alternatives and communicate them naturally. Unknowns remain explicitly labeled as assumptions.
 
-I would make this the signature MetaMuse feature.
+I would make this the signature LifeSOS feature.
 
 ### C. The Life Intelligence Engine
 
@@ -229,7 +229,7 @@ Every recommendation should have a lifecycle:
 
 1. Observation
 
-   MetaMuse identifies a possible conflict.
+   LifeSOS identifies a possible conflict.
 2. Decision
 
    The user chooses an action.
@@ -274,7 +274,7 @@ The important distinction is that Muse Spark does not invent a user's life score
 
 It reasons over the structured evidence, identifies possible explanations, generates alternatives, and communicates in Lumi's voice.
 
-For MetaMuse, I would make Muse Spark the reasoning engine behind the experience rather than the experience itself.
+For LifeSOS, I would make Muse Spark the reasoning engine behind the experience rather than the experience itself.
 
 ## 4. How I would redesign the actual application
 
@@ -313,7 +313,7 @@ The biggest UI change is that the Home screen should become an actual conversati
 The Intelligence tab should answer:
 
 - What's happening?
-- Why did MetaMuse notice it?
+- Why did LifeSOS notice it?
 - What might happen next?
 - What can I change?
 - What happened after I changed it?
@@ -344,7 +344,7 @@ Lumi is sitting in a quiet, dim habitat.
 
 "Something interesting is happening. You're accomplishing more than ever, but you're leaving less room for the things you've told me matter."
 
-Scene 2 — MetaMuse reveals the evidence
+Scene 2 — LifeSOS reveals the evidence
 
 # 98%
 
@@ -374,7 +374,7 @@ Muse Spark explains the trade-offs and generates alternatives.
 
 Scene 4 — The action
 
-The user chooses to protect an evening. MetaMuse offers to schedule a work boundary and draft a reconnection message.
+The user chooses to protect an evening. LifeSOS offers to schedule a work boundary and draft a reconnection message.
 
 The user approves both.
 
@@ -386,7 +386,7 @@ The following day, Lumi recognizes the calendar change. After the user confirms 
 
 ## The audience sees a complete intelligence loop.
 
-This demo would establish why MetaMuse needs all its components: Android integrations, deterministic rules, Meta's model, personal values, action execution, and Lumi.
+This demo would establish why LifeSOS needs all its components: Android integrations, deterministic rules, Meta's model, personal values, action execution, and Lumi.
 
 Your current README already has the foundations for this storyline through its Success Trap scenario, four data streams, and closed-loop companion concept.&#x20;
 
@@ -475,7 +475,7 @@ For the hackathon, one beautiful, complete experience is worth more than ten hal
 
 There is a much larger opportunity here.
 
-Imagine MetaMuse eventually becoming the intelligence layer connecting someone's entire digital life.
+Imagine LifeSOS eventually becoming the intelligence layer connecting someone's entire digital life.
 
 Not another calendar. Not another fitness tracker. Not another budgeting application. Not another AI chatbot.
 
@@ -497,7 +497,7 @@ And importantly:
 
 That's a much more meaningful proposition than another productivity assistant.
 
-# MetaMuse
+# LifeSOS
 
 # Intelligence for the life you're building.
 
@@ -507,14 +507,14 @@ Lumi is the companion. Muse Spark is the intelligence. Your life is the context.
 
 ## My final recommendation
 
-I would not abandon MetaMuse. I would make one fundamental change:
+I would not abandon LifeSOS. I would make one fundamental change:
 
 Move from Life Monitoring to Life Decision Intelligence.
 
-The feature I would bet on is the Life Trade-off Simulator. I think that is the piece that could make someone see MetaMuse and immediately understand that it is doing something different.
+The feature I would bet on is the Life Trade-off Simulator. I think that is the piece that could make someone see LifeSOS and immediately understand that it is doing something different.
 
 And I'd make one principle non-negotiable:
 
-MetaMuse should never tell people what a good life looks like. It should help them live the life they chose for themselves.
+LifeSOS should never tell people what a good life looks like. It should help them live the life they chose for themselves.
 
 That is the product I would build.

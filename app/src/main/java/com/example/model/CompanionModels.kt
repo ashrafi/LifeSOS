@@ -27,8 +27,8 @@ enum class PresenceMode(
         "Analytical synthesis, crisp priority framing",
         0xFF79F3EA
     ),
-    CREATIVE_MUSE(
-        "Creative Muse",
+    CREATIVE_FLOW(
+        "Creative Flow",
         "Vibrant, associative, spark-igniting intuition",
         0xFFFBBF24
     ),
@@ -47,12 +47,13 @@ enum class TamagotchiMood(
     RADIANT("Happy & Radiant", "✨", "In full bloom from your sustainable life rhythm!"),
     BALANCED("Harmonious & Serene", "🌿", "Calm and contented with your day."),
     HOPEFUL("Hopeful & Recovering", "🌱", "Brightening as you commit to a healthier routine—waiting on follow-through!"),
-    SICK("Visibly Sick & Weak", "🤒", "Muse detected a hidden conflict in your life patterns and needs to talk."),
+    SICK("Visibly Sick & Weak", "🤒", "LifeSOS detected a hidden conflict in your life patterns and needs to talk."),
     SAD("Sad & Drifting", "🥺", "Feeling the quiet distance between you and the people who matter most."),
     TIRED("Exhausted & Drained", "🥱", "Your late nights and low sleep are draining our vitality."),
     THIRSTY("Craving Hydration", "💧", "A cup of fresh water would revitalize us."),
     RESTLESS("Seeking Flow", "⚡", "Ready for a quiet deep focus block."),
-    SLEEPY("Needs Restorative Pause", "🌙", "Time to step away and breathe.")
+    SLEEPY("Needs Restorative Pause", "🌙", "Time to step away and breathe."),
+    DORMANT("Dormant & Waiting", "💤", "No live signals yet — connect a channel to wake me up!")
 }
 
 enum class MuseDemoScenario(
@@ -112,7 +113,7 @@ enum class MuseDemoScenario(
 }
 
 enum class DemoRecoveryStage(val label: String) {
-    PROACTIVE_CONCERN("Muse Initiated Concern (Step 1 of 2)"),
+    PROACTIVE_CONCERN("LifeSOS Initiated Concern (Step 1 of 2)"),
     AWAITING_COMMITMENT("Exploring Context (Step 2 of 2)"),
     HOPEFUL_COMMITTED("Committed — Awaiting Logged Follow-Through"),
     RECOVERED_HAPPY("Logged Recovery — Healthy & Happy")
@@ -132,7 +133,8 @@ data class ChannelTelemetryReport(
     val scorePercent: Int,
     val isAlert: Boolean,
     val metrics: List<ChannelMetricItem>,
-    val historyLog: List<String>
+    val historyLog: List<String>,
+    val isAvailable: Boolean = true
 )
 
 data class SyntheticTelemetrySnapshot(
@@ -147,21 +149,21 @@ data class SyntheticTelemetrySnapshot(
 )
 
 data class TamagotchiState(
-    val name: String = "Muse",
+    val name: String = "Lumi",
     val evolution: String = "Bio-Responsive Companion Charm",
-    val level: Int = 4,
-    val xp: Int = 740,
+    val level: Int = 1,
+    val xp: Int = 0,
     val xpForNextLevel: Int = 1000,
-    val hydration: Float = 0.85f,
-    val focus: Float = 0.90f,
-    val innerPeace: Float = 0.82f,
-    val physicalEnergy: Float = 0.78f,
-    val connection: Float = 0.80f,
-    val mood: TamagotchiMood = TamagotchiMood.RADIANT,
-    val speech: String = "I feel so radiant today! You've nurtured our mind and body beautifully.",
+    val hydration: Float = 0f,
+    val focus: Float = 0f,
+    val innerPeace: Float = 0f,
+    val physicalEnergy: Float = 0f,
+    val connection: Float = 0f,
+    val mood: TamagotchiMood = TamagotchiMood.DORMANT,
+    val speech: String = "Still asleep — connect a channel in the Connections tab and I'll wake up. 💤",
     val equippedAccessory: String = "Celestial Halo",
     val isSleeping: Boolean = false,
-    val totalPets: Int = 42,
+    val totalPets: Int = 0,
     val activeScenario: MuseDemoScenario = MuseDemoScenario.NONE,
     val recoveryStage: DemoRecoveryStage = DemoRecoveryStage.RECOVERED_HAPPY
 ) {
@@ -293,7 +295,8 @@ data class MetaAiConfig(
     val selectedEngine: MetaModelEngine = MetaModelEngine.MUSE_SPARK_1_3,
     val isLocalLlamaPrivacyMode: Boolean = false,
     val isKeyEncryptedInKeystore: Boolean = true,
-    val hasConfiguredKey: Boolean = false
+    val hasConfiguredKey: Boolean = false,
+    val chatHistoryWindow: Int = 7
 )
 
 data class MuseLifeAdvice(

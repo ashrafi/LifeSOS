@@ -43,7 +43,7 @@ class ExampleRobolectricTest {
     fun `read string from context`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val appName = context.getString(R.string.app_name)
-        assertEquals("MetaMuse", appName)
+        assertEquals("LifeSOS", appName)
     }
 
     @Test
@@ -138,6 +138,18 @@ class ExampleRobolectricTest {
     }
 
     @Test
+    fun `chat reply progress idles when no cloud call is in flight`() {
+        val repo = SerenityRepository()
+        assertEquals(0, repo.chatPendingCount.value)
+        assertEquals(null, repo.chatReplyStatus.value)
+
+        // Synchronous local path never raises the sending state.
+        repo.sendMessage("I need a calm breath reset")
+        assertEquals(0, repo.chatPendingCount.value)
+        assertEquals(null, repo.chatReplyStatus.value)
+    }
+
+    @Test
     fun `viewModel screen navigation and presence mode`() {
         val viewModel = SerenityViewModel()
         assertEquals(ScreenNav.ATTUNE, viewModel.currentScreen.value)
@@ -164,8 +176,8 @@ class ExampleRobolectricTest {
         viewModel.setShowFullConnections(true)
         assertEquals(true, viewModel.showFullConnections.value)
 
-        viewModel.setPresenceMode(PresenceMode.CREATIVE_MUSE)
-        assertEquals(PresenceMode.CREATIVE_MUSE, viewModel.selectedMode.value)
+        viewModel.setPresenceMode(PresenceMode.CREATIVE_FLOW)
+        assertEquals(PresenceMode.CREATIVE_FLOW, viewModel.selectedMode.value)
     }
 
     @Test
@@ -173,7 +185,8 @@ class ExampleRobolectricTest {
         val repo = SerenityRepository()
         val initialTamagotchi = repo.tamagotchiState.value
         assertEquals("Lumi", initialTamagotchi.name)
-        assertTrue(initialTamagotchi.overallLifeScore > 70)
+        assertEquals(TamagotchiMood.DORMANT, initialTamagotchi.mood)
+        assertEquals(0, initialTamagotchi.overallLifeScore)
 
         val initialHydration = initialTamagotchi.hydration
         val initialXp = initialTamagotchi.xp
@@ -202,13 +215,13 @@ class ExampleRobolectricTest {
         assertTrue(repo.messages.value.last().content.contains("protect your sleep"))
         assertEquals(TamagotchiMood.SICK, repo.tamagotchiState.value.mood)
 
-        // User step 2 (agreement makes Muse HOPEFUL, not immediately healthy)
+        // User step 2 (agreement makes LifeSOS HOPEFUL, not immediately healthy)
         repo.sendMessage("Okay. I'll stop working at midnight and see my friends this weekend.")
         assertEquals("That sounds like a life worth building.", repo.messages.value.last().content)
         assertEquals(TamagotchiMood.HOPEFUL, repo.tamagotchiState.value.mood)
         assertEquals(DemoRecoveryStage.HOPEFUL_COMMITTED, repo.demoRecoveryStage.value)
 
-        // Simulated/verified follow-through makes Muse RADIANT (healthy and happy)
+        // Simulated/verified follow-through makes LifeSOS RADIANT (healthy and happy)
         repo.completeDemoFollowThrough()
         assertEquals(TamagotchiMood.RADIANT, repo.tamagotchiState.value.mood)
         assertEquals(DemoRecoveryStage.RECOVERED_HAPPY, repo.demoRecoveryStage.value)
@@ -256,7 +269,7 @@ class ExampleRobolectricTest {
     }
 
     @Test
-    fun `meta ai token update and muse telemetry transmission`() = runTest {
+    fun `meta ai token update and lifesos telemetry transmission`() = runTest {
         // Deterministic canned cloud response: no real network in automated tests.
         // (Live API smoke stays a human device-check, not a unit-test dependency.)
         val cannedContent = JSONObject()
@@ -352,7 +365,7 @@ class ExampleRobolectricTest {
 
         val bankConnector = BankFinanceConnector()
         val restored = bankConnector.restoreCachedCsv(
-            context.getSharedPreferences("metamuse_real_connectors_prefs", Context.MODE_PRIVATE)
+            context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
                 .getString("cached_csv_transactions_json", "") ?: ""
         )
         assertNotNull(restored)
@@ -466,5 +479,178 @@ class ExampleRobolectricTest {
         )
         assertEquals(1, bodies.size)
         assertEquals(1, bodies[0].split("Fresh question here?").size - 1)
+    }
+
+    @Test
+    fun `fresh install starts dormant with zero vitals and unavailable channels`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
+            .edit().clear().commit()
+        val repo = SerenityRepository(context)
+
+        assertEquals(MuseDemoScenario.LIVE_REAL_DATA, repo.activeDemoScenario.value)
+        val fresh = repo.tamagotchiState.value
+        assertEquals(TamagotchiMood.DORMANT, fresh.mood)
+        assertEquals(0, fresh.overallLifeScore)
+        assertEquals(0f, fresh.hydration, 0.001f)
+
+        val snap = repo.telemetrySnapshot.value
+        assertFalse(snap.healthReport.isAvailable)
+        assertFalse(snap.tasksReport.isAvailable)
+        assertFalse(snap.financeReport.isAvailable)
+        assertFalse(snap.socialReport.isAvailable)
+
+        val integrations = repo.integrations.value
+        assertFalse(integrations.googleHealthConnected)
+        assertFalse(integrations.facebookConnected)
+        assertFalse(integrations.financeAppConnected)
+        assertFalse(integrations.tasksAppConnected)
+    }
+
+    @Test
+    fun `dormant consult skips the cloud call and keeps ai disconnected`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
+            .edit().clear().commit()
+        val repo = SerenityRepository(context)
+        assertEquals(TamagotchiMood.DORMANT, repo.tamagotchiState.value.mood)
+
+        val advice = repo.sendAllInfoToMuse()
+        assertTrue(advice.modelUsed.contains("Dormant"))
+        assertFalse(repo.metaAiConfig.value.isConnected)
+        assertNotNull(repo.latestMuseAdvice.value)
+    }
+
+    @Test
+    fun `demo scenarios never rewrite measured integrations`() {
+        val repo = SerenityRepository()
+        repo.activateDemoScenario(MuseDemoScenario.SUCCESS_TRAP)
+        assertEquals(TamagotchiMood.SICK, repo.tamagotchiState.value.mood)
+        assertFalse(repo.integrations.value.googleHealthConnected)
+        assertFalse(repo.integrations.value.facebookConnected)
+        assertFalse(repo.integrations.value.financeAppConnected)
+        assertFalse(repo.integrations.value.tasksAppConnected)
+
+        repo.activateDemoScenario(MuseDemoScenario.NONE)
+        assertFalse(repo.integrations.value.googleHealthConnected)
+        assertFalse(repo.integrations.value.facebookConnected)
+        assertFalse(repo.integrations.value.financeAppConnected)
+        assertFalse(repo.integrations.value.tasksAppConnected)
+    }
+
+    @Test
+    fun `nurture without signals keeps companion dormant`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
+            .edit().clear().commit()
+        val repo = SerenityRepository(context)
+
+        repo.nurtureWater()
+        assertEquals(TamagotchiMood.DORMANT, repo.tamagotchiState.value.mood)
+        assertTrue(repo.tamagotchiState.value.hydration > 0f)
+    }
+
+    @Test
+    fun `chat history persists across repository instances`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val prefs = context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
+        prefs.edit().clear().commit()
+        try {
+            val repo = SerenityRepository(context)
+            val marker = "persistence marker ${System.currentTimeMillis()}"
+            repo.sendMessage(marker)
+
+            // The persist collector runs async; poll with a deadline (no fixed sleep).
+            val store = ConnectorPreferencesStore(context)
+            val deadline = System.currentTimeMillis() + 5000
+            while (store.chatHistoryJson.isBlank() && System.currentTimeMillis() < deadline) {
+                Thread.sleep(50)
+            }
+            assertTrue("chat history was never persisted", store.chatHistoryJson.isNotBlank())
+
+            val repo2 = SerenityRepository(context)
+            val restored = repo2.messages.value
+            assertTrue(restored.any { it.isFromUser && it.content == marker })
+            assertTrue(restored.size >= 3)
+        } finally {
+            prefs.edit().clear().commit()
+        }
+    }
+
+    @Test
+    fun `chat history window caps cloud payload at seven messages`() = runTest {
+        val bodies = mutableListOf<String>()
+        val service = MuseService(capturingClient(bodies))
+        val history = (0..9).map { i ->
+            ChatMessage(id = "w$i", isFromUser = i % 2 == 0, content = "capw$i marker", timestamp = "t")
+        }
+        service.chatWithMuseSpark(
+            metaAiToken = "test_token",
+            userMessage = "capcurrent marker",
+            history = history,
+            tamagotchiState = TamagotchiState(),
+            telemetrySnapshot = null
+        )
+        assertEquals(1, bodies.size)
+        val body = bodies[0]
+        // First three history turns fall outside the 7-message window.
+        assertFalse(body.contains("capw0 marker"))
+        assertFalse(body.contains("capw1 marker"))
+        assertFalse(body.contains("capw2 marker"))
+        // Last seven history turns plus the current message are sent.
+        for (i in 3..9) {
+            assertTrue("missing capw$i", body.contains("capw$i marker"))
+        }
+        assertTrue(body.contains("capcurrent marker"))
+    }
+
+    @Test
+    fun `chat history window setting narrows cloud payload`() = runTest {
+        val bodies = mutableListOf<String>()
+        val service = MuseService(capturingClient(bodies))
+        val history = (0..4).map { i ->
+            ChatMessage(id = "n$i", isFromUser = i % 2 == 0, content = "narrow$i marker", timestamp = "t")
+        }
+        service.chatWithMuseSpark(
+            metaAiToken = "test_token",
+            userMessage = "narrowcurrent marker",
+            history = history,
+            tamagotchiState = TamagotchiState(),
+            telemetrySnapshot = null,
+            historyWindowSize = 2
+        )
+        assertEquals(1, bodies.size)
+        val body = bodies[0]
+        assertFalse(body.contains("narrow0 marker"))
+        assertFalse(body.contains("narrow1 marker"))
+        assertFalse(body.contains("narrow2 marker"))
+        assertTrue(body.contains("narrow3 marker"))
+        assertTrue(body.contains("narrow4 marker"))
+        assertTrue(body.contains("narrowcurrent marker"))
+    }
+
+    @Test
+    fun `chat history window update persists and clamps`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val prefs = context.getSharedPreferences("lifesos_real_connectors_prefs", Context.MODE_PRIVATE)
+        prefs.edit().clear().commit()
+        try {
+            val repo = SerenityRepository(context)
+            assertEquals(7, repo.metaAiConfig.value.chatHistoryWindow)
+
+            repo.updateChatHistoryWindow(3)
+            assertEquals(3, repo.metaAiConfig.value.chatHistoryWindow)
+
+            repo.updateChatHistoryWindow(99)
+            assertEquals(7, repo.metaAiConfig.value.chatHistoryWindow)
+
+            repo.updateChatHistoryWindow(0)
+            assertEquals(1, repo.metaAiConfig.value.chatHistoryWindow)
+
+            val store = ConnectorPreferencesStore(context)
+            assertEquals(1, store.chatHistoryWindow)
+        } finally {
+            prefs.edit().clear().commit()
+        }
     }
 }
