@@ -19,6 +19,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,6 +72,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -85,13 +87,18 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.hypot
 import kotlin.math.sin
 import com.example.model.ChannelTelemetryReport
 import com.example.model.MemoryItem
@@ -911,6 +918,7 @@ private fun SimpleDataGraphicView(
         ) / 4
 
     var showDemoScenarios by rememberSaveable { mutableStateOf(false) }
+    var selectedChannel by rememberSaveable { mutableStateOf<Int?>(null) }
 
     Column(
         modifier = modifier
@@ -1042,9 +1050,11 @@ private fun SimpleDataGraphicView(
             ) {
                 DataTelemetryGraphic(
                     telemetry = telemetry,
-                    modifier = Modifier
-                        .size(195.dp)
-                        .clickable(onClick = onOpenFullData)
+                    selectedIndex = selectedChannel,
+                    onRingTap = { tapped ->
+                        selectedChannel = if (tapped == selectedChannel) null else tapped
+                    },
+                    modifier = Modifier.size(195.dp)
                 )
             }
 
@@ -1062,14 +1072,16 @@ private fun SimpleDataGraphicView(
                         icon = Icons.Default.Favorite,
                         accentColor = MintSecondary,
                         onClick = onOpenFullData,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        highlighted = selectedChannel == 0
                     )
                     CompactChannelTelemetryTile(
                         report = telemetry.tasksReport,
                         icon = Icons.Default.TaskAlt,
                         accentColor = SageAccent,
                         onClick = onOpenFullData,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        highlighted = selectedChannel == 1
                     )
                 }
                 Row(
@@ -1081,14 +1093,16 @@ private fun SimpleDataGraphicView(
                         icon = Icons.Default.AccountBalance,
                         accentColor = AmberTertiary,
                         onClick = onOpenFullData,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        highlighted = selectedChannel == 2
                     )
                     CompactChannelTelemetryTile(
                         report = telemetry.socialReport,
                         icon = Icons.Default.Groups,
                         accentColor = CoralPrimary,
                         onClick = onOpenFullData,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        highlighted = selectedChannel == 3
                     )
                 }
             }
@@ -1146,18 +1160,24 @@ private fun CompactChannelTelemetryTile(
     icon: ImageVector,
     accentColor: Color,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    highlighted: Boolean = false
 ) {
-    val borderColor = if (report.isAlert) SerenityError.copy(alpha = 0.55f) else WarmBorder
-    val badgeBg = if (report.isAlert) SerenityErrorContainer else if (!report.isAvailable) SubtleContainer else accentColor.copy(alpha = 0.14f)
+    val highlightColor = if (report.isAvailable) accentColor else WarmSlateCharcoal
+    val borderColor = when {
+        highlighted -> highlightColor
+        report.isAlert -> SerenityError.copy(alpha = 0.55f)
+        else -> WarmBorder
+    }
+    val badgeBg = if (report.isAlert) SerenityErrorContainer else if (!report.isAvailable) SubtleContainer else accentColor.copy(alpha = if (highlighted) 0.32f else 0.14f)
     val badgeTextCol = if (report.isAlert) SerenityError else if (!report.isAvailable) WarmSlateCharcoal else DarkSageText
 
     Box(
         modifier = modifier
-            .shadow(3.dp, RoundedCornerShape(18.dp))
+            .shadow(if (highlighted) 9.dp else 3.dp, RoundedCornerShape(18.dp))
             .clip(RoundedCornerShape(18.dp))
             .background(FloatingSurface)
-            .border(1.dp, borderColor, RoundedCornerShape(18.dp))
+            .border(if (highlighted) 2.dp else 1.dp, borderColor, RoundedCornerShape(18.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 10.dp)
     ) {
@@ -1224,9 +1244,38 @@ private fun CompactChannelTelemetryTile(
     }
 }
 
+/**
+ * Ring index shared by the radar graphic and the channel tiles/cards:
+ * 0 = Health, 1 = Tasks, 2 = Finance, 3 = Social (outer → inner ring).
+ *
+ * Pure hit-test: returns the tapped ring when the tap lands within half the
+ * stroke plus touch slop of a ring radius, else null (core, gaps, outside).
+ */
+fun resolveRingTap(
+    distanceFromCenterPx: Float,
+    outerRadiusPx: Float,
+    ringGapPx: Float,
+    strokeWidthPx: Float,
+    touchSlopPx: Float,
+    ringCount: Int = 4
+): Int? {
+    var best: Int? = null
+    var bestDist = Float.MAX_VALUE
+    for (idx in 0 until ringCount) {
+        val d = abs(distanceFromCenterPx - (outerRadiusPx - idx * ringGapPx))
+        if (d < bestDist) {
+            bestDist = d
+            best = idx
+        }
+    }
+    return if (bestDist <= strokeWidthPx / 2f + touchSlopPx) best else null
+}
+
 @Composable
 private fun DataTelemetryGraphic(
     telemetry: SyntheticTelemetrySnapshot,
+    selectedIndex: Int?,
+    onRingTap: (Int?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "DataGraphicIdle")
@@ -1270,7 +1319,37 @@ private fun DataTelemetryGraphic(
         label = "SocialSweep"
     )
 
-    Canvas(modifier = modifier) {
+    val density = LocalDensity.current
+    var canvasPx by remember { mutableStateOf(Size.Zero) }
+    val latestFloatOffset by rememberUpdatedState(floatOffset)
+
+    Canvas(
+        modifier = modifier
+            .onSizeChanged { canvasPx = Size(it.width.toFloat(), it.height.toFloat()) }
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    val w = canvasPx.width
+                    if (w <= 0f) return@detectTapGestures
+                    val cx = w / 2f
+                    val cy = canvasPx.height / 2f + latestFloatOffset
+                    val dist = hypot(
+                        (offset.x - cx).toDouble(),
+                        (offset.y - cy).toDouble()
+                    ).toFloat()
+                    with(density) {
+                        onRingTap(
+                            resolveRingTap(
+                                distanceFromCenterPx = dist,
+                                outerRadiusPx = w * 0.40f,
+                                ringGapPx = 13.dp.toPx(),
+                                strokeWidthPx = 9.dp.toPx(),
+                                touchSlopPx = 8.dp.toPx()
+                            )
+                        )
+                    }
+                }
+            }
+    ) {
         val w = size.width
         val h = size.height
         val cx = w / 2f
@@ -1324,6 +1403,20 @@ private fun DataTelemetryGraphic(
                 else -> baseColor
             }
             val sweepDeg = if (!available) 0f else 260f * progress.coerceIn(0.12f, 1f)
+            val isSelected = selectedIndex == idx
+
+            // Selection halo behind the tapped ring
+            if (isSelected) {
+                drawArc(
+                    color = activeColor.copy(alpha = 0.30f),
+                    startAngle = -220f,
+                    sweepAngle = 260f,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = strokeWidth * 2.2f, cap = StrokeCap.Round)
+                )
+            }
 
             // Subtle track ring
             drawArc(
@@ -1344,7 +1437,10 @@ private fun DataTelemetryGraphic(
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                style = Stroke(
+                    width = if (isSelected) strokeWidth * 1.6f else strokeWidth,
+                    cap = StrokeCap.Round
+                )
             )
 
             // Glowing endpoint dot at the tip of the arc

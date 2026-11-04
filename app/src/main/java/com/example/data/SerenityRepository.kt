@@ -351,6 +351,35 @@ class SerenityRepository(
         }
     }
 
+    suspend fun generateSampleHealthData() {
+        val ctx = appContext ?: return
+        _realConnectorState.value = _realConnectorState.value.copy(isSyncing = true, lastError = null)
+        try {
+            val result = healthConnectManager.generateSampleData(ctx)
+            Log.d(TAG, "health: sample generation ok=${result.success} records=${result.recordsWritten} needsPerm=${result.needsWritePermission}")
+            if (result.needsWritePermission) {
+                _realConnectorState.value = _realConnectorState.value.copy(
+                    lastError = "Allow LifeSOS to write health data in the Health Connect prompt, then tap Generate again."
+                )
+                return
+            }
+            if (!result.success) {
+                _realConnectorState.value = _realConnectorState.value.copy(
+                    lastError = result.error ?: "Sample generation failed"
+                )
+                return
+            }
+            latestHealthResult = healthConnectManager.syncRealHealthData(ctx)
+            _activeDemoScenario.value = MuseDemoScenario.LIVE_REAL_DATA
+            rebuildLiveTelemetryAndEvaluateRules()
+            _realConnectorState.value = _realConnectorState.value.copy(
+                lastSyncSummary = "Sample demo week (${result.recordsWritten} records) written + synced at ${currentTimeFormatted()}"
+            )
+        } finally {
+            _realConnectorState.value = _realConnectorState.value.copy(isSyncing = false)
+        }
+    }
+
     suspend fun syncRealCalendarAndTasks(googleTasksToken: String? = null) {
         val ctx = appContext ?: return
         if (googleTasksToken != null) {

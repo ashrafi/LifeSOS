@@ -1,6 +1,6 @@
 # LifeSOS — Final Pre-Submission Runbook ✅
 
-Everything Muse Code could do from here is done (code, tests 59/59 green, docs,
+Everything Muse Code could do from here is done (code, tests 66/66 green, docs,
 icon, live rule engine). This runbook is the **human-only remainder**: device work,
 proof capture, and submission. Do the steps in order; each ends with an expected result.
 Check the box only when you see it.
@@ -36,7 +36,7 @@ committed `debug.keystore` signs correctly on a machine that never saw this repo
 grep -h "<testsuite " app/build/test-results/testDebugUnitTest/*.xml
 ```
 Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 29/29`, `LifeRuleEngineTest 11/11`,
-`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, zero failures/errors — **59/59 green**, matching the last verified run.
+`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, `HealthSampleDataTest 3/3`, `RingTapMathTest 4/4`, zero failures/errors — **66/66 green**, matching the last verified run.
 
 ---
 
@@ -99,19 +99,23 @@ falls back to offline cleanly.
 ## Phase 4 — Capture submission assets (45 min)
 
 **4.1 Screenshots** (physical device, light mode, Meta Horizon theme) into
-`doc/screenshots/` per the shot list: home-radiant, success-trap-sick,
+`doc/Demo/screenshots/` per the shot list: home-radiant, success-trap-sick,
 whatsapp-nudge (crop personal chats), follow-through-radiant, bio-radar, connections,
 spark-proof.
 Expected: 7 PNGs at device resolution, status-bar clutter cropped.
+(DONE 11/3: 38 story screenshots captured in `doc/Demo/screenshots/` and embedded
+in the README gallery — screenshot set COMPLETE, including Trap live-Spark chat
+proof. Only the demo video link remains.)
 
-**4.2 Demo video (60–90 s).** Record the [demo-script.md](demo-script.md) flow with
-voiceover, upload unlisted to YouTube/Loom.
-Expected: shareable link, audible narration, shows WhatsApp handoff + voice readout.
+**4.2 Demo video (3 min, required).** Record the [video-script-3min.md](video-script-3min.md)
+flow with voiceover ([demo-script.md](demo-script.md) stays the 60 s rehearsal version),
+upload unlisted to YouTube/Loom.
+Expected: shareable link, audible narration, shows WhatsApp handoff + voice readout + offline backup.
 
-**4.3 Link assets in the README.** Embed the 7 screenshots in the Three-Tab Interface
-section and the video link near the top (below the badges).
+**4.3 Link assets in the README.** (DONE 11/3: 38-shot story gallery embedded
+after Key Highlights.) Still to add: the video link near the top (below the badges).
 Expected: README renders fully offline in GitHub preview — no broken image links
-(use relative `doc/screenshots/...` paths, verify after push).
+(use relative `doc/Demo/screenshots/...` paths, verify after push).
 
 ---
 

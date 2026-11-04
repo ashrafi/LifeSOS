@@ -15,11 +15,15 @@ import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.HydrationRecord
+import androidx.health.connect.client.records.Record
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.records.metadata.Device as HealthDevice
+import androidx.health.connect.client.records.metadata.Metadata as HealthMetadata
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+import androidx.health.connect.client.units.Volume
 import com.example.model.ChannelMetricItem
 import com.example.model.ChannelTelemetryReport
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +49,21 @@ data class RealHealthSyncResult(
     val report: ChannelTelemetryReport
 )
 
+/** One day of the deterministic demo sample plan (see [HealthConnectManager.buildSampleWeekPlan]). */
+data class SampleDayPlan(
+    val steps: Long,
+    val sleepHours: Float,
+    val restingHrBpm: Long,
+    val hydrationLiters: Double
+)
+
+data class SampleGenerationResult(
+    val success: Boolean,
+    val recordsWritten: Int = 0,
+    val needsWritePermission: Boolean = false,
+    val error: String? = null
+)
+
 class HealthConnectManager {
 
     companion object {
@@ -65,6 +84,22 @@ class HealthConnectManager {
             }
             return (currentTotal - baseline) to baseline
         }
+
+        /**
+         * Deterministic 7-day sample plan (oldest → today) for the demo-data
+         * generator. Plausible healthy-ish values so a fresh phone lights up green.
+         * Pure Kotlin so unit tests can pin it; the Health Connect mapping lives in
+         * [HealthConnectManager.generateSampleData].
+         */
+        fun buildSampleWeekPlan(): List<SampleDayPlan> = listOf(
+            SampleDayPlan(steps = 8234, sleepHours = 7.5f, restingHrBpm = 62, hydrationLiters = 1.8),
+            SampleDayPlan(steps = 6102, sleepHours = 6.8f, restingHrBpm = 65, hydrationLiters = 1.5),
+            SampleDayPlan(steps = 9420, sleepHours = 8.0f, restingHrBpm = 61, hydrationLiters = 2.0),
+            SampleDayPlan(steps = 4871, sleepHours = 6.2f, restingHrBpm = 68, hydrationLiters = 1.2),
+            SampleDayPlan(steps = 7655, sleepHours = 7.1f, restingHrBpm = 63, hydrationLiters = 1.6),
+            SampleDayPlan(steps = 10230, sleepHours = 7.8f, restingHrBpm = 60, hydrationLiters = 2.1),
+            SampleDayPlan(steps = 3540, sleepHours = 7.4f, restingHrBpm = 64, hydrationLiters = 0.9)
+        )
     }
 
     val requiredPermissions: Set<String> = setOf(
@@ -73,6 +108,15 @@ class HealthConnectManager {
         HealthPermission.getReadPermission(HeartRateRecord::class),
         HealthPermission.getReadPermission(HydrationRecord::class)
     )
+
+    val writePermissions: Set<String> = setOf(
+        HealthPermission.getWritePermission(StepsRecord::class),
+        HealthPermission.getWritePermission(SleepSessionRecord::class),
+        HealthPermission.getWritePermission(HeartRateRecord::class),
+        HealthPermission.getWritePermission(HydrationRecord::class)
+    )
+
+    val readWritePermissions: Set<String> = requiredPermissions + writePermissions
 
     fun createPermissionRequestContract() =
         PermissionController.createRequestPermissionResultContract()
@@ -109,6 +153,127 @@ class HealthConnectManager {
             false
         }
     }
+
+    /**
+     * Writes the 7-day sample plan into Health Connect as clearly-labeled demo
+     * records (sleep sessions carry a "sample demo data" note; all records are
+     * attributed to this app's package). Previously generated samples are deleted
+     * first — Health Connect scopes deletes to the calling app, so the user's real
+     * data from other apps is never touched. Re-tapping is idempotent.
+     */
+    suspend fun generateSampleData(context: Context): SampleGenerationResult =
+        withContext(Dispatchers.IO) {
+            if (HealthConnectClient.getSdkStatus(context) != HealthConnectClient.SDK_AVAILABLE) {
+                return@withContext SampleGenerationResult(
+                    success = false,
+                    error = "Health Connect is not available on this device"
+                )
+            }
+            try {
+                val client = HealthConnectClient.getOrCreate(context)
+                val granted = client.permissionController.getGrantedPermissions()
+                if (!writePermissions.all { granted.contains(it) }) {
+                    return@withContext SampleGenerationResult(
+                        success = false,
+                        needsWritePermission = true
+                    )
+                }
+                val zone = ZoneId.systemDefault()
+                val today = LocalDate.now(zone)
+                val now = Instant.now()
+                val windowStart = today.minusDays(6).atStartOfDay(zone).toInstant()
+                val windowFilter = TimeRangeFilter.between(windowStart, now)
+
+                // Idempotency: clear our own previously written samples first.
+                // Deletes are scoped to this app's package by Health Connect.
+                listOf(
+                    StepsRecord::class,
+                    SleepSessionRecord::class,
+                    HeartRateRecord::class,
+                    HydrationRecord::class
+                ).forEach { recordType ->
+                    try {
+                        client.deleteRecords(recordType, windowFilter)
+                    } catch (_: Exception) {
+                        // Best effort; insert proceeds regardless.
+                    }
+                }
+
+                val records = mutableListOf<Record>()
+                val sampleMetadata =
+                    HealthMetadata.autoRecorded(device = HealthDevice(type = HealthDevice.TYPE_PHONE))
+                val weekPlan = buildSampleWeekPlan()
+                weekPlan.forEachIndexed { index, plan ->
+                    val day = today.minusDays((weekPlan.size - 1 - index).toLong())
+                    val dayStart = day.atStartOfDay(zone)
+                    fun at(hour: Int, minute: Int = 0) =
+                        dayStart.plusHours(hour.toLong()).plusMinutes(minute.toLong()).toInstant()
+                    fun offsetAt(instant: Instant) = zone.rules.getOffset(instant)
+
+                    val stepsStart = at(8)
+                    val stepsEnd = at(22)
+                    records += StepsRecord(
+                        count = plan.steps,
+                        startTime = stepsStart,
+                        endTime = stepsEnd,
+                        startZoneOffset = offsetAt(stepsStart),
+                        endZoneOffset = offsetAt(stepsEnd),
+                        metadata = sampleMetadata
+                    )
+
+                    val sleepMinutes = (plan.sleepHours * 60).toLong()
+                    val sleepEnd = day.plusDays(1).atStartOfDay(zone).plusHours(7).toInstant()
+                    val sleepStart = sleepEnd.minusSeconds(sleepMinutes * 60)
+                    records += SleepSessionRecord(
+                        startTime = sleepStart,
+                        startZoneOffset = offsetAt(sleepStart),
+                        endTime = sleepEnd,
+                        endZoneOffset = offsetAt(sleepEnd),
+                        stages = emptyList(),
+                        notes = "Sample demo data generated by LifeSOS",
+                        title = "LifeSOS sample night",
+                        metadata = sampleMetadata
+                    )
+
+                    val hrSamples = listOf(9, 13, 18).map { hour ->
+                        val t = at(hour)
+                        HeartRateRecord.Sample(
+                            time = t,
+                            beatsPerMinute = plan.restingHrBpm
+                        )
+                    }
+                    val hrStart = at(9)
+                    val hrEnd = at(18)
+                    records += HeartRateRecord(
+                        startTime = hrStart,
+                        startZoneOffset = offsetAt(hrStart),
+                        endTime = hrEnd,
+                        endZoneOffset = offsetAt(hrEnd),
+                        samples = hrSamples,
+                        metadata = sampleMetadata
+                    )
+
+                    val hydStart = at(8)
+                    val hydEnd = at(21)
+                    records += HydrationRecord(
+                        startTime = hydStart,
+                        startZoneOffset = offsetAt(hydStart),
+                        endTime = hydEnd,
+                        endZoneOffset = offsetAt(hydEnd),
+                        volume = Volume.liters(plan.hydrationLiters),
+                        metadata = sampleMetadata
+                    )
+                }
+
+                client.insertRecords(records)
+                SampleGenerationResult(success = true, recordsWritten = records.size)
+            } catch (e: Exception) {
+                SampleGenerationResult(
+                    success = false,
+                    error = e.message ?: "Sample insert failed"
+                )
+            }
+        }
 
     suspend fun syncRealHealthData(context: Context): RealHealthSyncResult = withContext(Dispatchers.IO) {
         val zone = ZoneId.systemDefault()

@@ -2,13 +2,14 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 59/59 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 66/66 passing — see record below).
 
-## Current Verification Record (single source of truth, Nov 1)
+## Current Verification Record (single source of truth, Nov 3)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **59/59 green**,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **66/66 green**,
   zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 29,
-  `LifeRuleEngineTest` 11, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5.
+  `LifeRuleEngineTest` 11, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5,
+  `HealthSampleDataTest` 3, `RingTapMathTest` 4.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
 - Historical counts elsewhere in this doc (15 → 19 → 25 → 31) are dated milestones from
   earlier in the day, not conflicting claims — this section is the current truth.
@@ -82,8 +83,10 @@ perceived quality; P2 items are nice-to-have polish.
   `SERVER_SIDE_GEMINI_API`, contradicting the Meta-first story).
 
 ### 7. [PARTIAL] Screenshots + demo video (script done, capture = owner)
-- There are currently zero visual assets. Minimum: 3 screenshots (Home/Lumi, Bio-Radar,
-  Connections) in `doc/screenshots/` + a demo video link (unlisted YouTube/Loom).
+- [DONE 11/3] 38 story screenshots in `doc/Demo/screenshots/`, embedded in the
+  README gallery (all 3 demo scenarios, fresh install, healthy baseline, live
+  connections, live Spark chat proof). Screenshot set COMPLETE. Demo video link
+  still owner-side (unlisted YouTube/Loom).
 - Suggested 60-second judge script:
   1. Open app → Lumi Radiant on Meta Horizon theme (0–10s).
   2. Tap science icon → trigger "Success Trap" → Lumi turns Sick, Spark diagnosis + WhatsApp
@@ -345,6 +348,19 @@ and Muse hardware-ecosystem names (factual Meta references), internal code
 identifiers, the `metamuse://` deep-link scheme (must match the Facebook app
 dashboard), and the AI-tool credit. Suite stays **59/59 green** — see Current
 Verification Record.
+
+A "Generate Sample Data" button was added to the Google Health Data card: it
+writes a deterministic, clearly-labeled 7-day sample week (steps, sleep, heart
+rate, hydration) into Health Connect — clearing only this app's own prior
+samples first, never touching real data from other apps — then re-syncs so a
+fresh demo phone lights up. Pinned by `HealthSampleDataTest` (3 tests). Suite
+at **62/62 green** — see Current Verification Record.
+
+Tapping a ring on the Show Data radar now lights the matching channel tile
+(2dp accent border, stronger shadow, brighter badge; the ring itself gains a
+halo and thicker stroke). Tap again, the core, or empty space to clear.
+Hit-test math is a pure function pinned by `RingTapMathTest` (4 tests). Suite
+at **66/66 green** — see Current Verification Record.
 
 Owner-scoped honesty note: the Facebook Graph cloud path ships code-complete
 but will never be live-validated pre-submission (no time for Meta app review).

@@ -69,6 +69,7 @@ class SerenityViewModel(
     val realConnectorState: StateFlow<RealConnectorState> = repository.realConnectorState
 
     val healthConnectPermissions: Set<String> = repository.healthConnectManager.requiredPermissions
+    val healthConnectReadWritePermissions: Set<String> = repository.healthConnectManager.readWritePermissions
 
     fun createHealthPermissionContract() =
         repository.healthConnectManager.createPermissionRequestContract()
@@ -121,6 +122,12 @@ class SerenityViewModel(
     fun syncRealHealth() {
         viewModelScope.launch {
             repository.syncRealHealth()
+        }
+    }
+
+    fun generateSampleHealthData() {
+        viewModelScope.launch {
+            repository.generateSampleHealthData()
         }
     }
 

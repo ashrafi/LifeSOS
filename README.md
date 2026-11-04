@@ -10,9 +10,18 @@
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
 [![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
+[![CI](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml/badge.svg)](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-66%2F66_passing-brightgreen?style=for-the-badge&logo=android&logoColor=white)](doc/hackathon-readiness.md#current-verification-record-single-source-of-truth-nov-3)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![Min SDK](https://img.shields.io/badge/Android_API-26%2B-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![BYOK Security](https://img.shields.io/badge/BYOK-Android_Keystore_AES--256--GCM-00B2FF?style=for-the-badge)](#security-privacy-responsible-ai--direct-byok-safeguards)
+[![Offline Capable](https://img.shields.io/badge/Fallback-Offline_Rules_Engine-FF8A3D?style=for-the-badge)](#-key-highlights--hackathon-innovation)
 
-### User Guide: 
+### User Guide:
 > > 📖 **New here?** Start with the [LifeSOS User Guide](doc/user-guide.md) — name setup, keys & connections, and every feature explained.
+
+> 🏆 **Hackathon contribution disclosure:** LifeSOS was built entirely during the hackathon period — the full git history runs from the initial commit (Oct 27, 2026) through submission week, with no pre-existing codebase. Every feature is documented in order in the [Build Log](doc/build-log.md) and [Hackathon Readiness](doc/hackathon-readiness.md) review history.
 
 ---
 
@@ -107,6 +116,101 @@ Life Data ──► Life State Engine ──► Meta Muse Spark 1.3 ──► Pr
    All API keys are entered directly by the user. Zero keys exist in the APK or repository, and the Meta API token and Plaid client secret are encrypted at rest with Android Keystore AES-256-GCM (hardware backing where the device provides it); other connector tokens live in private app storage excluded from backups.
 9. **Offline Privacy-First Rules Engine**:
    Includes an offline rule-based privacy engine where sensitive health and financial numbers never leave the device, establishing a clean path to **ExecuTorch on-device Llama 3.2**.
+
+---
+
+## 📸 Demo Walkthrough — The Stories in Screenshots
+
+<img src="doc/Demo/screenshots/lumi-concept-art.png" width="160" alt="Lumi concept art" />
+
+*Meet Lumi (concept art above, in-app companion below). All screenshots are from the real app on a physical phone. Flask-icon shots use the labeled synthetic demo scenarios; everything else is live mode.*
+
+### Story 1 — Fresh install: honestly gray
+
+First launch with zero connections. Lumi is dormant, all four chips read "—", Consult is disabled — nothing is faked until real data flows.
+
+| Dormant home | Empty data tab | Constellation (0 of 5) |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Init/01-fresh-install-dormant-home.png" width="250" alt="Fresh install, dormant Lumi home" /> | <img src="doc/Demo/screenshots/Init/02-fresh-install-empty-data.png" width="250" alt="Empty data tab, no live signals" /> | <img src="doc/Demo/screenshots/Init/03-fresh-install-constellation.png" width="250" alt="Connections constellation, 0 of 5 streams" /> |
+
+| Data detail (permissions needed) | Companion Hub (dormant) | Profile & connections setup |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Init/04-fresh-install-data-detail.png" width="250" alt="Data detail, awaiting permissions" /> | <img src="doc/Demo/screenshots/Init/05-fresh-install-companion-hub.png" width="250" alt="Companion hub, dormant" /> | <img src="doc/Demo/screenshots/Init/06-profile-and-connections-setup.png" width="250" alt="Profile and connections setup" /> |
+
+### Story 2 — Healthy baseline: Lumi radiant
+
+With balanced signals across all four channels, the radar hits 88% harmony and Lumi glows under the sun.
+
+| 88% harmony radar | Channel details | Radiant home |
+|---|---|---|
+| <img src="doc/Demo/screenshots/SetData/07-healthy-baseline-radar.png" width="250" alt="Healthy baseline radar, 88 percent harmony" /> | <img src="doc/Demo/screenshots/SetData/08-healthy-baseline-details.png" width="250" alt="Healthy baseline channel details" /> | <img src="doc/Demo/screenshots/SetData/09-healthy-baseline-home.png" width="250" alt="Radiant Lumi home" /> |
+
+| Ring-tap: Finance tile lit |
+|---|
+| <img src="doc/Demo/screenshots/33-ring-tap-highlight.png" width="250" alt="Ring tap lights the Finance tile" /> |
+| *Tapping a radar ring lights its channel tile — the Finance ring is selected here.* |
+
+### Story 3 — The Success Trap: sick, diagnosed, heard
+
+High output, growing savings — but sleep crashing and plans canceled. Lumi falls visibly sick, the rule engine fires, and the offline engine drafts guidance (cloud unreachable in this capture, and the card says so).
+
+| Sick Lumi | Rule match | Evidence (social + sleep trend) |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Trap/10-success-trap-sick-home.png" width="250" alt="Sick Lumi, Success Trap" /> | <img src="doc/Demo/screenshots/Trap/11-success-trap-rule-match.png" width="250" alt="Success Trap rule match" /> | <img src="doc/Demo/screenshots/Trap/12-success-trap-evidence.png" width="250" alt="Success Trap evidence" /> |
+
+| Offline advice (labeled) | Vitals + check-in chat |
+|---|---|
+| <img src="doc/Demo/screenshots/Trap/13-success-trap-offline-advice.png" width="250" alt="Offline advice card, Success Trap" /> | <img src="doc/Demo/screenshots/Trap/14-success-trap-checkin.png" width="250" alt="Check-in conversation, Success Trap" /> |
+
+| Hopeful commitment + Log Follow-Through | Hopeful recovery |
+|---|---|
+| <img src="doc/Demo/screenshots/Trap/31-success-trap-hopeful-commitment.png" width="250" alt="Hopeful commitment, log follow-through" /> | <img src="doc/Demo/screenshots/Trap/32-success-trap-recovery.png" width="250" alt="Hopeful recovering Lumi" /> |
+
+| ★ Live question ("Contacting…") | ★ Live Spark reply |
+|---|---|
+| <img src="doc/Demo/screenshots/Trap/37-success-trap-live-question.png" width="250" alt="Live question, contacting Muse Spark" /> | <img src="doc/Demo/screenshots/Trap/38-success-trap-live-spark-reply.png" width="250" alt="Live Muse Spark reply in chat" /> |
+
+*Real chat round-trip: "How to make more time" → personalized Muse Spark 1.3 reply citing live vitals (focus 88%, hydration 0%).*
+
+### Story 4 — Connection Debt: Spark advises, WhatsApp reconnects, Lumi recovers
+
+The full loop: sad Lumi → rule match → **live Meta Muse Spark 1.3 response** → one-tap prefilled WhatsApp message → follow-through logged → radiant recovery.
+
+| Sad Lumi (Social 22%) | Rule match | Companion vitals |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Debt/15-connection-debt-sad-home.png" width="250" alt="Sad Lumi, Connection Debt" /> | <img src="doc/Demo/screenshots/Debt/16-connection-debt-rule-match.png" width="250" alt="Connection Debt rule match" /> | <img src="doc/Demo/screenshots/Debt/17-connection-debt-vitals.png" width="250" alt="Companion vitals, low connection" /> |
+
+| Consulting… | ★ Live Spark advice + WhatsApp pill | Prefilled WhatsApp message |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Debt/18-connection-debt-consulting.png" width="250" alt="Consulting LifeSOS, transmitting" /> | <img src="doc/Demo/screenshots/Debt/19-connection-debt-spark-advice.png" width="250" alt="Live Muse Spark advice with WhatsApp pill" /> | <img src="doc/Demo/screenshots/Debt/20-whatsapp-prefilled-message.png" width="250" alt="Prefilled WhatsApp message" /> |
+
+| Contact picker | Radiant recovery |
+|---|---|
+| <img src="doc/Demo/screenshots/Debt/22-whatsapp-contact-picker.png" width="250" alt="WhatsApp contact picker" /> | <img src="doc/Demo/screenshots/Debt/21-connection-debt-recovery.png" width="250" alt="Radiant Lumi recovery" /> |
+
+### Story 5 — The Invisible Money Leak: late nights, delivery loop, second Spark proof
+
+Delivery orders clustering on short-sleep late-work evenings. Lumi falls sick, the rule fires, **live Muse Spark 1.3** advises, a WhatsApp dinner invite goes out, and skipping one $34 order logs the recovery.
+
+| Sick Lumi | Rule match | Evidence (tasks + finance) |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Leak/23-money-leak-sick-home.png" width="250" alt="Sick Lumi, Money Leak" /> | <img src="doc/Demo/screenshots/Leak/24-money-leak-rule-match.png" width="250" alt="Money Leak rule match" /> | <img src="doc/Demo/screenshots/Leak/25-money-leak-evidence.png" width="250" alt="Money Leak evidence" /> |
+
+| Ring-tap: Finance lit | Check-in + Transmitting | ★ Live Spark advice |
+|---|---|---|
+| <img src="doc/Demo/screenshots/Leak/26-money-leak-ring-highlight.png" width="250" alt="Finance ring selected, tile lit" /> | <img src="doc/Demo/screenshots/Leak/27-money-leak-checkin.png" width="250" alt="Check-in, transmitting" /> | <img src="doc/Demo/screenshots/Leak/28-money-leak-spark-advice.png" width="250" alt="Live Muse Spark advice, Money Leak" /> |
+
+| WhatsApp invite sent | Radiant recovery ($34 saved) |
+|---|---|
+| <img src="doc/Demo/screenshots/Leak/29-money-leak-whatsapp-sent.png" width="250" alt="WhatsApp dinner invite sent" /> | <img src="doc/Demo/screenshots/Leak/30-money-leak-recovery.png" width="250" alt="Radiant Lumi recovery, Money Leak" /> |
+
+### Live Connections: real streams, real data, sample-data helper
+
+Beyond demos: 4 of 5 live streams active with the Muse Spark key configured, real Calendar + Plaid Sandbox telemetry, and the one-tap sample-data generator for empty demo phones.
+
+| 4 of 5 streams live | Live Calendar + Plaid data | Generate Sample Data |
+|---|---|---|
+| <img src="doc/Demo/screenshots/35-connections-live-streams.png" width="250" alt="Constellation, 4 of 5 streams active" /> | <img src="doc/Demo/screenshots/36-live-calendar-finance-data.png" width="250" alt="Live calendar and Plaid finance data" /> | <img src="doc/Demo/screenshots/34-generate-sample-data.png" width="250" alt="Generate Sample Data expanded" /> |
 
 ---
 

@@ -7,6 +7,9 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -49,6 +52,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Palette
@@ -73,6 +78,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import kotlin.math.roundToInt
@@ -200,10 +206,15 @@ fun PresenceScreen(
         viewModel.syncRealHealth()
     }
 
+    var pendingSampleGeneration by remember { mutableStateOf(false) }
+
     val healthPermissionLauncher = rememberLauncherForActivityResult(
         contract = remember { viewModel.createHealthPermissionContract() }
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+        if (pendingSampleGeneration) {
+            pendingSampleGeneration = false
+            viewModel.generateSampleHealthData()
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED
         ) {
             activityRecognitionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
@@ -225,6 +236,20 @@ fun PresenceScreen(
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             activityRecognitionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+        } else {
+            viewModel.openHealthConnectSettings()
+        }
+    }
+
+    val requestSampleDataGeneration: () -> Unit = {
+        if (realState.healthSdkAvailable) {
+            try {
+                pendingSampleGeneration = true
+                healthPermissionLauncher.launch(viewModel.healthConnectReadWritePermissions)
+            } catch (_: Exception) {
+                pendingSampleGeneration = false
+                viewModel.openHealthConnectSettings()
+            }
         } else {
             viewModel.openHealthConnectSettings()
         }
@@ -487,7 +512,8 @@ fun PresenceScreen(
                         statsText = integrations.googleHealthStats,
                         realState = realState,
                         onGrantAndSync = requestRealHealthConnect,
-                        onOpenHealthConnect = { viewModel.openHealthConnectSettings() }
+                        onOpenHealthConnect = { viewModel.openHealthConnectSettings() },
+                        onGenerateSampleData = requestSampleDataGeneration
                     )
                 }
 
@@ -1111,7 +1137,8 @@ private fun RealGoogleHealthCard(
     statsText: String,
     realState: RealConnectorState,
     onGrantAndSync: () -> Unit,
-    onOpenHealthConnect: () -> Unit
+    onOpenHealthConnect: () -> Unit,
+    onGenerateSampleData: () -> Unit
 ) {
     SerenityCard(
         modifier = Modifier
@@ -1162,6 +1189,56 @@ private fun RealGoogleHealthCard(
                     onClick = onOpenHealthConnect,
                     modifier = Modifier.weight(0.95f)
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            var showSampleGenerator by rememberSaveable { mutableStateOf(false) }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable { showSampleGenerator = !showSampleGenerator }
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Demo sample data",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = WarmSlateCharcoal,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+                Icon(
+                    imageVector = if (showSampleGenerator) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (showSampleGenerator) "Hide sample data generator" else "Show sample data generator",
+                    tint = WarmSlateCharcoal,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            AnimatedVisibility(
+                visible = showSampleGenerator,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    SerenitySecondaryButton(
+                        text = "Generate Sample Data",
+                        icon = Icons.Default.AutoAwesome,
+                        onClick = onGenerateSampleData,
+                        modifier = Modifier.fillMaxWidth(),
+                        testTag = "generate_health_sample_button"
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Writes 7 days of clearly-labeled demo records into Health Connect, then re-syncs. Handy on empty demo phones; your real data from other apps is never touched.",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = WarmSlateCharcoal,
+                            lineHeight = 17.sp
+                        )
+                    )
+                }
             }
         }
     }

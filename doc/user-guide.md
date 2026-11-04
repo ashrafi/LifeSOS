@@ -58,6 +58,12 @@ Tap the Health card and grant the Health Connect permissions (steps, sleep,
 heart rate, hydration). If Health Connect has no steps for today, LifeSOS
 falls back to the phone's hardware step counter.
 
+**Empty phone?** Expand **Demo sample data** (chevron) on the Health card and
+tap **Generate Sample Data**: it writes a clearly-labeled 7-day demo week
+(steps, sleep, heart rate, water) into Health Connect and re-syncs, so the
+gray chips light up immediately. Re-tapping replaces the previous samples;
+your real data from other apps is never touched.
+
 ### Schedule — Calendar & Tasks
 
 Grant Android Calendar permission to read today's events, late-night load,
@@ -128,7 +134,8 @@ LifeSOS also re-syncs automatically in the background about every six hours.
 ### Data tab
 
 - **Header + bio-radar rings** — one ring per channel; gray and empty until
-  data flows.
+  data flows. Tap a ring and its channel tile lights up; tap again (or the
+  core) to clear.
 - **Sleep wave** — your week of sleep, or a gray baseline with a hint to
   connect Health.
 - **Check-in sliders** — self-report clarity, equilibrium, and peace; these

@@ -42,15 +42,15 @@ diagnosis. **Path B (backup):** airplane mode, no keys → Offline Rules Engine 
 - Mention: "With a Meta Model API key it reasons in the cloud; without one, the
   on-device engine keeps every demo beat working offline."
 
-## Screenshot shot list (see `screenshots/`)
+## Screenshot shot list (captured in `doc/Demo/screenshots/`, embedded in README)
 
-1. `01-home-radiant.png` — Home, Lumi Radiant, Meta Horizon theme.
-2. `02-success-trap-sick.png` — Success Trap active, Lumi Sick + diagnosis card.
-3. `03-whatsapp-nudge.png` — WhatsApp with pre-filled message (crop personal chats).
-4. `04-follow-through-radiant.png` — Recovered Radiant state.
-5. `05-bio-radar.png` — Show Data tab, 4-channel radar.
-6. `06-connections.png` — Connections tab, connector cards + BYOK status.
-7. `07-spark-proof.png` — Spark diagnosis card with `modelUsed: Meta Muse Spark 1.3` visible (Path A proof).
+1. `SetData/09-healthy-baseline-home.png` — Home, Lumi Radiant, Meta Horizon theme. ✅
+2. `Trap/10-success-trap-sick-home.png` — Success Trap active, Lumi Sick + diagnosis card. ✅
+3. `Debt/20-whatsapp-prefilled-message.png` — WhatsApp with pre-filled message (crop personal chats). ✅
+4. `Debt/21-connection-debt-recovery.png` — Recovered Radiant state. ✅
+5. `SetData/07-healthy-baseline-radar.png` — Show Data tab, 4-channel radar. ✅
+6. `Init/03-fresh-install-constellation.png` — Connections tab, constellation + BYOK status. ✅
+7. `Debt/19-connection-debt-spark-advice.png` — Spark diagnosis card with `modelUsed: Meta Muse Spark 1.3` visible (Path A proof). ✅
 
 Record at device resolution, crop status-bar clutter, and link the video + images
-from the README's Three-Tab Interface section before submitting.
+from the README's Demo Walkthrough gallery before submitting.
