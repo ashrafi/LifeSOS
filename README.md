@@ -11,7 +11,8 @@
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
 [![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
 [![CI](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml/badge.svg)](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-69%2F69_passing-brightgreen?style=for-the-badge&logo=android&logoColor=white)](doc/hackathon-readiness.md#current-verification-record-single-source-of-truth-nov-3)
+[![Tests](https://img.shields.io/badge/Tests-70%2F70_passing-brightgreen?style=for-the-badge&logo=android&logoColor=white)](doc/hackathon-readiness.md#current-verification-record-single-source-of-truth-nov-3)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-3_Min_Watch-red?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/FBlQfv24Qck)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Min SDK](https://img.shields.io/badge/Android_API-26%2B-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org)
@@ -20,6 +21,8 @@
 
 ### User Guide:
 > > 📖 **New here?** Start with the [LifeSOS User Guide](doc/user-guide.md) — name setup, keys & connections, and every feature explained.
+
+> 🎬 **Watch the 3-minute demo:** [LifeSOS on YouTube](https://youtu.be/FBlQfv24Qck) — the Success Trap end to end, clean-install setup, and the other two demos.
 
 > 🏆 **Hackathon contribution disclosure:** LifeSOS was built entirely during the hackathon period — the full git history runs from the initial commit (Oct 27, 2026) through submission week, with no pre-existing codebase. Every feature is documented in order in the [Build Log](doc/build-log.md) and [Hackathon Readiness](doc/hackathon-readiness.md) review history.
 

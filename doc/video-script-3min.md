@@ -71,7 +71,7 @@ expand **Demo sample data** → **Generate Sample Data**; chips light up.
 skipped-delivery recovery. Then → **3. Connection Debt**: sad Lumi at Social
 22%, Spark card with the green WhatsApp pill. Quick cuts, ~15s each.
 
-> "Two more patterns, same loop. The Money Leak: late-night delivery orders
+> "Two more patterns, same loop. The Money Leak: delivery spending
 > clustering on short-sleep evenings — Spark advises, one skipped order saves
 > $34, Lumi recovers. And Connection Debt: everything above 90% except the
 > relationships that matter. Notice, explain, act, recover — every time."
@@ -92,4 +92,4 @@ skipped-delivery recovery. Then → **3. Connection Debt**: sad Lumi at Social
 - [ ] Ring-tap highlight + Generate Sample Data visible in Parts 1–2
 - [ ] No API keys, tokens, or personal chats visible in any frame
 - [ ] Voiceover audible; ends ≤3:00
-- [ ] Upload unlisted (YouTube/Loom) → send the link to slot below the README badges
+- [x] Upload unlisted (YouTube/Loom) → send the link to slot below the README badges — done: https://youtu.be/FBlQfv24Qck
