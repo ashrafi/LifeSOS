@@ -1,94 +1,87 @@
 # LifeSOS — 3-Minute Submission Video Script
 
 Verbatim voiceover + shots. Portrait screen recording, Meta Horizon theme, voiceover throughout.
-Total: ~180 seconds. Primary path uses a live Meta Model API key; the offline backup
-is scripted at 2:25 so one recording covers both.
+Total: ~180 seconds. Record with a live Meta Model API key entered and WhatsApp logged in.
 
 ## Setup (before recording)
 
-- Fresh install; kill and relaunch so Lumi opens **Dormant gray**.
-- Enter the Meta Model API key in Connections → AI Configuration (Path A).
-- WhatsApp installed and logged in on the device.
-- Do a full rehearsal pass first; record the second pass.
+- Fresh install for Part 2; rehearse the Success Trap pass first, then record second takes.
+- Meta Model API key entered (Connections → AI Configuration); WhatsApp logged in.
+- Airplane-mode backup: if the network dies mid-take, keep rolling — the Offline
+  Rules Engine card is an honest beat, not a blooper.
 
-## 0:00–0:15 — Hook + meet Lumi
+## Part 0 — Intro: what it is, how it works (0:00–0:30)
 
-**Shot:** Home, Lumi Dormant.
+**Shots:** Home, Lumi Radiant; slow swipe Home → Show Data → Connections → Home.
 
-> "Your fitness tracker knows how many steps you take. Your calendar knows how
-> busy you are. Your bank knows what you spend. But none of them knows what
-> your life is costing you." *(beat)* "This is Lumi — she does."
+> "Your fitness tracker knows your steps. Your calendar knows your meetings.
+> Your bank knows your spending. But none of them knows what your life is
+> costing you. LifeSOS connects all four — Health, Tasks, Finance, and Social —
+> into one living companion. When your life falls out of balance, Lumi feels it
+> first. This is how it works."
 
-## 0:15–0:35 — Honest empty state
+## Part 1 — Meet Lumi: the Success Trap, end to end (0:30–1:30)
 
-**Shots:** gray chips, "—" score, disabled Consult; quick swipe through Show Data
-("No Live Signals Yet") and Connections ("0 of 5 Streams Active").
+**Shot:** flask icon → **1. The Success Trap**. Home: Lumi Sick, clouds, red chips.
 
-> "Fresh install, zero connections — and Lumi shows nothing. No fake baseline,
-> no made-up scores. She stays gray and dormant until real data flows. That's
-> the deal this app makes with you: she never pretends to know what she doesn't."
+> "Meet Lumi. Right now she's sick — and she's trying to tell us why. Work is
+> at 98%, savings are up 20%. Every other app would congratulate you."
 
-## 0:35–1:30 — The Success Trap (main story)
+**Shot:** Show Data tab — anomaly radar, red tiles, RULE MATCH strip; tap a ring
+so its tile lights.
 
-**Shot:** flask icon → **1. The Success Trap**. Lumi turns Sick; clouds replace the sun.
+> "But look at the data. Sleep has crashed to five hours, and three weeks of
+> plans just got canceled. The rule engine catches the exact trade-off: success
+> on paper, borrowed from sleep and friendship. Tap any ring to inspect it."
 
-> "Now life gets complicated. You're crushing work — 98% of tasks done — and
-> savings are up 20%. Every other app would congratulate you."
+**Shot:** Companion Hub → **Consult LifeSOS for Advice**; hold ≥2s on the
+diagnosis card so `Meta Muse Spark 1.3` is readable.
 
-**Shot:** tap **Consult LifeSOS for Advice**; hold on the diagnosis card so
-`Meta Muse Spark 1.3` is readable.
-
-> "Lumi sees the trade: sleep has crashed to five hours, and you've canceled
-> plans three weeks in a row. This diagnosis comes from Meta Muse Spark
-> reasoning over all four channels at once — see the model attribution right
-> on the card."
+> "Meta Muse Spark reads all four channels and explains it like a friend —
+> with the model attribution right on the card."
 
 **Shot:** tap **💬 Open WhatsApp & Reach Out**; WhatsApp opens pre-filled.
 
 > "One tap turns insight into reconnection."
 
-**Shot:** back in app → **Log Follow-Through**, then tap 🔊 voice readout.
-Lumi recovers toward Radiant.
+**Shot:** back in app → **Log Follow-Through**, then 🔊 voice readout. Lumi
+recovers to Radiant under the sun.
 
 > "Only logged follow-through heals her — agreeing isn't enough. And she tells
 > you so herself."
 
-## 1:30–2:00 — Second proof: Connection Debt
+## Part 2 — Clean install: setup in under a minute (1:30–2:10)
 
-**Shots:** flask icon → **3. Connection Debt**; sad Lumi (Social 22%); Consult →
-Spark card with the green WhatsApp pill; stop there (no need to send twice).
+**Shots:** fresh install opens Dormant gray ("—" chips, disabled Consult).
 
-> "Same engine, different pattern. Health, tasks, and money all above 90% —
-> but you've postponed calling your sibling three times and missed a birthday.
-> Spark spots it, and the one-tap outreach is ready again. Two scenarios, same
-> loop: notice, explain, act, recover."
+> "Now let's start over. Fresh install, zero connections — Lumi shows nothing.
+> No fake scores, no pretend data. Gray until real life flows in."
 
-## 2:00–2:25 — The data behind her
+**Shots:** Connections → profile name → connect Health, Calendar, Finance;
+expand **Demo sample data** → **Generate Sample Data**; chips light up.
 
-**Shots:** Show Data tab — radar; **tap a ring** so its tile lights; scroll the
-evidence cards. Then Connections — "4 of 5 Streams Active," Muse Spark key
-configured; expand **Demo sample data** briefly.
+> "Setup takes seconds: name yourself, connect Health, Calendar, and your bank —
+> keys are entered on-device and encrypted, never hardcoded. And if your phone
+> is empty, one tap generates a week of labeled sample data so you can watch
+> the gray chips come alive."
 
-> "Under the hood: Health Connect, Calendar, finance, and social flow into one
-> deterministic rule engine — Spark interprets, Lumi feels. Tap any ring to
-> inspect its channel. Keys are entered on-device and encrypted; nothing raw
-> ever leaves the phone except the derived summaries Spark needs."
+## Part 3 — The other demos (2:10–2:45)
 
-## 2:25–2:45 — Offline backup
+**Shots:** flask icon → **2. Money Leak**: sick Lumi, rule match, Spark card,
+skipped-delivery recovery. Then → **3. Connection Debt**: sad Lumi at Social
+22%, Spark card with the green WhatsApp pill. Quick cuts, ~15s each.
 
-**Shots:** airplane mode ON (show the icon), repeat Consult on the Success Trap;
-hold on the card reading **Offline Rules Engine**.
+> "Two more patterns, same loop. The Money Leak: late-night delivery orders
+> clustering on short-sleep evenings — Spark advises, one skipped order saves
+> $34, Lumi recovers. And Connection Debt: everything above 90% except the
+> relationships that matter. Notice, explain, act, recover — every time."
 
-> "And if the network dies? The offline engine keeps every beat working — and
-> the card tells you exactly that. Graceful honesty under failure."
-
-## 2:45–3:00 — Close
+## Part 4 — Done (2:45–3:00)
 
 **Shot:** Home, Lumi Radiant.
 
 > "LifeSOS: a living mirror of the life you're actually living — powered by
-> Meta Muse Spark. If we win, one hundred percent of net winnings goes to
-> charity. Thank you — we built this with love for the Meta community."
+> Meta Muse Spark."
 
 ---
 
@@ -96,7 +89,7 @@ hold on the card reading **Offline Rules Engine**.
 
 - [ ] Spark attribution readable (pause ≥2s on each diagnosis card)
 - [ ] WhatsApp handoff visible with pre-filled text
-- [ ] "Offline Rules Engine" card readable in the backup beat
+- [ ] Ring-tap highlight + Generate Sample Data visible in Parts 1–2
 - [ ] No API keys, tokens, or personal chats visible in any frame
-- [ ] Voiceover audible over a quiet background; ends ≤3:00
+- [ ] Voiceover audible; ends ≤3:00
 - [ ] Upload unlisted (YouTube/Loom) → send the link to slot below the README badges

@@ -1,0 +1,6 @@
+Now let's start over. Fresh install, zero connections.
+Lumi shows nothing. No fake scores, no pretend data.
+Gray until real life flows in. Setup takes seconds: name yourself,
+connect Health, Calendar, and your bank. Keys are entered on-device and encrypted,
+never hardcoded. And if your phone is empty, one tap generates a week of labeled
+sample data, so you can watch the gray chips come alive.
