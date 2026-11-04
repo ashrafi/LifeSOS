@@ -53,9 +53,17 @@ class SuccessTrapJourneyTest {
 
         // 3. Open the hub and consult (no key → offline engine).
         compose.onNodeWithText("Open Companion Hub").performClick()
-        // The hub is a lazy list: scroll until Consult is composed, then tap it.
+        // The hub is a lazy list: scroll until Consult is composed, nudge it
+        // fully above the bottom nav bar (a tap at the screen edge would hit
+        // the nav instead), then tap it.
         compose.onNodeWithTag("attune_screen")
             .performScrollToNode(hasText("Consult LifeSOS for Advice"))
+        compose.onNodeWithTag("attune_screen").performTouchInput {
+            swipeUp(
+                startY = visibleSize.height - 200f,
+                endY = visibleSize.height - 700f
+            )
+        }
         compose.onNodeWithTag("home_send_to_muse_button").performClick()
 
         // 4. The offline advice card arrives with honest provenance. It composes
