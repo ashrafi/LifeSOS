@@ -1597,8 +1597,13 @@ class SerenityRepository(
         currentList.add(userMsg)
 
         val scenario = _activeDemoScenario.value
-        if (scenario == MuseDemoScenario.LIVE_REAL_DATA && _metaAiConfig.value.token.isNotBlank()) {
-            Log.d(TAG, "chat: live cloud path; user msg appended, awaiting Spark reply")
+        // Demo recovery arcs advance on the user's words no matter which engine drafts
+        // the reply: resolve at most one transition from the entry stage, apply it,
+        // then route (Spark when keyed, scripted narrative when keyless).
+        val demoTransition = resolveDemoTransition(scenario, _demoRecoveryStage.value, userText.lowercase())
+        if (demoTransition != null) applyDemoTransition(demoTransition)
+        if (_metaAiConfig.value.token.isNotBlank()) {
+            Log.d(TAG, "chat: cloud path (scenario=$scenario); user msg appended, awaiting Spark reply")
             _chatPendingCount.value = _chatPendingCount.value + 1
             _chatReplyStatus.value = if (_metaAiConfig.value.isLocalLlamaPrivacyMode) {
                 "Offline Engine drafting reply…"
@@ -1641,8 +1646,8 @@ class SerenityRepository(
                 }
             }
         } else {
-            Log.d(TAG, "chat: local scripted reply (scenario=$scenario)")
-            val companionReply = generateCompanionReply(userText, _selectedMode.value)
+            Log.d(TAG, "chat: local scripted reply (scenario=$scenario transition=$demoTransition)")
+            val companionReply = generateCompanionReply(userText, _selectedMode.value, demoTransition)
             currentList.add(companionReply)
             _messages.value = currentList
         }
@@ -1652,25 +1657,121 @@ class SerenityRepository(
         return SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date())
     }
 
-    private fun generateCompanionReply(input: String, mode: PresenceMode): ChatMessage {
+    /** Scripted demo-chat branch, resolved once per user message from the entry stage. */
+    private enum class DemoChatTransition {
+        ST_CONCERN, ST_COMMIT, ML_CONCERN, ML_COMMIT, CD_VALUES, CD_OPENER, CD_COMMIT
+    }
+
+    /**
+     * Matches the user's words against the active demo's recovery arc. Pure evaluation —
+     * the caller applies [applyDemoTransition] and picks the reply source separately, so
+     * a keyed demo still advances its arc while Spark drafts the reply.
+     */
+    private fun resolveDemoTransition(
+        scenario: MuseDemoScenario,
+        entryStage: DemoRecoveryStage,
+        lower: String
+    ): DemoChatTransition? {
+        return when (scenario) {
+            MuseDemoScenario.SUCCESS_TRAP -> when {
+                entryStage == DemoRecoveryStage.PROACTIVE_CONCERN ||
+                    lower.contains("working hard") ||
+                    lower.contains("better life later") -> DemoChatTransition.ST_CONCERN
+                entryStage == DemoRecoveryStage.AWAITING_COMMITMENT ||
+                    lower.contains("midnight") ||
+                    lower.contains("friends this weekend") ||
+                    lower.contains("okay") -> DemoChatTransition.ST_COMMIT
+                else -> null
+            }
+            MuseDemoScenario.INVISIBLE_MONEY_LEAK -> when {
+                entryStage == DemoRecoveryStage.PROACTIVE_CONCERN ||
+                    lower.contains("tired when i get home") ||
+                    lower.contains("ordering food") -> DemoChatTransition.ML_CONCERN
+                entryStage == DemoRecoveryStage.AWAITING_COMMITMENT ||
+                    lower.contains("that would help") ||
+                    lower.contains("save anything") ||
+                    lower.contains("okay") -> DemoChatTransition.ML_COMMIT
+                else -> null
+            }
+            MuseDemoScenario.CONNECTION_DEBT -> when {
+                lower.contains("other things to do") || lower.contains("get around to it") ->
+                    DemoChatTransition.CD_VALUES
+                lower.contains("awkward") || lower.contains("don't know what to say") ->
+                    DemoChatTransition.CD_OPENER
+                lower.contains("call tonight") || lower.contains("okay") ->
+                    DemoChatTransition.CD_COMMIT
+                else -> null
+            }
+            else -> null
+        }
+    }
+
+    /**
+     * Applies the state side of a scripted branch (stage, mood, vitals). Speech stays
+     * with the reply builder: scripted narrative sets it keyless, Spark's reply sets
+     * it keyed.
+     */
+    private fun applyDemoTransition(transition: DemoChatTransition) {
+        when (transition) {
+            DemoChatTransition.ST_CONCERN -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
+                )
+            }
+            DemoChatTransition.ST_COMMIT -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    mood = TamagotchiMood.HOPEFUL,
+                    physicalEnergy = 0.62f,
+                    connection = 0.60f,
+                    innerPeace = 0.68f,
+                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                )
+            }
+            DemoChatTransition.ML_CONCERN -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
+                )
+            }
+            DemoChatTransition.ML_COMMIT -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    mood = TamagotchiMood.HOPEFUL,
+                    innerPeace = 0.66f,
+                    physicalEnergy = 0.64f,
+                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                )
+            }
+            DemoChatTransition.CD_VALUES, DemoChatTransition.CD_OPENER -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
+                )
+            }
+            DemoChatTransition.CD_COMMIT -> {
+                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+                _tamagotchiState.value = _tamagotchiState.value.copy(
+                    mood = TamagotchiMood.HOPEFUL,
+                    connection = 0.68f,
+                    innerPeace = 0.80f,
+                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                )
+            }
+        }
+    }
+
+    private fun generateCompanionReply(input: String, mode: PresenceMode, transition: DemoChatTransition?): ChatMessage {
         val lower = input.lowercase()
         val timeStr = currentTimeFormatted()
         val id = UUID.randomUUID().toString()
-        val scenario = _activeDemoScenario.value
-        val stage = _demoRecoveryStage.value
 
         // 1. Handle Demo 1: The Success Trap scripted & natural dialogue
-        if (scenario == MuseDemoScenario.SUCCESS_TRAP) {
-            if (stage == DemoRecoveryStage.PROACTIVE_CONCERN ||
-                lower.contains("working hard") ||
-                lower.contains("better life later")
-            ) {
-                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+        if (transition == DemoChatTransition.ST_CONCERN) {
+            run {
                 val replyText = "I understand. But what if the way you're building that future is taking too much away from your life today? You don't have to give up your ambition. Can we protect your sleep and put one important relationship back on your calendar?"
-                _tamagotchiState.value = _tamagotchiState.value.copy(
-                    speech = replyText,
-                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
-                )
+                _tamagotchiState.value = _tamagotchiState.value.copy(speech = replyText)
                 return ChatMessage(
                     id = id,
                     isFromUser = false,
@@ -1685,20 +1786,15 @@ class SerenityRepository(
                     ),
                     category = "The Success Trap • Coaching"
                 )
-            } else if (stage == DemoRecoveryStage.AWAITING_COMMITMENT ||
-                lower.contains("midnight") ||
-                lower.contains("friends this weekend") ||
-                lower.contains("okay")
-            ) {
-                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+            }
+        }
+
+        // 1b. Success Trap commitment beat
+        if (transition == DemoChatTransition.ST_COMMIT) {
+            run {
                 val replyText = "That sounds like a life worth building."
                 _tamagotchiState.value = _tamagotchiState.value.copy(
-                    mood = TamagotchiMood.HOPEFUL,
-                    physicalEnergy = 0.62f,
-                    connection = 0.60f,
-                    innerPeace = 0.68f,
-                    speech = "$replyText (I'm feeling hopeful! Log your follow-through once you rest and reconnect.)",
-                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                    speech = "$replyText (I'm feeling hopeful! Log your follow-through once you rest and reconnect.)"
                 )
                 return ChatMessage(
                     id = id,
@@ -1719,17 +1815,10 @@ class SerenityRepository(
         }
 
         // 2. Handle Demo 2: The Invisible Money Leak scripted & natural dialogue
-        if (scenario == MuseDemoScenario.INVISIBLE_MONEY_LEAK) {
-            if (stage == DemoRecoveryStage.PROACTIVE_CONCERN ||
-                lower.contains("tired when i get home") ||
-                lower.contains("ordering food")
-            ) {
-                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+        if (transition == DemoChatTransition.ML_CONCERN) {
+            run {
                 val replyText = "That makes sense. I don't think you need another lecture about budgeting. I think we should make your evenings easier. Let's plan a few meals that take five minutes, keep an easy dinner ready, and choose one evening activity you actually look forward to."
-                _tamagotchiState.value = _tamagotchiState.value.copy(
-                    speech = replyText,
-                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
-                )
+                _tamagotchiState.value = _tamagotchiState.value.copy(speech = replyText)
                 return ChatMessage(
                     id = id,
                     isFromUser = false,
@@ -1744,19 +1833,15 @@ class SerenityRepository(
                     ),
                     category = "The Invisible Money Leak • Coaching"
                 )
-            } else if (stage == DemoRecoveryStage.AWAITING_COMMITMENT ||
-                lower.contains("that would help") ||
-                lower.contains("save anything") ||
-                lower.contains("okay")
-            ) {
-                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+            }
+        }
+
+        // 2b. Money Leak commitment beat
+        if (transition == DemoChatTransition.ML_COMMIT) {
+            run {
                 val replyText = "Then let's start by making tomorrow easier, not by asking you to become a completely different person overnight."
                 _tamagotchiState.value = _tamagotchiState.value.copy(
-                    mood = TamagotchiMood.HOPEFUL,
-                    innerPeace = 0.66f,
-                    physicalEnergy = 0.64f,
-                    speech = "$replyText (I'm feeling hopeful! Log your easy evening follow-through to complete recovery.)",
-                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                    speech = "$replyText (I'm feeling hopeful! Log your easy evening follow-through to complete recovery.)"
                 )
                 return ChatMessage(
                     id = id,
@@ -1777,14 +1862,10 @@ class SerenityRepository(
         }
 
         // 3. Handle Demo 3: The Connection Debt scripted & natural dialogue
-        if (scenario == MuseDemoScenario.CONNECTION_DEBT) {
-            if (lower.contains("other things to do") || lower.contains("get around to it")) {
-                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+        if (transition == DemoChatTransition.CD_VALUES) {
+            run {
                 val replyText = "You told me those relationships are important to you. I'm worried that 'later' keeps getting pushed further away. Is there a reason you've been avoiding those calls?"
-                _tamagotchiState.value = _tamagotchiState.value.copy(
-                    speech = replyText,
-                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
-                )
+                _tamagotchiState.value = _tamagotchiState.value.copy(speech = replyText)
                 return ChatMessage(
                     id = id,
                     isFromUser = false,
@@ -1799,13 +1880,14 @@ class SerenityRepository(
                     ),
                     category = "The Connection Debt • Values Alignment"
                 )
-            } else if (lower.contains("awkward") || lower.contains("don't know what to say")) {
-                _demoRecoveryStage.value = DemoRecoveryStage.AWAITING_COMMITMENT
+            }
+        }
+
+        // 3b. Connection Debt opener beat
+        if (transition == DemoChatTransition.CD_OPENER) {
+            run {
                 val replyText = "You don't need a perfect explanation. A simple 'I've missed talking to you. How have you been?' is enough to start. Want to set aside ten minutes today?"
-                _tamagotchiState.value = _tamagotchiState.value.copy(
-                    speech = replyText,
-                    recoveryStage = DemoRecoveryStage.AWAITING_COMMITMENT
-                )
+                _tamagotchiState.value = _tamagotchiState.value.copy(speech = replyText)
                 return ChatMessage(
                     id = id,
                     isFromUser = false,
@@ -1820,15 +1902,15 @@ class SerenityRepository(
                     ),
                     category = "The Connection Debt • Coaching"
                 )
-            } else if (lower.contains("call tonight") || lower.contains("okay")) {
-                _demoRecoveryStage.value = DemoRecoveryStage.HOPEFUL_COMMITTED
+            }
+        }
+
+        // 3c. Connection Debt commitment beat
+        if (transition == DemoChatTransition.CD_COMMIT) {
+            run {
                 val replyText = "That makes me happy. You have room in your life for the people who make it meaningful, too."
                 _tamagotchiState.value = _tamagotchiState.value.copy(
-                    mood = TamagotchiMood.HOPEFUL,
-                    connection = 0.68f,
-                    innerPeace = 0.80f,
-                    speech = "$replyText (Record your planned call when done so we can celebrate together!)",
-                    recoveryStage = DemoRecoveryStage.HOPEFUL_COMMITTED
+                    speech = "$replyText (Record your planned call when done so we can celebrate together!)"
                 )
                 return ChatMessage(
                     id = id,

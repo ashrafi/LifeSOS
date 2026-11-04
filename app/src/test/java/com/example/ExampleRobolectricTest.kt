@@ -16,7 +16,10 @@ import com.example.model.ScreenNav
 import com.example.model.TamagotchiMood
 import com.example.model.TamagotchiState
 import com.example.viewmodel.SerenityViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -108,6 +111,67 @@ class ExampleRobolectricTest {
         }
         assertTrue(sparkFallback.llamaGuardStatus.contains("Unscreened"))
         assertTrue(privacyFallback.llamaGuardStatus.contains("Unscreened"))
+    }
+
+    private fun statusClient(code: Int): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                Response.Builder()
+                    .request(chain.request())
+                    .protocol(Protocol.HTTP_1_1)
+                    .code(code)
+                    .message("canned")
+                    .body("{}".toResponseBody("application/json".toMediaType()))
+                    .build()
+            }
+            .build()
+    }
+
+    private fun throwingClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor { throw java.io.IOException("synthetic network failure") }
+            .build()
+    }
+
+    private suspend fun consultWith(
+        service: MuseService,
+        token: String,
+        privacy: Boolean = false
+    ) = service.sendLifeTelemetryToMuse(
+        metaAiToken = token,
+        tamagotchiState = TamagotchiState(),
+        quests = emptyList(),
+        recentLogs = emptyList(),
+        valuesAndMemories = emptyList(),
+        modelName = "muse-spark-1.3",
+        isLocalPrivacyMode = privacy
+    )
+
+    @Test
+    fun `keyed 401 consult surfaces key-rejected note on offline card`() = runTest {
+        val advice = consultWith(MuseService(statusClient(401)), "dummy-key")
+        assertEquals("Offline Rules Engine (Muse Spark Unreachable)", advice.modelUsed)
+        assertNotNull(advice.cloudFailureNote)
+        assertTrue(advice.cloudFailureNote!!.contains("rejected the API key"))
+        assertTrue(advice.cloudFailureNote!!.contains("401"))
+    }
+
+    @Test
+    fun `keyed network failure consult surfaces unreachable note`() = runTest {
+        val advice = consultWith(MuseService(throwingClient()), "dummy-key")
+        assertEquals("Offline Rules Engine (Muse Spark Unreachable)", advice.modelUsed)
+        assertNotNull(advice.cloudFailureNote)
+        // The concrete cause rides along so the card names it, not just "network error".
+        assertTrue(advice.cloudFailureNote!!.contains("synthetic network failure"))
+    }
+
+    @Test
+    fun `keyless and privacy consults carry no failure note`() = runTest {
+        val keyless = consultWith(MuseService(statusClient(200)), "")
+        assertEquals(null, keyless.cloudFailureNote)
+        val privacy = consultWith(MuseService(statusClient(200)), "dummy-key", privacy = true)
+        assertEquals(null, privacy.cloudFailureNote)
+        assertEquals("Offline Rules Engine (Zero-Cloud)", privacy.modelUsed)
     }
 
     @Test
@@ -266,6 +330,33 @@ class ExampleRobolectricTest {
 
         repo.completeDemoFollowThrough()
         assertEquals(TamagotchiMood.RADIANT, repo.tamagotchiState.value.mood)
+    }
+
+    @Test
+    fun `keyed demo chat consults cloud engine while recovery arc still advances`() {
+        // Demo chat must not be hardcoded to local scripted replies: with a key set
+        // the reply comes from the engine (offline fallback here — throwing client,
+        // no network), while the user's words still advance the recovery arc.
+        val repo = SerenityRepository(museService = MuseService(throwingClient()))
+        repo.updateMetaAiToken("dummy-key")
+        repo.activateDemoScenario(MuseDemoScenario.SUCCESS_TRAP)
+        val before = repo.messages.value.size
+
+        repo.sendMessage("I'm working hard now so I can have a better life later.")
+
+        // Arc advances inline, independent of which engine drafts the reply.
+        assertEquals(DemoRecoveryStage.AWAITING_COMMITMENT, repo.demoRecoveryStage.value)
+
+        // Cloud branch taken: engine reply, not the scripted narrative beat.
+        runBlocking {
+            withTimeout(15_000) {
+                while (repo.messages.value.size < before + 2) delay(100)
+            }
+        }
+        val last = repo.messages.value.last()
+        assertFalse(last.isFromUser)
+        assertEquals("Offline Engine (Cloud Unreachable)", last.category)
+        assertFalse(last.content.contains("protect your sleep"))
     }
 
     @Test

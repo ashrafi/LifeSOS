@@ -309,7 +309,14 @@ data class MuseLifeAdvice(
     val reasoningSteps: List<ThoughtStep> = emptyList(),
     val actionableNudge: ActionableNudge? = null,
     val llamaGuardStatus: String = "Prompt-Level Safety Guidance (No Separate Classifier Call)",
-    val modelUsed: String = "Meta Muse Spark 1.3 (Meta Model API)"
+    val modelUsed: String = "Meta Muse Spark 1.3 (Meta Model API)",
+    /**
+     * Set only when a key was configured but the cloud call failed: tells the
+     * user on-screen why they are seeing offline guidance instead of failing
+     * silently. Null for intentional offline (privacy mode) and keyless runs,
+     * where the modelUsed label already explains the path.
+     */
+    val cloudFailureNote: String? = null
 )
 
 data class MusePillarAdvice(

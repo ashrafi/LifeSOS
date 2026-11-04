@@ -612,6 +612,24 @@ fun AttuneScreen(
                                     )
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
+                                advice.cloudFailureNote?.let { note ->
+                                    Surface(
+                                        shape = RoundedCornerShape(6.dp),
+                                        color = AmberContainer
+                                    ) {
+                                        Text(
+                                            text = "⚠️ $note",
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                color = OnAmberContainer,
+                                                fontSize = 10.sp
+                                            ),
+                                            modifier = Modifier
+                                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                .testTag("advice_cloud_warning")
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                }
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,

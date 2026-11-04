@@ -2,12 +2,12 @@
 
 **Goal:** a solid, judge-proof, presentable project for the Meta Million Dollar Hackathon.
 **Last reviewed:** 2026-11-01 against the current codebase (`SerenityRepository`, `MuseService`,
-connectors, `SecureByokStore`, UI screens, tests: 66/66 passing — see record below).
+connectors, `SecureByokStore`, UI screens, tests: 70/70 passing — see record below).
 
 ## Current Verification Record (single source of truth, Nov 3)
 
-- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **66/66 green**,
-  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 29,
+- Command: `./gradlew testDebugUnitTest --offline` (Android Studio JBR 21) → **70/70 green**,
+  zero failures/errors: `ExampleUnitTest` 8, `ExampleRobolectricTest` 33,
   `LifeRuleEngineTest` 11, `LifeMemoryMomentsTest` 6, `SyncFallbackMathTest` 5,
   `HealthSampleDataTest` 3, `RingTapMathTest` 4.
 - `:app:assembleDebug --offline` → BUILD SUCCESSFUL; launcher icon pixel-verified in APK.
@@ -361,6 +361,24 @@ Tapping a ring on the Show Data radar now lights the matching channel tile
 halo and thicker stroke). Tap again, the core, or empty space to clear.
 Hit-test math is a pure function pinned by `RingTapMathTest` (4 tests). Suite
 at **66/66 green** — see Current Verification Record.
+
+Consult no longer fails silently to offline: when a key is configured but the
+cloud call fails (401/403 rejected key, other HTTP errors, network exception,
+unreadable reply), the advice carries a `cloudFailureNote` rendered as an amber
+⚠️ strip on the card (e.g. "Muse Spark rejected the API key (HTTP 401) —
+showing offline guidance"). Privacy-mode and keyless runs stay note-free since
+their offline path is expected. Pinned by 3 Robolectric tests with canned
+HTTP/failure clients (no network). Suite at **70/70 green** — see Current
+Verification Record.
+
+Demo chat is no longer hardcoded to local scripted replies: with a key set, chat
+during an active demo scenario consults Spark (same cloud path as live chat, with
+the demo telemetry snapshot as context) instead of only serving narrative
+templates. Recovery-arc advancement was decoupled from reply generation
+(`resolveDemoTransition`/`applyDemoTransition`), so the user's commitment words
+still move Lumi Sick → Hopeful → recovered exactly as before — keyless demos are
+byte-identical in behavior, pinned by the 3 existing demo-arc tests plus 1 new
+keyed-routing test (throwing client, no network).
 
 Owner-scoped honesty note: the Facebook Graph cloud path ships code-complete
 but will never be live-validated pre-submission (no time for Meta app review).

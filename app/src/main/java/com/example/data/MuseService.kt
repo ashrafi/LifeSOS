@@ -116,6 +116,7 @@ class MuseService(
         // 2. If token is provided, execute real Meta Model API (Muse Spark 1.3 / Llama) inference
         val cleanToken = metaAiToken.trim()
         val isSparkModel = modelName.contains("spark", ignoreCase = true)
+        var cloudFailureNote: String? = null
         if (cleanToken.isNotBlank()) {
             try {
                 val systemPrompt = if (isSparkModel) {
@@ -218,19 +219,36 @@ class MuseService(
                         val parsed = parseLlamaCompletion(bodyString, currentTime, tamagotchiState, modelName)
                         if (parsed != null) return@withContext parsed
                     }
+                    cloudFailureNote = "Muse Spark returned an unreadable response — showing offline guidance"
+                } else if (response.code == 401 || response.code == 403) {
+                    cloudFailureNote = "Muse Spark rejected the API key (HTTP ${response.code}) — showing offline guidance"
+                } else {
+                    cloudFailureNote = "Muse Spark unreachable (HTTP ${response.code}) — showing offline guidance"
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "consult: cloud call failed (${e.message}); using offline fallback")
+                // Surface the concrete cause (DNS, timeout, TLS…) truncated to one
+                // short line: OkHttp failure messages never contain request headers,
+                // so the API key cannot leak through here.
+                val detail = e.message?.lineSequence()?.firstOrNull()?.trim()?.take(90)
+                cloudFailureNote = if (detail.isNullOrBlank()) {
+                    "Muse Spark unreachable (network error) — showing offline guidance"
+                } else {
+                    "Muse Spark unreachable ($detail) — showing offline guidance"
+                }
             }
         }
 
         // 3. Fallback to offline flagship-style synthesis or the offline privacy engine
         Log.d(TAG, "consult: offline fallback (sparkPath=$isSparkModel)")
-        if (isSparkModel) {
+        val fallback = if (isSparkModel) {
             synthesizeOfflineFlagshipAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         } else {
             synthesizeOfflinePrivacyAdvice(tamagotchiState, telemetrySnapshot, currentTime)
         }
+        // Blank-token and privacy-mode runs keep cloudFailureNote null: their
+        // offline path is expected, and modelUsed already discloses it.
+        fallback.copy(cloudFailureNote = cloudFailureNote)
     }
 
     suspend fun chatWithMuseSpark(

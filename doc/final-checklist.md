@@ -1,6 +1,6 @@
 # LifeSOS — Final Pre-Submission Runbook ✅
 
-Everything Muse Code could do from here is done (code, tests 66/66 green, docs,
+Everything Muse Code could do from here is done (code, tests 70/70 green, docs,
 icon, live rule engine). This runbook is the **human-only remainder**: device work,
 proof capture, and submission. Do the steps in order; each ends with an expected result.
 Check the box only when you see it.
@@ -35,8 +35,8 @@ committed `debug.keystore` signs correctly on a machine that never saw this repo
 ./gradlew testDebugUnitTest
 grep -h "<testsuite " app/build/test-results/testDebugUnitTest/*.xml
 ```
-Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 29/29`, `LifeRuleEngineTest 11/11`,
-`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, `HealthSampleDataTest 3/3`, `RingTapMathTest 4/4`, zero failures/errors — **66/66 green**, matching the last verified run.
+Expected: `ExampleUnitTest 8/8`, `ExampleRobolectricTest 33/33`, `LifeRuleEngineTest 11/11`,
+`LifeMemoryMomentsTest 6/6`, `SyncFallbackMathTest 5/5`, `HealthSampleDataTest 3/3`, `RingTapMathTest 4/4`, zero failures/errors — **70/70 green**, matching the last verified run.
 
 ---
 

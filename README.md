@@ -11,7 +11,7 @@
 [![Meta Horizon Theme](https://img.shields.io/badge/Design_System-Meta_Horizon_Colors-0866FF?style=for-the-badge)](https://www.meta.com/)
 [![WhatsApp Deep Link](https://img.shields.io/badge/Action-WhatsApp_1--Tap_Nudge-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com)
 [![CI](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml/badge.svg)](https://github.com/ashrafi/LifeSOS/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/Tests-66%2F66_passing-brightgreen?style=for-the-badge&logo=android&logoColor=white)](doc/hackathon-readiness.md#current-verification-record-single-source-of-truth-nov-3)
+[![Tests](https://img.shields.io/badge/Tests-69%2F69_passing-brightgreen?style=for-the-badge&logo=android&logoColor=white)](doc/hackathon-readiness.md#current-verification-record-single-source-of-truth-nov-3)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Min SDK](https://img.shields.io/badge/Android_API-26%2B-34A853?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org)
